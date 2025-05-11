@@ -24,6 +24,8 @@ public class RegisterMenuController {
     private void processRegistration() {
         String userName = view.getUserName().getText();
         String password = view.getPassword().getText();
+        String question = view.getSecurityQuestionSelect().getSelected();
+        String answer = view.getSecurityAnswer().getText();
 
         Result result = validatePassword(password);
         if(userName.equals("your username...") || userName.isEmpty()){
@@ -37,9 +39,11 @@ public class RegisterMenuController {
         }
         else if (!result.isSuccessful()) {
             DialogManager.showErrorDialog(view.getStage(),"Error", result.getMessage(), null);
-
         }
-        else if(SaveData.getInstance().addUser(userName,password)){
+        else if(answer.equalsIgnoreCase("Enter your answer...") || answer.isEmpty()){
+            DialogManager.showErrorDialog(view.getStage(),"Error","answer can not be empty.",null);
+        }
+        else if(SaveData.getInstance().addUser(userName,password,question,answer)){
             DialogManager.showSuccessDialog(view.getStage(), "Success", "Registration successful!", new Runnable() {
                 @Override
                 public void run() {
@@ -74,6 +78,14 @@ public class RegisterMenuController {
                 public void clicked(InputEvent event, float x, float y) {
                     // انتقال به صفحه PreGameMenu
                     Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+                }
+            });
+
+            view.getBackButton().addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    // بازگشت به منوی اصلی
+                    Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
                 }
             });
         }

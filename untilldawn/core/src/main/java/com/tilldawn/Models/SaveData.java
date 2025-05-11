@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class SaveData {
     private static final String SAVE_FILE = "data/users.json";
 
@@ -56,7 +55,13 @@ public class SaveData {
                     String username = userValue.getString("userName");
                     String password = userValue.getString("password");
 
-                    User user = new User(username, password);
+                    String securityQuestion = "";
+                    String securityAnswer = "";
+                    if (userValue.has("securityQuestion") && userValue.has("securityAnswer")) {
+                        securityQuestion = userValue.getString("securityQuestion");
+                        securityAnswer = userValue.getString("securityAnswer");
+                    }
+                    User user = new User(username, password, securityQuestion, securityAnswer);
                     users.put(username, user);
                 }
 
@@ -89,6 +94,9 @@ public class SaveData {
             String jsonString = json.prettyPrint(userList);
             file.writeString(jsonString, false);
 
+            // چاپ مسیر فایل برای دیباگ
+            System.out.println("User data saved to: " + file.file().getAbsolutePath());
+
             Gdx.app.log("SaveData", "Saved " + users.size() + " users to JSON");
         } catch (Exception e) {
             Gdx.app.error("SaveData", "Error saving users to JSON", e);
@@ -96,20 +104,33 @@ public class SaveData {
     }
 
     /**
-     * افزودن یک کاربر جدید
+     * افزودن یک کاربر جدید با سؤال و پاسخ امنیتی
      * @param username نام کاربری
      * @param password رمز عبور
+     * @param securityQuestion سؤال امنیتی
+     * @param securityAnswer پاسخ سؤال امنیتی
      * @return true اگر با موفقیت اضافه شد، false اگر نام کاربری قبلاً وجود داشت
      */
-    public boolean addUser(String username, String password) {
+    public boolean addUser(String username, String password, String securityQuestion, String securityAnswer) {
         if (users.containsKey(username)) {
             return false; // کاربر قبلاً وجود دارد
         }
 
-        users.put(username, new User(username, password));
+        User user = new User(username, password, securityQuestion, securityAnswer);
+        users.put(username, user);
         saveUsers();
         return true;
     }
+
+//    /**
+//     * افزودن یک کاربر جدید بدون سؤال و پاسخ امنیتی (برای حفظ سازگاری با کد قبلی)
+//     * @param username نام کاربری
+//     * @param password رمز عبور
+//     * @return true اگر با موفقیت اضافه شد، false اگر نام کاربری قبلاً وجود داشت
+//     */
+//    public boolean addUser(String username, String password) {
+//        return addUser(username, password, "", "");
+//    }
 
     /**
      * بررسی اعتبار کاربر
@@ -124,6 +145,104 @@ public class SaveData {
         }
 
         return user.getPassword().equals(password);
+    }
+
+    /**
+     * بررسی پاسخ سؤال امنیتی کاربر
+     * @param username نام کاربری
+     * @param securityAnswer پاسخ سؤال امنیتی
+     * @return true اگر پاسخ سؤال امنیتی صحیح باشد
+     */
+    public boolean validateSecurityAnswer(String username, String securityAnswer) {
+        User user = users.get(username);
+        if (user == null || user.getSecurityAnswer() == null || user.getSecurityAnswer().isEmpty()) {
+            return false;
+        }
+
+        return user.getSecurityAnswer().equalsIgnoreCase(securityAnswer.trim());
+    }
+
+    /**
+     * دریافت سؤال امنیتی کاربر
+     * @param username نام کاربری
+     * @return سؤال امنیتی یا null اگر کاربر یافت نشد یا سؤال امنیتی ندارد
+     */
+    public String getSecurityQuestion(String username) {
+        User user = users.get(username);
+        if (user == null) {
+            return null;
+        }
+        return user.getSecurityQuestion();
+    }
+
+    /**
+     * بازیابی رمز عبور با استفاده از سؤال امنیتی
+     * @param username نام کاربری
+     * @param securityAnswer پاسخ سؤال امنیتی
+     * @return رمز عبور اگر پاسخ صحیح باشد، در غیر این صورت null
+     */
+    public String recoverPassword(String username, String securityAnswer) {
+        if (validateSecurityAnswer(username, securityAnswer)) {
+            User user = users.get(username);
+            if (user != null) {
+                return user.getPassword();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * تغییر رمز عبور کاربر
+     * @param username نام کاربری
+     * @param oldPassword رمز عبور قدیمی
+     * @param newPassword رمز عبور جدید
+     * @return true اگر رمز عبور با موفقیت تغییر کرد
+     */
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        if (validateUser(username, oldPassword)) {
+            User user = users.get(username);
+            user.setPassword(newPassword);
+            saveUsers();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * تغییر رمز عبور با استفاده از سؤال امنیتی (برای بازیابی رمز عبور)
+     * @param username نام کاربری
+     * @param securityAnswer پاسخ سؤال امنیتی
+     * @param newPassword رمز عبور جدید
+     * @return true اگر رمز عبور با موفقیت تغییر کرد
+     */
+    public boolean resetPasswordWithSecurityQuestion(String username, String securityAnswer, String newPassword) {
+        if (validateSecurityAnswer(username, securityAnswer)) {
+            User user = users.get(username);
+            user.setPassword(newPassword);
+            saveUsers();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * تغییر سؤال و پاسخ امنیتی
+     * @param username نام کاربری
+     * @param password رمز عبور (برای تأیید هویت)
+     * @param newSecurityQuestion سؤال امنیتی جدید
+     * @param newSecurityAnswer پاسخ امنیتی جدید
+     * @return true اگر سؤال و پاسخ امنیتی با موفقیت تغییر کردند
+     */
+    public boolean changeSecurityQuestion(String username, String password,
+                                          String newSecurityQuestion, String newSecurityAnswer) {
+        if (validateUser(username, password)) {
+            User user = users.get(username);
+            user.setSecurityQuestion(newSecurityQuestion);
+            user.setSecurityAnswer(newSecurityAnswer);
+            saveUsers();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -168,5 +287,48 @@ public class SaveData {
             return true;
         }
         return false;
+    }
+
+    /**
+     * بررسی وجود نام کاربری
+     * @param username نام کاربری
+     * @return true اگر نام کاربری قبلاً ثبت شده باشد
+     */
+    public boolean userExists(String username) {
+        return users.containsKey(username);
+    }
+
+    /**
+     * دریافت تعداد کاربران ثبت شده
+     * @return تعداد کاربران
+     */
+    public int getUserCount() {
+        return users.size();
+    }
+
+    /**
+     * دریافت مسیر فایل ذخیره‌سازی کاربران
+     * @return مسیر کامل فایل
+     */
+    public String getUserDataFilePath() {
+        FileHandle file = Gdx.files.local(SAVE_FILE);
+        return file.file().getAbsolutePath();
+    }
+
+    /**
+     * خواندن محتوای فایل ذخیره‌سازی کاربران
+     * @return محتوای فایل به صورت رشته
+     */
+    public String getUserDataFileContent() {
+        try {
+            FileHandle file = Gdx.files.local(SAVE_FILE);
+            if (file.exists()) {
+                return file.readString();
+            } else {
+                return "File does not exist";
+            }
+        } catch (Exception e) {
+            return "Error reading file: " + e.getMessage();
+        }
     }
 }
