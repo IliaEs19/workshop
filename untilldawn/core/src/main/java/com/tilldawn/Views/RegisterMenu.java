@@ -25,7 +25,7 @@ public class RegisterMenu implements Screen {
     private TextField password;
     private TextButton register;
     private TextButton guestButton;
-    private Action pulseAction;
+
 
 
     public RegisterMenu(RegisterMenuController controller, Skin skin){

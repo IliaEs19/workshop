@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tilldawn.Main;
-import com.tilldawn.Models.GameAssetManager;
-import com.tilldawn.Models.Result;
+import com.tilldawn.Models.*;
+import com.tilldawn.Views.MainMenu;
 import com.tilldawn.Views.PreGameMenu;
 import com.tilldawn.Views.RegisterMenu;
 
@@ -20,6 +20,35 @@ public class RegisterMenuController {
         this.view = view;
         setupListeners();
     }
+
+    private void processRegistration() {
+        String userName = view.getUserName().getText();
+        String password = view.getPassword().getText();
+
+        Result result = validatePassword(password);
+        if(userName.equals("your username...") || userName.isEmpty()){
+            DialogManager.showErrorDialog(view.getStage(),"Error","username can not be empty.",null);
+        }
+        else if(password.equals("your password...") || password.isEmpty()){
+            DialogManager.showErrorDialog(view.getStage(),"Error","password can not be empty.",null);
+        }
+        else if(SaveData.getInstance().getUser(userName) != null){
+            DialogManager.showErrorDialog(view.getStage(),"Error","username already exist! choose another username.",null);
+        }
+        else if (!result.isSuccessful()) {
+            DialogManager.showErrorDialog(view.getStage(),"Error", result.getMessage(), null);
+
+        }
+        else if(SaveData.getInstance().addUser(userName,password)){
+            DialogManager.showSuccessDialog(view.getStage(), "Success", "Registration successful!", new Runnable() {
+                @Override
+                public void run() {
+                    //Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
+                }
+            });
+        }
+    }
+
 
     private void setupListeners() {
         if (view != null) {
@@ -50,22 +79,6 @@ public class RegisterMenuController {
         }
     }
 
-    private void processRegistration() {
-        String userName = view.getUserName().getText();
-        String password = view.getPassword().getText();
-
-        Result result = validatePassword(password);
-        if(userName.equals("your username...") || userName.isEmpty()){
-            showErrorDialog("username can not be empty.");
-        }
-        else if(password.equals("your password...") || password.isEmpty()){
-            showErrorDialog("password can not be empty.");
-        }
-        else if (!result.isSuccessful()) {
-            showErrorDialog(result.getMessage());
-        }
-    }
-
     private void showErrorDialog(String errorMessage) {
         Dialog errorDialog = new Dialog("", GameAssetManager.getGameAssetManager().getSkin()) {
             @Override
@@ -83,6 +96,27 @@ public class RegisterMenuController {
         errorDialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, true);
         errorDialog.setModal(true);
         errorDialog.show(view.getStage());
+    }
+
+    private void showSuccessDialog(String message, final Runnable onSuccess) {
+        Dialog successDialog = new Dialog("SUCCESS", GameAssetManager.getGameAssetManager().getSkin()) {
+            @Override
+            protected void result(Object object) {
+                if (object instanceof Boolean && (Boolean)object) {
+                    hide();
+                    remove();
+                    if (onSuccess != null) {
+                        onSuccess.run();
+                    }
+                }
+            }
+        };
+
+        successDialog.text(message);
+        successDialog.button("Ok", true);
+        successDialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
+        successDialog.setModal(true);
+        successDialog.show(view.getStage());
     }
 
     public static Result validatePassword(String password) {

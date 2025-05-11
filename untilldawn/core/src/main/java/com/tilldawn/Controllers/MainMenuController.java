@@ -1,5 +1,6 @@
 package com.tilldawn.Controllers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
@@ -38,6 +39,9 @@ public class MainMenuController {
                             break;
                         case "TalentMenu":
                             //Main.getMain().setScreen(new TalentMenu(/* constructor args */));
+                            break;
+                        case "Exit":
+                            Gdx.app.exit();
                             break;
                     }
 

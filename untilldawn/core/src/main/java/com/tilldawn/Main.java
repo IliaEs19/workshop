@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.SaveData;
 import com.tilldawn.Views.MainMenu;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -23,6 +24,7 @@ public class Main extends Game {
     public void create() {
         main = this;
         batch = new SpriteBatch();
+        SaveData.getInstance();
         main.setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
     }
 
