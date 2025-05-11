@@ -91,46 +91,6 @@ public class RegisterMenuController {
         }
     }
 
-    private void showErrorDialog(String errorMessage) {
-        Dialog errorDialog = new Dialog("", GameAssetManager.getGameAssetManager().getSkin()) {
-            @Override
-            protected void result(Object object) {
-                if (object instanceof Boolean && (Boolean)object) {
-                    hide();
-                    remove();
-                }
-            }
-        };
-
-        errorDialog.text(errorMessage);
-        errorDialog.button("Ok", true);
-        errorDialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
-        errorDialog.key(com.badlogic.gdx.Input.Keys.ESCAPE, true);
-        errorDialog.setModal(true);
-        errorDialog.show(view.getStage());
-    }
-
-    private void showSuccessDialog(String message, final Runnable onSuccess) {
-        Dialog successDialog = new Dialog("SUCCESS", GameAssetManager.getGameAssetManager().getSkin()) {
-            @Override
-            protected void result(Object object) {
-                if (object instanceof Boolean && (Boolean)object) {
-                    hide();
-                    remove();
-                    if (onSuccess != null) {
-                        onSuccess.run();
-                    }
-                }
-            }
-        };
-
-        successDialog.text(message);
-        successDialog.button("Ok", true);
-        successDialog.key(com.badlogic.gdx.Input.Keys.ENTER, true);
-        successDialog.setModal(true);
-        successDialog.show(view.getStage());
-    }
-
     public static Result validatePassword(String password) {
         if (password.length() < 8) {
             return new Result(false, "Password must be at least 8 characters long.");

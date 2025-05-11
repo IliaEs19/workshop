@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.SaveData;
 import com.tilldawn.Views.MainMenu;
 import com.tilldawn.Views.PreGameMenu;
 import com.tilldawn.Views.*;
@@ -26,10 +27,11 @@ public class MainMenuController {
                             Main.getMain().setScreen(new RegisterMenu(new RegisterMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "LoginMenu":
-                            //Main.getMain().setScreen(new LoginMenu(/* constructor args */));
+                            Main.getMain().setScreen(new LoginMenu(new LoginMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "ProfileMenu":
-                            //Main.getMain().setScreen(new ProfileMenu(/* constructor args */));
+                            Main.getMain().setScreen(new ProfileLoginMenu(new ProfileLoginMenuController(),
+                                GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "SettingMenu":
                             //Main.getMain().setScreen(new SettingMenu(/* constructor args */));

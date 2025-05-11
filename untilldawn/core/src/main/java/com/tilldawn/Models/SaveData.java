@@ -14,8 +14,10 @@ import java.util.Map;
 public class SaveData {
     private static final String SAVE_FILE = "data/users.json";
 
+    private static User currentUser;
+
     private static SaveData instance;
-    private Map<String, User> users;
+    private static Map<String, User> users;
     private final Json json;
 
     private SaveData() {
@@ -37,6 +39,14 @@ public class SaveData {
      */
     private static class UserList {
         public ArrayList<User> users = new ArrayList<>();
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        SaveData.currentUser = currentUser;
     }
 
     /**
@@ -122,15 +132,40 @@ public class SaveData {
         return true;
     }
 
-//    /**
-//     * افزودن یک کاربر جدید بدون سؤال و پاسخ امنیتی (برای حفظ سازگاری با کد قبلی)
-//     * @param username نام کاربری
-//     * @param password رمز عبور
-//     * @return true اگر با موفقیت اضافه شد، false اگر نام کاربری قبلاً وجود داشت
-//     */
-//    public boolean addUser(String username, String password) {
-//        return addUser(username, password, "", "");
-//    }
+    public boolean changeUsername(String oldUsername, String newUsername, String password) {
+        // بررسی وجود کاربر قدیمی
+        User user = users.get(oldUsername);
+        if (user == null) {
+            return false; // کاربر وجود ندارد
+        }
+
+        // بررسی صحت رمز عبور
+        if (!user.getPassword().equals(password)) {
+            return false; // رمز عبور نادرست است
+        }
+
+        // بررسی تکراری نبودن نام کاربری جدید
+        if (users.containsKey(newUsername)) {
+            return false; // نام کاربری جدید قبلاً وجود دارد
+        }
+
+        // ایجاد کاربر جدید با نام کاربری جدید و همان اطلاعات قبلی
+        User newUser = new User(
+            newUsername,
+            user.getPassword(),
+            user.getSecurityQuestion(),
+            user.getSecurityAnswer()
+        );
+
+        // حذف کاربر قدیمی و اضافه کردن کاربر جدید
+        users.remove(oldUsername);
+        users.put(newUsername, newUser);
+
+        // ذخیره تغییرات
+        saveUsers();
+
+        return true;
+    }
 
     /**
      * بررسی اعتبار کاربر
@@ -250,7 +285,7 @@ public class SaveData {
      * @param username نام کاربری
      * @return شیء User یا null اگر کاربر یافت نشد
      */
-    public User getUser(String username) {
+    public static User getUser(String username) {
         return users.get(username);
     }
 
