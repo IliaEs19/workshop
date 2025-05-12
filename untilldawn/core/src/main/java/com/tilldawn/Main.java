@@ -22,6 +22,8 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        GameAssetManager.resetGameAssetManager();
+
         main = this;
         batch = new SpriteBatch();
         SaveData.getInstance();

@@ -3,6 +3,8 @@ package com.tilldawn.Views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Main;
+import com.tilldawn.Models.GameAssetManager;
 
 import java.util.ArrayList;
 
@@ -22,6 +25,11 @@ public class MainMenu implements Screen {
     public Table table;
     private final MainMenuController controller;
 
+    private Texture backgroundTexture; // تصویر پس‌زمینه
+    private SpriteBatch batch; // برای رندر کردن تصویر پس‌زمینه
+
+
+
     private ArrayList<TextButton> menus = new ArrayList<>();
     private TextButton exit;
 
@@ -30,6 +38,10 @@ public class MainMenu implements Screen {
     private final Color hoverColor = new Color(0.9f, 1f, 0.9f, 1f);   // سبز روشن
 
     public MainMenu(MainMenuController controller, Skin skin) {
+
+        this.backgroundTexture = GameAssetManager.getGameAssetManager().getMainMenuBackground();
+        this.batch = new SpriteBatch();
+
         this.controller = controller;
         menus.add(new TextButton("RegisterMenu", skin));
         menus.add(new TextButton("LoginMenu", skin));
@@ -152,6 +164,12 @@ public class MainMenu implements Screen {
         ScreenUtils.clear(0, 0, 0, 1);
         Main.getBatch().begin();
         Main.getBatch().end();
+
+        batch.begin();
+        // تنظیم تصویر برای پوشش کل صفحه
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
         controller.handleMainMenuButtons();
