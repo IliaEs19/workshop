@@ -10,16 +10,16 @@ public class GameAssetManager {
     private Skin skin ;
        // = new Skin(Gdx.files.internal("skin1/pixthulhu-ui.json"));
 
-    private Texture mainMenuBackground; // تصویر پس‌زمینه منوی اصلی
+    private Texture mainMenuBackground;
 
     private GameAssetManager() {
-        loadAssets(); // بارگذاری منابع در یک متد جداگانه
+        loadAssets();
     }
 
     private void loadAssets() {
         skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
 
-        mainMenuBackground = new Texture(Gdx.files.internal("backgrounds/MainMenu.jpg"));
+        mainMenuBackground = new Texture(Gdx.files.internal("backgrounds/back1.png"));
     }
 
 

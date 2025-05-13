@@ -34,7 +34,7 @@ public class MainMenuController {
                                 GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "SettingMenu":
-                            //Main.getMain().setScreen(new SettingMenu(/* constructor args */));
+                            Main.getMain().setScreen(new SettingMenu(new SettingMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "PreGameMenu":
                             Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController(), GameAssetManager.getGameAssetManager().getSkin()));

@@ -29,24 +29,22 @@ public class ProfileLoginMenu implements Screen {
     private TextButton backButton;
 
     // اندازه‌های استاندارد برای عناصر فرم
-    private static final float FIELD_WIDTH = 450;
-    private static final float FIELD_HEIGHT = 90;
+    private static final float FIELD_WIDTH = 470;
+    private static final float FIELD_HEIGHT = 100;
     private static final float LABEL_SCALE = 1.0f;
     private static final float TITLE_SCALE = 1.8f;
     private static final float BUTTON_WIDTH = 465;
-    private static final float BUTTON_HEIGHT = 100;
+    private static final float BUTTON_HEIGHT = 120;
     private static final float PADDING = 15;
     private static final float BUTTON_SPACING = 10;
 
     public ProfileLoginMenu(ProfileLoginMenuController controller, Skin skin) {
         this.controller = controller;
 
-        // عنوان با فونت بزرگتر
         menuTitle = new Label("ACCESS PROFILE", skin);
         menuTitle.setFontScale(TITLE_SCALE);
         menuTitle.setColor(Color.CYAN);
 
-        // فیلدهای ورودی با اندازه بزرگتر
         this.userName = new TextField("", skin);
         this.userName.setMessageText("Enter your username...");
 
@@ -55,7 +53,6 @@ public class ProfileLoginMenu implements Screen {
         this.password.setPasswordMode(true);
         this.password.setPasswordCharacter('*');
 
-        // چک‌باکس برای نمایش/مخفی کردن رمز عبور
         this.showPasswordCheckbox = new CheckBox(" Show Password", skin);
         this.showPasswordCheckbox.setChecked(false);
         this.showPasswordCheckbox.getLabel().setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
@@ -67,13 +64,11 @@ public class ProfileLoginMenu implements Screen {
             }
         });
 
-        // دکمه‌ها
         this.accessButton = new TextButton("ACCESS PROFILE", skin);
         this.backButton = new TextButton("BACK", skin);
 
         this.table = new Table();
 
-        // اعمال فونت بزرگتر به TextField ها
         TextField.TextFieldStyle style = this.userName.getStyle();
         style.font.getData().setScale(1.2f);
 

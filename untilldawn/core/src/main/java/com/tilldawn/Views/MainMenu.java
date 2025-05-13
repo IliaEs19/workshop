@@ -64,43 +64,33 @@ public class MainMenu implements Screen {
         table.setFillParent(true);
         table.center();
         menuTitle.setColor(Color.GREEN);
-        menuTitle.setFontScale(1.5f); // عنوان بزرگتر
-        table.add(menuTitle).padBottom(100);
-        table.row().pad(15, 0, 15, 0); // فاصله بیشتر بین ردیف‌ها
+        menuTitle.setFontScale(1.5f);
+        //table.add(menuTitle).padBottom(100).padLeft(900);
+        table.row().pad(15, 0, 15, 0);
 
-        // اضافه کردن انیمیشن به دکمه‌های منو
         for (TextButton button : menus) {
-            // تنظیم رنگ یکسان برای همه دکمه‌ها
             button.setColor(buttonColor);
 
-            // اضافه کردن انیمیشن پالس
             button.addAction(Actions.sequence(
-                Actions.scaleTo(1, 1), // مقدار اولیه
+                Actions.scaleTo(1, 1),
                 Actions.forever(Actions.sequence(
                     Actions.scaleTo(1.05f, 1.05f, 0.5f),
                     Actions.scaleTo(1f, 1f, 0.5f)
                 ))
             ));
 
-            // اضافه کردن افکت hover
             button.addListener(new ClickListener() {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                    // توقف تمام انیمیشن‌های قبلی
                     button.clearActions();
-                    // تغییر رنگ به رنگ hover
                     button.setColor(hoverColor);
-                    // بزرگ‌تر شدن دکمه
                     button.addAction(Actions.scaleTo(1.1f, 1.1f, 0.2f));
                 }
 
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                    // توقف تمام انیمیشن‌های قبلی
                     button.clearActions();
-                    // برگشت به رنگ اصلی
                     button.setColor(buttonColor);
-                    // کوچک شدن دکمه و سپس شروع مجدد انیمیشن پالسی
                     button.addAction(Actions.sequence(
                         Actions.scaleTo(1f, 1f, 0.2f),
                         Actions.forever(Actions.sequence(
@@ -111,16 +101,14 @@ public class MainMenu implements Screen {
                 }
             });
 
-            // اضافه کردن دکمه به جدول با سایز بزرگتر
-            table.add(button).width(500).height(100);
+            table.add(button).width(430).height(100).padLeft(1100).padBottom(0);
             table.row().pad(15, 0, 15, 0);
         }
 
-        // انیمیشن برای دکمه خروج (با همان رنگ دیگر دکمه‌ها)
         exit.setColor(buttonColor);
 
         exit.addAction(Actions.sequence(
-            Actions.scaleTo(1, 1), // مقدار اولیه
+            Actions.scaleTo(1, 1),
             Actions.forever(Actions.sequence(
                 Actions.scaleTo(1.05f, 1.05f, 0.5f),
                 Actions.scaleTo(1f, 1f, 0.5f)
@@ -130,21 +118,15 @@ public class MainMenu implements Screen {
         exit.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // توقف تمام انیمیشن‌های قبلی
                 exit.clearActions();
-                // تغییر رنگ به رنگ hover
                 exit.setColor(hoverColor);
-                // بزرگ‌تر شدن دکمه
                 exit.addAction(Actions.scaleTo(1.1f, 1.1f, 0.2f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // توقف تمام انیمیشن‌های قبلی
                 exit.clearActions();
-                // برگشت به رنگ اصلی
                 exit.setColor(buttonColor);
-                // کوچک شدن دکمه و سپس شروع مجدد انیمیشن پالسی
                 exit.addAction(Actions.sequence(
                     Actions.scaleTo(1f, 1f, 0.2f),
                     Actions.forever(Actions.sequence(
@@ -155,7 +137,7 @@ public class MainMenu implements Screen {
             }
         });
 
-        table.add(exit).width(500).height(100);
+        table.add(exit).width(420).height(100).padLeft(1100);
         stage.addActor(table);
     }
 
@@ -166,7 +148,6 @@ public class MainMenu implements Screen {
         Main.getBatch().end();
 
         batch.begin();
-        // تنظیم تصویر برای پوشش کل صفحه
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 

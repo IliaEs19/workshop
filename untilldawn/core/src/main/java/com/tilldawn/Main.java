@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.MusicManager;
 import com.tilldawn.Models.SaveData;
 import com.tilldawn.Views.MainMenu;
 
@@ -23,6 +24,7 @@ public class Main extends Game {
     @Override
     public void create() {
         GameAssetManager.resetGameAssetManager();
+        MusicManager.getInstance().playDefaultMusic();
 
         main = this;
         batch = new SpriteBatch();
@@ -37,6 +39,8 @@ public class Main extends Game {
 
     @Override
     public void dispose() {
+        MusicManager.getInstance().dispose();
+        GameAssetManager.getGameAssetManager().dispose();
         batch.dispose();
     }
 
