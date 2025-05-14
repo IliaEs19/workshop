@@ -40,7 +40,7 @@ public class MainMenuController {
                             Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "TalentMenu":
-                            //Main.getMain().setScreen(new TalentMenu(/* constructor args */));
+                            Main.getMain().setScreen(new TalentMenu(new TalentMenuController()));
                             break;
                         case "Exit":
                             Gdx.app.exit();

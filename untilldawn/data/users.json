@@ -15,13 +15,6 @@
 		"avatarPath": "avatars/character3.jpg"
 	},
 	{
-		"userName": "alo",
-		"password": "lskaJSjh142#$$",
-		"securityQuestion": "What was the name of your first pet?",
-		"securityAnswer": "salam",
-		"avatarPath": ""
-	},
-	{
 		"userName": "salam",
 		"password": "sasaD@34agjhas",
 		"securityQuestion": "",
@@ -117,7 +110,7 @@
 		"password": "JAK4274hdsjhkj@#$",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sslka",
-		"avatarPath": ""
+		"avatarPath": "avatars/character3.jpg"
 	},
 	{
 		"userName": "oap",
@@ -125,6 +118,13 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sala",
 		"avatarPath": ""
+	},
+	{
+		"userName": "ali",
+		"password": "lskaJSjh142#$$",
+		"securityQuestion": "What was the name of your first pet?",
+		"securityAnswer": "salam",
+		"avatarPath": "avatars/character3.jpg"
 	}
 ]
 }
