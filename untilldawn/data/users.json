@@ -8,6 +8,13 @@
 		"avatarPath": ""
 	},
 	{
+		"userName": "salam1",
+		"password": "slamGHH313@#",
+		"securityQuestion": "What was the name of your first pet?",
+		"securityAnswer": "salam",
+		"avatarPath": "avatars/character3.jpg"
+	},
+	{
 		"userName": "alo",
 		"password": "lskaJSjh142#$$",
 		"securityQuestion": "What was the name of your first pet?",
@@ -36,19 +43,18 @@
 		"avatarPath": ""
 	},
 	{
-		"userName": "avatar",
-		"password": "Avatar123!@#",
-		"securityQuestion": "What was the name of your first pet?",
-		"securityAnswer": "avatar",
-		"avatarIndex": 3,
-		"avatarPath": "avatars/character4.jpg"
-	},
-	{
 		"userName": "popop",
 		"password": "AJkhh232#$2536",
 		"securityQuestion": "",
 		"securityAnswer": "",
 		"avatarPath": ""
+	},
+	{
+		"userName": "pso",
+		"password": "la;lAKk525#$%",
+		"securityQuestion": "What was the name of your first pet?",
+		"securityAnswer": "sala",
+		"avatarPath": "avatars/character4.jpg"
 	},
 	{
 		"userName": "jadlk",
@@ -97,6 +103,13 @@
 		"password": "sakjskasJAKjk@3",
 		"securityQuestion": "",
 		"securityAnswer": "",
+		"avatarPath": ""
+	},
+	{
+		"userName": "lalal",
+		"password": "Avatar123!@#",
+		"securityQuestion": "What was the name of your first pet?",
+		"securityAnswer": "avatar",
 		"avatarPath": ""
 	},
 	{

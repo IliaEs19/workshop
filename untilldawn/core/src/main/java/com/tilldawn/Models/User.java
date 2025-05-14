@@ -13,13 +13,13 @@ public class User {
 
     public User(){}
 
-    public User(String userName, String password, String securityQuestion, String securityAnswer) {
-        this.userName = userName;
-        this.password = password;
-        this.securityQuestion = securityQuestion;
-        this.securityAnswer = securityAnswer;
-        this.avatarPath = ""; // مقدار پیش‌فرض خالی
-    }
+//    public User(String userName, String password, String securityQuestion, String securityAnswer) {
+//        this.userName = userName;
+//        this.password = password;
+//        this.securityQuestion = securityQuestion;
+//        this.securityAnswer = securityAnswer;
+//        this.avatarPath = ""; // مقدار پیش‌فرض خالی
+//    }
 
     // سازنده جدید با آواتار
     public User(String userName, String password, String securityQuestion, String securityAnswer, String avatarPath) {
@@ -28,6 +28,10 @@ public class User {
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         this.avatarPath = avatarPath;
+    }
+
+    public User(String userName, String password, String securityQuestion, String securityAnswer) {
+        this(userName, password, securityQuestion, securityAnswer, "");
     }
 
     public String getAvatarPath() {

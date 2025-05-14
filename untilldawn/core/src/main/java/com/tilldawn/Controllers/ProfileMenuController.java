@@ -10,6 +10,7 @@ import com.tilldawn.Models.DialogManager;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.Result;
 import com.tilldawn.Models.SaveData;
+import com.tilldawn.Views.AvatarSelectionDialog;
 import com.tilldawn.Views.MainMenu;
 import com.tilldawn.Views.ProfileMenu;
 import com.badlogic.gdx.utils.Timer;
@@ -28,6 +29,14 @@ public class ProfileMenuController {
 
     private void setupListeners() {
         if (view != null) {
+
+            view.getChangeAvatarButton().addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    showAvatarSelectionDialog();
+                }
+            });
+
             // لیسنر دکمه تغییر نام کاربری
             view.getChangeUsernameButton().addListener(new ChangeListener() {
                 @Override
@@ -93,6 +102,23 @@ public class ProfileMenuController {
                 }
             });
         }
+    }
+
+    private void showAvatarSelectionDialog() {
+        // ایجاد و نمایش دیالوگ انتخاب آواتار
+        AvatarSelectionDialog dialog = new AvatarSelectionDialog(
+            view.getStage(),
+            view.getCurrentUsername(),
+            new Runnable() {
+                @Override
+                public void run() {
+                    // به‌روزرسانی آواتار در صفحه پروفایل پس از تغییر
+                    view.updateUserAvatar(view.getCurrentUsername());
+                }
+            }
+        );
+
+        dialog.show(view.getStage());
     }
 
     private void processChangeUsername() {

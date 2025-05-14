@@ -190,6 +190,10 @@ public class SaveData {
             return false; // نام کاربری جدید قبلاً وجود دارد
         }
 
+        // ذخیره مسیر آواتار کاربر قدیمی
+        String avatarPath = user.getAvatarPath();
+        Gdx.app.log("SaveData", "Avatar path for old user: " + avatarPath);
+
         // ایجاد کاربر جدید با نام کاربری جدید و همان اطلاعات قبلی
         User newUser = new User(
             newUsername,
@@ -197,6 +201,10 @@ public class SaveData {
             user.getSecurityQuestion(),
             user.getSecurityAnswer()
         );
+
+        // به‌صورت مستقیم آدرس آواتار را به کاربر جدید منتقل می‌کنیم
+        newUser.setAvatarPath(avatarPath);
+        Gdx.app.log("SaveData", "Set avatar path for new user: " + newUser.getAvatarPath());
 
         // حذف کاربر قدیمی و اضافه کردن کاربر جدید
         users.remove(oldUsername);
@@ -267,17 +275,23 @@ public class SaveData {
         return null;
     }
 
-    /**
-     * تغییر رمز عبور کاربر
-     * @param username نام کاربری
-     * @param oldPassword رمز عبور قدیمی
-     * @param newPassword رمز عبور جدید
-     * @return true اگر رمز عبور با موفقیت تغییر کرد
-     */
     public boolean changePassword(String username, String oldPassword, String newPassword) {
         if (validateUser(username, oldPassword)) {
             User user = users.get(username);
+
+            // ذخیره آدرس آواتار قبل از تغییر رمز عبور
+            String avatarPath = user.getAvatarPath();
+            Gdx.app.log("SaveData", "Saving avatar path before password change: " + avatarPath);
+
+            // تغییر رمز عبور
             user.setPassword(newPassword);
+
+            // اطمینان از حفظ آدرس آواتار
+            if (avatarPath != null && !avatarPath.isEmpty()) {
+                user.setAvatarPath(avatarPath);
+                Gdx.app.log("SaveData", "Restored avatar path after password change: " + user.getAvatarPath());
+            }
+
             saveUsers();
             return true;
         }
