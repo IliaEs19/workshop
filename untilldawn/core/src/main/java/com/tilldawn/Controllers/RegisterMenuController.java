@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.tilldawn.Main;
 import com.tilldawn.Models.*;
+import com.tilldawn.Views.AvatarSelectionScreen;
 import com.tilldawn.Views.MainMenu;
 import com.tilldawn.Views.PreGameMenu;
 import com.tilldawn.Views.RegisterMenu;
@@ -47,8 +48,13 @@ public class RegisterMenuController {
             DialogManager.showSuccessDialog(view.getStage(), "Success", "Registration successful!", new Runnable() {
                 @Override
                 public void run() {
-                    //Main.getMain().setScreen(new MainMenu(new MainMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
-                }
+                    User user = SaveData.getInstance().getUser(userName);
+
+                    // نمایش صفحه انتخاب آواتار
+                    Main.getMain().setScreen(new AvatarSelectionScreen(
+                        new AvatarSelectionController(),
+                        GameAssetManager.getGameAssetManager().getSkin(),
+                        user));                }
             });
         }
     }

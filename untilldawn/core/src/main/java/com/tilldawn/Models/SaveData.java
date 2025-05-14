@@ -71,7 +71,14 @@ public class SaveData {
                         securityQuestion = userValue.getString("securityQuestion");
                         securityAnswer = userValue.getString("securityAnswer");
                     }
-                    User user = new User(username, password, securityQuestion, securityAnswer);
+
+                    // اضافه کردن خواندن مسیر آواتار
+                    String avatarPath = "";
+                    if (userValue.has("avatarPath")) {
+                        avatarPath = userValue.getString("avatarPath");
+                    }
+
+                    User user = new User(username, password, securityQuestion, securityAnswer, avatarPath);
                     users.put(username, user);
                 }
 
@@ -82,6 +89,40 @@ public class SaveData {
         } else {
             Gdx.app.log("SaveData", "No saved users found");
         }
+    }
+
+    public boolean saveUserAvatar(String username, String avatarPath) {
+        User user = users.get(username);
+        if (user == null) {
+            return false;
+        }
+
+        user.setAvatarPath(avatarPath);
+        saveUsers();
+        return true;
+    }
+
+    /**
+     * ذخیره شماره آواتار برای کاربر
+     * @param username نام کاربری
+     * @param avatarIndex شماره آواتار
+     * @return true اگر با موفقیت ذخیره شد
+     */
+    public boolean saveUserAvatarByIndex(String username, int avatarIndex) {
+        // مسیر آواتارها بر اساس شماره
+        String[] AVATAR_PATHS = {
+            "avatars/character1.jpg",
+            "avatars/character2.jpg",
+            "avatars/character3.jpg",
+            "avatars/character4.jpg"
+        };
+
+        // بررسی معتبر بودن شماره آواتار
+        if (avatarIndex < 0 || avatarIndex >= AVATAR_PATHS.length) {
+            return false;
+        }
+
+        return saveUserAvatar(username, AVATAR_PATHS[avatarIndex]);
     }
 
     /**

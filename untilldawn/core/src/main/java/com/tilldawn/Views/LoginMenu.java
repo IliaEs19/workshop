@@ -187,7 +187,6 @@ public class LoginMenu implements Screen {
 
         stage.addActor(table);
 
-        // تنظیم اندازه فونت برای TextField ها
         try {
             userName.getStyle().font.getData().setScale(1.2f);
             password.getStyle().font.getData().setScale(1.2f);

@@ -8,6 +8,8 @@ public class User {
     private String password ;
     private String securityQuestion;
     private String securityAnswer;
+    private int avatarIndex = -1;
+    private String avatarPath; // فیلد جدید برای ذخیره مسیر آواتار
 
     public User(){}
 
@@ -16,6 +18,24 @@ public class User {
         this.password = password;
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
+        this.avatarPath = ""; // مقدار پیش‌فرض خالی
+    }
+
+    // سازنده جدید با آواتار
+    public User(String userName, String password, String securityQuestion, String securityAnswer, String avatarPath) {
+        this.userName = userName;
+        this.password = password;
+        this.securityQuestion = securityQuestion;
+        this.securityAnswer = securityAnswer;
+        this.avatarPath = avatarPath;
+    }
+
+    public String getAvatarPath() {
+        return avatarPath;
+    }
+
+    public void setAvatarPath(String avatarPath) {
+        this.avatarPath = avatarPath;
     }
 
     public String getUserName() {
@@ -48,5 +68,13 @@ public class User {
 
     public void setSecurityAnswer(String securityAnswer) {
         this.securityAnswer = securityAnswer;
+    }
+
+    public int getAvatarIndex() {
+        return avatarIndex;
+    }
+
+    public void setAvatarIndex(int avatarIndex) {
+        this.avatarIndex = avatarIndex;
     }
 }
