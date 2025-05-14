@@ -9,7 +9,7 @@ public enum AbilityType {
         "VITALITY",
         "افزایش ماکسیمم HP به اندازه یک واحد",
         "Increases maximum health points by one unit.",
-        "assets/abilities/vitality.png",
+        "heroes/character4.png",
         AbilityCategory.DEFENSE
     ),
 
@@ -17,7 +17,7 @@ public enum AbilityType {
         "DAMAGER",
         "افزایش 25 درصدی میزان دمیج سلاح به مدت 10 ثانیه",
         "Increases weapon damage by 25% for 10 seconds.",
-        "assets/abilities/damager.png",
+        "heroes/character4.png",
         AbilityCategory.ATTACK
     ),
 
@@ -25,7 +25,7 @@ public enum AbilityType {
         "PROCREASE",
         "افزایش یک واحدی Projectile سلاح",
         "Increases weapon projectile count by one unit.",
-        "assets/abilities/procrease.png",
+        "heroes/character4.png",
         AbilityCategory.ATTACK
     ),
 
@@ -33,7 +33,7 @@ public enum AbilityType {
         "AMOCREASE",
         "افزایش 5 واحدی حداکثر تعداد تیرهای سلاح",
         "Increases maximum weapon ammo by 5 units.",
-        "assets/abilities/amocrease.png",
+        "heroes/character4.png",
         AbilityCategory.UTILITY
     ),
 
@@ -41,7 +41,7 @@ public enum AbilityType {
         "SPEEDY",
         "2 برابر شدن سرعت حرکت بازیکن به مدت 10 ثانیه",
         "Doubles player movement speed for 10 seconds.",
-        "assets/abilities/speedy.png",
+        "heroes/character4.png",
         AbilityCategory.MOVEMENT
     );
 
