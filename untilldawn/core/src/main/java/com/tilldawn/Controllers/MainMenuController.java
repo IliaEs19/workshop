@@ -37,7 +37,7 @@ public class MainMenuController {
                             Main.getMain().setScreen(new SettingMenu(new SettingMenuController(),GameAssetManager.getGameAssetManager().getSkin()));
                             break;
                         case "PreGameMenu":
-                            Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+                            Main.getMain().setScreen(new PreGameMenu());
                             break;
                         case "TalentMenu":
                             Main.getMain().setScreen(new TalentMenu(new TalentMenuController()));

@@ -124,9 +124,7 @@ public class LoginMenuController {
             @Override
             public void run() {
                 // انتقال به منوی بازی
-                Main.getMain().setScreen(new PreGameMenu(
-                    new PreGameMenuController(),
-                    GameAssetManager.getGameAssetManager().getSkin()));
+                Main.getMain().setScreen(new PreGameMenu());
             }
         });
     }
