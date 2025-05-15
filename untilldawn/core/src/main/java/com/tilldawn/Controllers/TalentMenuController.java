@@ -22,7 +22,6 @@ public class TalentMenuController {
      * این متد می‌تواند در صورت نیاز فراخوانی شود
      */
     public void addBackButtonListener(ClickListener listener) {
-        // اگر نیاز به اضافه کردن لیسنر به دکمه بازگشت باشد
     }
 
     /**

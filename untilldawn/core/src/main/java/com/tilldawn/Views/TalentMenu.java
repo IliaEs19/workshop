@@ -16,7 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.tilldawn.Controllers.LoginMenuController;
+import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Controllers.TalentMenuController;
+import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.Hero.AbilityType;
 import com.tilldawn.Models.Hero.HeroType;
@@ -836,40 +839,55 @@ public class TalentMenu implements Screen {
         skillsTabButton.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
 
         // Placeholder tab buttons
-        final TextButton upgradesTabButton = new TextButton("UPGRADES", GameAssetManager.getGameAssetManager().getSkin());
+        final TextButton upgradesTabButton = new TextButton("KEYS", GameAssetManager.getGameAssetManager().getSkin());
         upgradesTabButton.pad(12);
         upgradesTabButton.getLabel().setFontScale(1.3f);
         upgradesTabButton.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
 
-        final TextButton achievementsTabButton = new TextButton("ACHIEVEMENTS", GameAssetManager.getGameAssetManager().getSkin());
+        final TextButton achievementsTabButton = new TextButton("CHEAT CODES", GameAssetManager.getGameAssetManager().getSkin());
         achievementsTabButton.pad(12);
         achievementsTabButton.getLabel().setFontScale(1.3f);
         achievementsTabButton.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
 
+        final TextButton backButton = new TextButton("BACK", GameAssetManager.getGameAssetManager().getSkin());
+        backButton.pad(12);
+        backButton.getLabel().setFontScale(1.3f);
+        backButton.setColor(new Color(0.5f, 0.5f, 0.5f, 1f));
+
         // Add tab buttons to table
         Table buttonsTable = new Table();
+        // ایجاد یک سل خالی که فضا را پر کند
+        //buttonsTable.add().expandX().fillX();
+        // اضافه کردن دکمه‌های تب در وسط
         buttonsTable.add(heroesTabButton).padRight(15);
         buttonsTable.add(skillsTabButton).padRight(15);
         buttonsTable.add(upgradesTabButton).padRight(15);
-        buttonsTable.add(achievementsTabButton);
+        buttonsTable.add(achievementsTabButton).padRight(15);
+        // اضافه کردن دکمه بازگشت در سمت راست
+        buttonsTable.add(backButton).right();
 
-        tabsTable.add(buttonsTable).row();
+        tabsTable.add(buttonsTable).expandX().fillX().row();
 
         // Add underline for selected tab
         Table underlineTable = new Table();
         underlineTable.setName("underlineTable");
 
+        // ایجاد خط زیرین برای تب‌ها
         Image heroesUnderline = createHorizontalLine(SELECTED_COLOR, 100, 2);
         Image skillsUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
         Image upgradesUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
         Image achievementsUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
+        Image backUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
 
+        // اضافه کردن خطوط زیرین با همان چیدمان دکمه‌ها
+        underlineTable.add().expandX().fillX();
         underlineTable.add(heroesUnderline).width(heroesTabButton.getWidth()).padRight(15);
         underlineTable.add(skillsUnderline).width(skillsTabButton.getWidth()).padRight(15);
         underlineTable.add(upgradesUnderline).width(upgradesTabButton.getWidth()).padRight(15);
-        underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth());
+        underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth()).padRight(15);
+        underlineTable.add(backUnderline).width(backButton.getWidth()).right();
 
-        tabsTable.add(underlineTable).padTop(2);
+        tabsTable.add(underlineTable).expandX().fillX().padTop(2);
 
         // Add click listeners for tab switching
         heroesTabButton.addListener(new ClickListener() {
@@ -886,15 +904,20 @@ public class TalentMenu implements Screen {
                 if (underlineTable != null) {
                     underlineTable.clear();
 
+                    // ایجاد مجدد خطوط زیرین
                     Image heroesUnderline = createHorizontalLine(SELECTED_COLOR, 100, 2);
                     Image skillsUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
                     Image upgradesUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
                     Image achievementsUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
+                    Image backUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
 
+                    // اضافه کردن خطوط زیرین با همان چیدمان
+                    underlineTable.add().expandX().fillX();
                     underlineTable.add(heroesUnderline).width(heroesTabButton.getWidth()).padRight(15);
                     underlineTable.add(skillsUnderline).width(skillsTabButton.getWidth()).padRight(15);
                     underlineTable.add(upgradesUnderline).width(upgradesTabButton.getWidth()).padRight(15);
-                    underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth());
+                    underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth()).padRight(15);
+                    underlineTable.add(backUnderline).width(backButton.getWidth()).right();
                 }
 
                 // Add pulsing effect
@@ -921,15 +944,20 @@ public class TalentMenu implements Screen {
                 if (underlineTable != null) {
                     underlineTable.clear();
 
+                    // ایجاد مجدد خطوط زیرین
                     Image heroesUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
                     Image skillsUnderline = createHorizontalLine(SELECTED_COLOR, 100, 2);
                     Image upgradesUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
                     Image achievementsUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
+                    Image backUnderline = createHorizontalLine(new Color(0.3f, 0.3f, 0.4f, 0f), 100, 2);
 
+                    // اضافه کردن خطوط زیرین با همان چیدمان
+                    underlineTable.add().expandX().fillX();
                     underlineTable.add(heroesUnderline).width(heroesTabButton.getWidth()).padRight(15);
                     underlineTable.add(skillsUnderline).width(skillsTabButton.getWidth()).padRight(15);
                     underlineTable.add(upgradesUnderline).width(upgradesTabButton.getWidth()).padRight(15);
-                    underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth());
+                    underlineTable.add(achievementsUnderline).width(achievementsTabButton.getWidth()).padRight(15);
+                    underlineTable.add(backUnderline).width(backButton.getWidth()).right();
                 }
 
                 // Add pulsing effect
@@ -942,11 +970,21 @@ public class TalentMenu implements Screen {
             }
         });
 
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Main.getMain().setScreen(new MainMenu(
+                    new MainMenuController(),
+                    GameAssetManager.getGameAssetManager().getSkin()));
+            }
+        });
+
         // Add hover effects
         addHoverEffect(heroesTabButton);
         addHoverEffect(skillsTabButton);
         addHoverEffect(upgradesTabButton);
         addHoverEffect(achievementsTabButton);
+        addHoverEffect(backButton);
 
         return tabsTable;
     }
