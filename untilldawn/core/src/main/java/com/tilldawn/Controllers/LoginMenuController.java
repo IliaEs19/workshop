@@ -123,8 +123,10 @@ public class LoginMenuController {
         DialogManager.showSuccessDialog(view.getStage(), "Success", "Login successful!", new Runnable() {
             @Override
             public void run() {
-                // انتقال به منوی بازی
-                Main.getMain().setScreen(new PreGameMenu());
+                PreGameMenuController preGameMenuController = new PreGameMenuController();
+                if (preGameMenuController.getView() != null) {
+                    Main.getMain().setScreen(preGameMenuController.getView());
+                }
             }
         });
     }

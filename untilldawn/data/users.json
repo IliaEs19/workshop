@@ -5,126 +5,164 @@
 		"password": "ASsj@#344fsf",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "salam1",
 		"password": "slamGHH313@#",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
-		"avatarPath": "avatars/character3.jpg"
+		"avatarPath": "avatars/character3.jpg",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "salam",
 		"password": "sasaD@34agjhas",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "lskal",
 		"password": "Asd@34gjgjg",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "ilia",
 		"password": "Asj#42344sbdmbHahj#",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "popop",
 		"password": "AJkhh232#$2536",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "pso",
 		"password": "la;lAKk525#$%",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sala",
-		"avatarPath": "avatars/character4.jpg"
+		"avatarPath": "avatars/character4.jpg",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "jadlk",
 		"password": "KJAhsksk@#$444",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "poo",
 		"password": "helloooJHd@#54",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "paa",
 		"password": "LLmskk@356jbcs",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "ppp",
 		"password": "aaaDfa4141#@3",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "ss",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "DLSDJ",
 		"password": "SJFK@3sdsd$4",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sa;a",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "pos",
 		"password": "alkGg132#35",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salla",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "salammm",
 		"password": "sakjskasJAKjk@3",
 		"securityQuestion": "",
 		"securityAnswer": "",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "lalal",
 		"password": "Avatar123!@#",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "avatar",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "nm",
 		"password": "JAK4274hdsjhkj@#$",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sslka",
-		"avatarPath": "avatars/character3.jpg"
+		"avatarPath": "avatars/character3.jpg",
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Dasher",
+		"totalGamesPlayed": 3
 	},
 	{
 		"userName": "oap",
 		"password": "alsGjs#42#44",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sala",
-		"avatarPath": ""
+		"avatarPath": "",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	},
 	{
 		"userName": "ali",
 		"password": "lskaJSjh142#$$",
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
-		"avatarPath": "avatars/character3.jpg"
+		"avatarPath": "avatars/character3.jpg",
+		"lastWeaponUsed": "",
+		"lastHeroUsed": ""
 	}
 ]
 }

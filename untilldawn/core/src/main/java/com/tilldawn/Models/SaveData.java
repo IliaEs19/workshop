@@ -78,7 +78,40 @@ public class SaveData {
                         avatarPath = userValue.getString("avatarPath");
                     }
 
+                    String lastWeaponUsed = "";
+                    int lastGameTime = 0;
+                    String lastHeroUsed = "";
+                    int highScore = 0;
+                    int totalGamesPlayed = 0;
+
+                    if (userValue.has("lastWeaponUsed")) {
+                        lastWeaponUsed = userValue.getString("lastWeaponUsed");
+                    }
+                    if (userValue.has("lastGameTime")) {
+                        lastGameTime = userValue.getInt("lastGameTime");
+                    }
+                    if (userValue.has("lastHeroUsed")) {
+                        lastHeroUsed = userValue.getString("lastHeroUsed");
+                    }
+                    if (userValue.has("highScore")) {
+                        highScore = userValue.getInt("highScore");
+                    }
+                    if (userValue.has("totalGamesPlayed")) {
+                        totalGamesPlayed = userValue.getInt("totalGamesPlayed");
+                    }
+
                     User user = new User(username, password, securityQuestion, securityAnswer, avatarPath);
+                    user.setLastWeaponUsed(lastWeaponUsed);
+                    user.setLastGameTime(lastGameTime);
+                    user.setLastHeroUsed(lastHeroUsed);
+                    user.setHighScore(highScore);
+
+                    // اگر تعداد بازی‌های انجام شده بیشتر از صفر است، آن را تنظیم کنید
+                    if (totalGamesPlayed > 0) {
+                        for (int i = 0; i < totalGamesPlayed; i++) {
+                            user.incrementTotalGamesPlayed();
+                        }
+                    }
                     users.put(username, user);
                 }
 

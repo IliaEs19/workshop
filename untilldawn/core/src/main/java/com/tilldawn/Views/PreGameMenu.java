@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 //import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Controllers.MainMenuController;
+import com.tilldawn.Controllers.PreGameMenuController;
 import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.Hero.HeroType;
@@ -28,6 +29,7 @@ import com.tilldawn.Models.Hero.WeaponType;
 
 public class PreGameMenu implements Screen {
     private Stage stage;
+    private PreGameMenuController controller;
     private Table mainTable;
     private Skin skin;
     private HeroType selectedHero = null;
@@ -57,9 +59,17 @@ public class PreGameMenu implements Screen {
     private Image weaponImage;
     private Label timeLabel;
 
-    public PreGameMenu() {
-        skin = GameAssetManager.getGameAssetManager().getSkin();
+
+    public PreGameMenu(PreGameMenuController controller) {
+        this.controller = controller;
+        skin = GameAssetManager.getGameAssetManager().getSkin(); // اضافه کردن این خط
+
+        // بررسی اینکه آیا کاربر لاگین کرده است
+        if (!controller.checkUserLoggedIn()) {
+            return; // اگر کاربر لاگین نکرده باشد، از سازنده خارج می‌شویم
+        }
     }
+
 
     @Override
     public void show() {
@@ -168,6 +178,30 @@ public class PreGameMenu implements Screen {
         mainTable.addAction(Actions.sequence(
             Actions.fadeIn(0.5f, Interpolation.smooth)
         ));
+
+        WeaponType defaultWeapon = controller.getSelectedWeapon();
+        HeroType defaultHero = controller.getSelectedHero();
+        int defaultTime = controller.getSelectedTime();
+
+        if (defaultHero != null) {
+            selectHero(defaultHero);
+        } else if (HeroType.values().length > 0) {
+            selectHero(HeroType.values()[0]);
+        }
+
+        if (defaultWeapon != null) {
+            selectWeapon(defaultWeapon);
+        } else if (WeaponType.values().length > 0) {
+            selectWeapon(WeaponType.values()[0]);
+        }
+
+        if (defaultTime > 0) {
+            selectedTime = defaultTime;
+            updateTimeLabel();
+        } else {
+            selectedTime = availableTimes.get(0);
+            updateTimeLabel();
+        }
     }
 
     private void createHeroSelectionSection() {
@@ -423,6 +457,7 @@ public class PreGameMenu implements Screen {
 
         // به‌روزرسانی رنگ دکمه‌ها
         updateHeroButtonsColors(hero);
+        controller.setSelectedHero(hero);
     }
 
     private void selectWeapon(WeaponType weapon) {
@@ -459,6 +494,7 @@ public class PreGameMenu implements Screen {
         ));
 
         updateWeaponButtonsColors(weapon);
+        controller.setSelectedWeapon(weapon);
     }
 
     private void updateTimeLabel() {
@@ -471,6 +507,7 @@ public class PreGameMenu implements Screen {
                 Actions.scaleTo(1.0f, 1.0f, 0.2f)
             ));
         }
+        controller.setSelectedTime(selectedTime);
     }
 
     private void updateHeroButtonsColors(HeroType selectedHero) {
@@ -674,6 +711,7 @@ public class PreGameMenu implements Screen {
                 }
             })
         ));
+        controller.startGame();
     }
 
     private void showErrorMessage(String message) {
@@ -804,5 +842,9 @@ public class PreGameMenu implements Screen {
         if (stage != null) {
             stage.dispose();
         }
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
