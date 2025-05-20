@@ -141,10 +141,10 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sslka",
 		"avatarPath": "avatars/character3.jpg",
-		"lastWeaponUsed": "Revolver",
+		"lastWeaponUsed": "SMGs Dual",
 		"lastGameTime": 2,
-		"lastHeroUsed": "Dasher",
-		"totalGamesPlayed": 3
+		"lastHeroUsed": "Scarlet",
+		"totalGamesPlayed": 19
 	},
 	{
 		"userName": "oap",
@@ -161,8 +161,10 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
 		"avatarPath": "avatars/character3.jpg",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Shotgun",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"totalGamesPlayed": 7
 	}
 ]
 }

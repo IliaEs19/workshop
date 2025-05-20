@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum WeaponType {
     REVOLVER("Revolver", 20, 1, 1.0f, 6,
-        "A powerful handgun with high accuracy and damage"),
+        "A powerful handgun with high accuracy and damage","Guns/REVOLVER.png"),
+
 
     SHOTGUN("Shotgun", 10, 4, 1.0f, 2,
-        "Shotgun with spread projectiles for close combat"),
+        "Shotgun with spread projectiles for close combat","Guns/SHOTGUN.png"),
 
     SMGS_DUAL("SMGs Dual", 8, 1, 2.0f, 24,
-        "Dual submachine guns with high fire rate and ammo capacity");
+        "Dual submachine guns with high fire rate and ammo capacity","Guns/SMG.png");
 
     private final String name;
     private final int damage;
@@ -19,15 +20,21 @@ public enum WeaponType {
     private final int maxAmmo;
     private final String englishDescription;
     private TextureRegion textureRegion;
+    private final String texturePath;
 
     WeaponType(String name, int damage, int projectileCount, float reloadTime, int maxAmmo,
-               String englishDescription) {
+               String englishDescription, String texturePath) {
         this.name = name;
         this.damage = damage;
         this.projectileCount = projectileCount;
         this.reloadTime = reloadTime;
         this.maxAmmo = maxAmmo;
         this.englishDescription = englishDescription;
+        this.texturePath = texturePath;
+    }
+
+    public String getTexturePath() {
+        return texturePath;
     }
 
     public String getName() {
@@ -54,9 +61,6 @@ public enum WeaponType {
         return englishDescription;
     }
 
-    public TextureRegion getTextureRegion() {
-        return textureRegion;
-    }
 
     public void setTextureRegion(TextureRegion textureRegion) {
         this.textureRegion = textureRegion;
@@ -68,6 +72,19 @@ public enum WeaponType {
         // REVOLVER.setTextureRegion(new TextureRegion(weaponsTexture, 0, 0, 64, 64));
         // SHOTGUN.setTextureRegion(new TextureRegion(weaponsTexture, 64, 0, 64, 64));
         // SMGS_DUAL.setTextureRegion(new TextureRegion(weaponsTexture, 128, 0, 64, 64));
+    }
+
+    public TextureRegion getTextureRegion() {
+        if (textureRegion == null) {
+            try {
+                Texture texture = new Texture(texturePath);
+                textureRegion = new TextureRegion(texture);
+            } catch (Exception e) {
+                // Handle the case when texture cannot be loaded
+                System.err.println("Error loading texture for " + name + ": " + e.getMessage());
+            }
+        }
+        return textureRegion;
     }
 
     public static void disposeAllTextures() {

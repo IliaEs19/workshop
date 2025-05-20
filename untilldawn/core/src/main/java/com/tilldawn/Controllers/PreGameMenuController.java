@@ -155,8 +155,8 @@ public class PreGameMenuController {
         saveData.updateUser(currentUser);
 
 //        // ایجاد GameController و شروع بازی
-//        GameController gameController = new GameController(selectedHero, selectedWeapon, selectedTime);
-//        Main.getMain().setScreen(gameController.getGameScreen());
+        GameController gameController = new GameController(selectedHero, selectedWeapon, selectedTime);
+        Main.getMain().setScreen(gameController.getGameScreen());
     }
 
     /**

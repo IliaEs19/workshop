@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 //import com.tilldawn.Controllers.GameController;
+import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Controllers.PreGameMenuController;
 import com.tilldawn.Main;
@@ -706,8 +707,8 @@ public class PreGameMenu implements Screen {
                 @Override
                 public void run() {
                     // ایجاد بازی جدید با تنظیمات انتخاب شده
-//                    GameController gameController = new GameController(selectedHero, selectedWeapon, selectedTime);
-//                    Main.getMain().setScreen(gameController.getGameScreen());
+                    GameController gameController = new GameController(selectedHero, selectedWeapon, selectedTime);
+                    Main.getMain().setScreen(gameController.getGameScreen());
                 }
             })
         ));
