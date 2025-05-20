@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum EnemyType {
-    TREE("Tree", 0, 0, "enemies/tree.png", false),
-    TENTACLE_MONSTER("Tentacle Monster", 25, 1, "enemies/tentacle_monster.png", false),
-    EYEBAT("Eyebat", 50, 5, "enemies/eyebat.png", true),
-    ELDER("Elder", 400, 10, "enemies/elder.png", true);
+    TREE("Tree", 0, 0, "enemies/TREE.png", false),
+    TENTACLE_MONSTER("Tentacle Monster", 25, 1, "enemies/TENTACLE.png", false),
+    EYEBAT("Eyebat", 50, 5, "enemies/EYEBAT.png", true),
+    ELDER("Elder", 400, 10, "enemies/ELDER.png", true);
 
     private final String name;
     private final int maxHealth;

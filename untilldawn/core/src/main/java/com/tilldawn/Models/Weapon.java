@@ -239,6 +239,10 @@ public class Weapon {
         return shootFailReason;
     }
 
+    public void addAmmo(int amount) {
+        currentAmmo = Math.min(currentAmmo + amount, type.getMaxAmmo() * 2); // اجازه داشتن حداکثر دو برابر ظرفیت عادی
+    }
+
     public void dispose() {
         if (texture != null && texture.getTexture() != null) {
             texture.getTexture().dispose();

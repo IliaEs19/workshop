@@ -87,6 +87,10 @@ public class Bullet {
         return y;
     }
 
+    public void setDamageMultiplier(float multiplier) {
+        this.damage = (int)(this.damage * multiplier);
+    }
+
     public static void disposeTexture() {
         if (texture != null && texture.getTexture() != null) {
             texture.getTexture().dispose();
