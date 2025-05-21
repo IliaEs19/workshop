@@ -110,6 +110,46 @@ public class GameView implements Screen {
     private float gameTimeElapsed = 0;
     private boolean gameOver = false;
 
+
+    //pause menu
+    private boolean isPaused = false;
+    private Texture pixelTexture;
+
+    // گزینه فعلی انتخاب شده در منو
+    private int pauseMenuSelectedOption = 0;
+
+    // گزینه‌های منو
+    private final String[] pauseMenuOptions = {
+        "Resume Game",
+        "Cheat Codes",
+        "View Abilities",
+        "Exit Game"
+    };
+
+    // تکسچر برای پس‌زمینه منو
+    private Texture pauseMenuBackground;
+
+    // رنگ‌های منو
+    private final Color MENU_BACKGROUND_COLOR = new Color(0, 0.2f, 0.3f, 0.85f);
+    private final Color MENU_TITLE_COLOR = new Color(0.9f, 0.9f, 0.3f, 1);
+    private final Color MENU_OPTION_COLOR = new Color(0.8f, 0.8f, 0.8f, 1);
+    private final Color MENU_SELECTED_COLOR = new Color(0.2f, 0.8f, 0.2f, 1);
+    private final Color MENU_KEY_COLOR = new Color(0.9f, 0.6f, 0.3f, 1);
+
+    // فونت‌های منو
+    private BitmapFont titleFont;
+    private BitmapFont optionFont;
+    private BitmapFont descriptionFont;
+
+    // نمایش کدهای تقلب
+    private boolean showingCheatCodes = false;
+
+    // نمایش توانایی‌ها
+    private boolean showingAbilities = false;
+
+    // زمان انیمیشن
+    private float menuAnimationTime = 0;
+
     // Direction enum for player animation
     private enum PlayerDirection {
         UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
@@ -162,6 +202,28 @@ public class GameView implements Screen {
 
         loadAssets();
         setupInput();
+    }
+
+    private void loadMenuAssets() {
+        // ایجاد تکسچر پیکسل مشترک برای همه منوها
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        pixelTexture = new Texture(pixmap);
+        pixmap.dispose();
+
+        // لود تکسچر پس‌زمینه منو (اگر نیاز دارید)
+        // pauseMenuBackground = new Texture(Gdx.files.internal("backgrounds/PAUSEMENU.png"));
+
+        // ایجاد فونت‌ها
+        titleFont = new BitmapFont();
+        titleFont.getData().setScale(2.5f);
+
+        optionFont = new BitmapFont();
+        optionFont.getData().setScale(1.8f);
+
+        descriptionFont = new BitmapFont();
+        descriptionFont.getData().setScale(1.2f);
     }
 
     private void loadAssets() {
@@ -239,7 +301,7 @@ public class GameView implements Screen {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
-                // اگر صفحه انتخاب قابلیت نمایش داده می‌شود، کلیدهای 1، 2، 3 را بررسی کن
+                // اگر صفحه انتخاب توانایی نمایش داده می‌شود، کلیدهای 1، 2، 3 را بررسی کن
                 if (showAbilitySelection) {
                     switch (keycode) {
                         case Keys.NUM_1:
@@ -255,13 +317,41 @@ public class GameView implements Screen {
                     return false;
                 }
 
+                // اگر منو در حالت نمایش است، کلیدهای منو را بررسی کن
+                if (isPaused) {
+                    switch (keycode) {
+                        case Keys.UP:
+                            navigatePauseMenu(-1);
+                            return true;
+                        case Keys.DOWN:
+                            navigatePauseMenu(1);
+                            return true;
+                        case Keys.ENTER:
+                            selectPauseMenuOption();
+                            return true;
+                        case Keys.ESCAPE:
+                        case Keys.P:
+                            togglePauseMenu();
+                            return true;
+                        case Keys.BACK:
+                            if (showingCheatCodes || showingAbilities) {
+                                showingCheatCodes = false;
+                                showingAbilities = false;
+                                return true;
+                            }
+                            break;
+                    }
+                    return false;
+                }
+
                 // کلیدهای عادی بازی
                 switch (keycode) {
                     case Keys.W: keyW = true; break;
                     case Keys.A: keyA = true; break;
                     case Keys.S: keyS = true; break;
                     case Keys.D: keyD = true; break;
-                    case Keys.ESCAPE: controller.pauseGame(); break;
+                    case Keys.P: togglePauseMenu(); break;
+                    case Keys.ESCAPE: togglePauseMenu(); break;
                     case Keys.SPACE: toggleAutoAim(); break;
                     case Keys.R: startReload(); break;
                 }
@@ -270,6 +360,11 @@ public class GameView implements Screen {
 
             @Override
             public boolean keyUp(int keycode) {
+                // اگر منو در حالت نمایش است، کلیدهای بازی را نادیده بگیر
+                if (isPaused || showAbilitySelection) {
+                    return false;
+                }
+
                 switch (keycode) {
                     case Keys.W: keyW = false; break;
                     case Keys.A: keyA = false; break;
@@ -282,27 +377,433 @@ public class GameView implements Screen {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                // اگر منو در حالت نمایش است، کلیک ماوس را برای منو بررسی کن
+                if (isPaused) {
+                    if (button == Buttons.LEFT) {
+                        checkPauseMenuClick(screenX, screenY);
+                    }
+                    return true;
+                }
+
+                // اگر صفحه انتخاب توانایی نمایش داده می‌شود، بررسی کن که آیا روی یک توانایی کلیک شده است
+                if (showAbilitySelection) {
+                    if (button == Buttons.LEFT) {
+                        checkAbilityClick(screenX, screenY);
+                    }
+                    return true;
+                }
+
                 if (button == Buttons.LEFT) {
                     mouseLeft = true;
-
-                    // اگر صفحه انتخاب توانایی نمایش داده می‌شود، بررسی کن که آیا روی یک توانایی کلیک شده است
-                    if (showAbilitySelection) {
-                        checkAbilityClick(screenX, screenY);
-                        return true;
-                    }
                 }
                 return true;
             }
 
-
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                // اگر منو در حالت نمایش است، کلیک ماوس را نادیده بگیر
+                if (isPaused || showAbilitySelection) {
+                    return false;
+                }
+
                 if (button == Buttons.LEFT) {
                     mouseLeft = false;
                 }
                 return true;
             }
         });
+    }
+
+    private void togglePauseMenu() {
+        isPaused = !isPaused;
+        showingCheatCodes = false;
+        showingAbilities = false;
+        menuAnimationTime = 0;
+
+        if (isPaused) {
+            pauseMenuSelectedOption = 0;
+        }
+    }
+
+    /**
+     * جابجایی بین گزینه‌های منوی pause
+     * @param direction جهت جابجایی (1 برای پایین، -1 برای بالا)
+     */
+    private void navigatePauseMenu(int direction) {
+        pauseMenuSelectedOption += direction;
+
+        if (pauseMenuSelectedOption < 0) {
+            pauseMenuSelectedOption = pauseMenuOptions.length - 1;
+        } else if (pauseMenuSelectedOption >= pauseMenuOptions.length) {
+            pauseMenuSelectedOption = 0;
+        }
+    }
+
+    /**
+     * انتخاب گزینه فعلی منوی pause
+     */
+    private void selectPauseMenuOption() {
+        switch (pauseMenuSelectedOption) {
+            case 0: // Resume Game
+                togglePauseMenu();
+                break;
+            case 1: // Cheat Codes
+                showingCheatCodes = true;
+                showingAbilities = false;
+                break;
+            case 2: // View Abilities
+                showingAbilities = true;
+                showingCheatCodes = false;
+                break;
+            case 3: // Exit Game
+                gameOver = true;
+                controller.exitGame();
+                break;
+        }
+    }
+
+    /**
+     * بررسی کلیک روی گزینه‌های منوی pause
+     * @param screenX مختصات X کلیک
+     * @param screenY مختصات Y کلیک
+     */
+    private void checkPauseMenuClick(int screenX, int screenY) {
+        // اگر در حال نمایش کدهای تقلب یا توانایی‌ها هستیم، بررسی کن که آیا روی دکمه بازگشت کلیک شده است
+        if (showingCheatCodes || showingAbilities) {
+            // تبدیل مختصات صفحه به مختصات دوربین UI
+            Vector3 touchPoint = new Vector3(screenX, screenY, 0);
+            uiViewport.unproject(touchPoint);
+
+            // بررسی کلیک روی دکمه بازگشت
+            float backButtonX = WORLD_WIDTH - 100;
+            float backButtonY = 50;
+            float backButtonWidth = 80;
+            float backButtonHeight = 40;
+
+            if (touchPoint.x >= backButtonX && touchPoint.x <= backButtonX + backButtonWidth &&
+                touchPoint.y >= backButtonY && touchPoint.y <= backButtonY + backButtonHeight) {
+                showingCheatCodes = false;
+                showingAbilities = false;
+                return;
+            }
+
+            return;
+        }
+
+        // تبدیل مختصات صفحه به مختصات دوربین UI
+        Vector3 touchPoint = new Vector3(screenX, screenY, 0);
+        uiViewport.unproject(touchPoint);
+
+        // محاسبه موقعیت گزینه‌های منو
+        float menuWidth = 400;
+        float menuHeight = 300;
+        float menuX = WORLD_WIDTH / 2 - menuWidth / 2;
+        float menuY = WORLD_HEIGHT / 2 - menuHeight / 2;
+
+        float optionHeight = 50;
+        float optionSpacing = 10;
+        float optionsStartY = menuY + menuHeight - 120;
+
+        for (int i = 0; i < pauseMenuOptions.length; i++) {
+            float optionY = optionsStartY - i * (optionHeight + optionSpacing);
+
+            if (touchPoint.x >= menuX + 20 && touchPoint.x <= menuX + menuWidth - 20 &&
+                touchPoint.y >= optionY - optionHeight && touchPoint.y <= optionY) {
+                pauseMenuSelectedOption = i;
+                selectPauseMenuOption();
+                return;
+            }
+        }
+    }
+
+    private void renderPauseMenu() {
+        if (!isPaused) return;
+
+        // تنظیم دوربین UI
+        uiViewport.apply();
+        batch.setProjectionMatrix(uiCamera.combined);
+        batch.begin();
+
+        // رسم پس‌زمینه نیمه‌شفاف
+        batch.setColor(0, 0, 0, 0.7f);
+        batch.draw(pixelTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+
+        // اگر در حال نمایش کدهای تقلب هستیم
+        if (showingCheatCodes) {
+            renderCheatCodes();
+        }
+        // اگر در حال نمایش توانایی‌ها هستیم
+        else if (showingAbilities) {
+            renderAbilitiesList();
+        }
+        // در غیر این صورت، منوی اصلی را نمایش بده
+        else {
+            renderMainPauseMenu();
+        }
+
+        batch.end();
+    }
+
+    /**
+     * رسم منوی اصلی pause
+     */
+    private void renderMainPauseMenu() {
+        // محاسبه موقعیت و اندازه منو
+        float menuWidth = 400;
+        float menuHeight = 300;
+        float menuX = WORLD_WIDTH / 2 - menuWidth / 2;
+        float menuY = WORLD_HEIGHT / 2 - menuHeight / 2;
+
+        // افکت انیمیشن ظاهر شدن منو
+        float scale = Math.min(1, menuAnimationTime * 3);
+        float actualMenuWidth = menuWidth * scale;
+        float actualMenuHeight = menuHeight * scale;
+        float actualMenuX = WORLD_WIDTH / 2 - actualMenuWidth / 2;
+        float actualMenuY = WORLD_HEIGHT / 2 - actualMenuHeight / 2;
+
+        // رسم پس‌زمینه منو (یک مستطیل شیک با حاشیه)
+        // پس‌زمینه اصلی
+        batch.setColor(0.1f, 0.1f, 0.2f, 0.9f);
+        batch.draw(pixelTexture, actualMenuX, actualMenuY, actualMenuWidth, actualMenuHeight);
+
+        // حاشیه منو
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        float borderThickness = 2;
+        // حاشیه بالا
+        batch.draw(pixelTexture, actualMenuX, actualMenuY + actualMenuHeight - borderThickness, actualMenuWidth, borderThickness);
+        // حاشیه پایین
+        batch.draw(pixelTexture, actualMenuX, actualMenuY, actualMenuWidth, borderThickness);
+        // حاشیه چپ
+        batch.draw(pixelTexture, actualMenuX, actualMenuY, borderThickness, actualMenuHeight);
+        // حاشیه راست
+        batch.draw(pixelTexture, actualMenuX + actualMenuWidth - borderThickness, actualMenuY, borderThickness, actualMenuHeight);
+
+        // اگر منو هنوز در حال انیمیشن است، منتظر بمان
+        if (scale < 1) {
+            return;
+        }
+
+        // رسم عنوان منو
+        titleFont.setColor(MENU_TITLE_COLOR);
+        GlyphLayout titleLayout = new GlyphLayout(titleFont, "GAME PAUSED");
+        titleFont.draw(batch, titleLayout,
+            menuX + menuWidth / 2 - titleLayout.width / 2,
+            menuY + menuHeight - 30);
+
+        // خط جداکننده زیر عنوان
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        batch.draw(pixelTexture, menuX + 20, menuY + menuHeight - 70, menuWidth - 40, 1);
+
+        // رسم گزینه‌های منو
+        float optionHeight = 50;
+        float optionSpacing = 10;
+        float optionsStartY = menuY + menuHeight - 80;
+
+        for (int i = 0; i < pauseMenuOptions.length; i++) {
+            float optionY = optionsStartY - i * (optionHeight + optionSpacing);
+
+            // رسم پس‌زمینه گزینه انتخاب شده
+            if (i == pauseMenuSelectedOption) {
+                // پس‌زمینه گزینه انتخاب شده با گرادیان
+                batch.setColor(0.2f, 0.3f, 0.5f, 0.7f);
+                batch.draw(pixelTexture, menuX + 20, optionY - optionHeight, menuWidth - 40, optionHeight);
+
+                // حاشیه گزینه انتخاب شده
+                batch.setColor(0.4f, 0.6f, 1f, 1);
+                // حاشیه بالا
+                batch.draw(pixelTexture, menuX + 20, optionY, menuWidth - 40, 1);
+                // حاشیه پایین
+                batch.draw(pixelTexture, menuX + 20, optionY - optionHeight, menuWidth - 40, 1);
+                // حاشیه چپ
+                batch.draw(pixelTexture, menuX + 20, optionY - optionHeight, 1, optionHeight);
+                // حاشیه راست
+                batch.draw(pixelTexture, menuX + menuWidth - 20 - 1, optionY - optionHeight, 1, optionHeight);
+            }
+
+            // رسم متن گزینه
+            optionFont.setColor(i == pauseMenuSelectedOption ? Color.WHITE : MENU_OPTION_COLOR);
+            optionFont.draw(batch, pauseMenuOptions[i], menuX + 40, optionY - 15);
+
+            // رسم کلید میانبر
+            String shortcutKey = "";
+            switch (i) {
+                case 0: shortcutKey = "ESC"; break;
+                case 1: shortcutKey = "C"; break;
+                case 2: shortcutKey = "A"; break;
+                case 3: shortcutKey = "Q"; break;
+            }
+
+            optionFont.setColor(MENU_KEY_COLOR);
+            GlyphLayout keyLayout = new GlyphLayout(optionFont, shortcutKey);
+            optionFont.draw(batch, shortcutKey,
+                menuX + menuWidth - 60 - keyLayout.width,
+                optionY - 15);
+        }
+
+        // رسم راهنما در پایین منو
+        descriptionFont.setColor(Color.LIGHT_GRAY);
+        descriptionFont.draw(batch, "Use arrow keys to navigate and Enter to select",
+            menuX + 20, menuY - 10);
+    }
+
+    /**
+     * رسم صفحه کدهای تقلب
+     */
+    private void renderCheatCodes() {
+        // محاسبه موقعیت و اندازه منو
+        float menuWidth = 500;
+        float menuHeight = 400;
+        float menuX = WORLD_WIDTH / 2 - menuWidth / 2;
+        float menuY = WORLD_HEIGHT / 2 - menuHeight / 2;
+
+        // رسم پس‌زمینه منو
+        batch.setColor(0.1f, 0.1f, 0.2f, 0.9f);
+        batch.draw(pixelTexture, menuX, menuY, menuWidth, menuHeight);
+
+        // حاشیه منو
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        float borderThickness = 2;
+        // حاشیه بالا
+        batch.draw(pixelTexture, menuX, menuY + menuHeight - borderThickness, menuWidth, borderThickness);
+        // حاشیه پایین
+        batch.draw(pixelTexture, menuX, menuY, menuWidth, borderThickness);
+        // حاشیه چپ
+        batch.draw(pixelTexture, menuX, menuY, borderThickness, menuHeight);
+        // حاشیه راست
+        batch.draw(pixelTexture, menuX + menuWidth - borderThickness, menuY, borderThickness, menuHeight);
+
+        // رسم عنوان
+        titleFont.setColor(MENU_TITLE_COLOR);
+        GlyphLayout titleLayout = new GlyphLayout(titleFont, "CHEAT CODES");
+        titleFont.draw(batch, titleLayout,
+            menuX + menuWidth / 2 - titleLayout.width / 2,
+            menuY + menuHeight - 30);
+
+        // خط جداکننده زیر عنوان
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        batch.draw(pixelTexture, menuX + 20, menuY + menuHeight - 70, menuWidth - 40, 1);
+
+        // رسم توضیحات
+        descriptionFont.setColor(Color.WHITE);
+        descriptionFont.draw(batch, "This section will be implemented later.",
+            menuX + 20, menuY + menuHeight - 80);
+
+        // رسم دکمه بازگشت
+        batch.setColor(0.3f, 0.3f, 0.5f, 0.9f);
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 80, 40);
+
+        // حاشیه دکمه بازگشت
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        // حاشیه بالا
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50 + 40, 80, 1);
+        // حاشیه پایین
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 80, 1);
+        // حاشیه چپ
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 1, 40);
+        // حاشیه راست
+        batch.draw(pixelTexture, WORLD_WIDTH - 100 + 80 - 1, 50, 1, 40);
+
+        optionFont.setColor(Color.WHITE);
+        GlyphLayout backLayout = new GlyphLayout(optionFont, "Back");
+        optionFont.draw(batch, backLayout,
+            WORLD_WIDTH - 100 + 40 - backLayout.width / 2,
+            50 + 25);
+    }
+
+    /**
+     * رسم لیست توانایی‌های بازیکن
+     */
+    private void renderAbilitiesList() {
+        // محاسبه موقعیت و اندازه منو
+        float menuWidth = 500;
+        float menuHeight = 400;
+        float menuX = WORLD_WIDTH / 2 - menuWidth / 2;
+        float menuY = WORLD_HEIGHT / 2 - menuHeight / 2;
+
+        // رسم پس‌زمینه منو
+        batch.setColor(0.1f, 0.1f, 0.2f, 0.9f);
+        batch.draw(pixelTexture, menuX, menuY, menuWidth, menuHeight);
+
+        // حاشیه منو
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        float borderThickness = 2;
+        // حاشیه بالا
+        batch.draw(pixelTexture, menuX, menuY + menuHeight - borderThickness, menuWidth, borderThickness);
+        // حاشیه پایین
+        batch.draw(pixelTexture, menuX, menuY, menuWidth, borderThickness);
+        // حاشیه چپ
+        batch.draw(pixelTexture, menuX, menuY, borderThickness, menuHeight);
+        // حاشیه راست
+        batch.draw(pixelTexture, menuX + menuWidth - borderThickness, menuY, borderThickness, menuHeight);
+
+        // رسم عنوان
+        titleFont.setColor(MENU_TITLE_COLOR);
+        GlyphLayout titleLayout = new GlyphLayout(titleFont, "YOUR ABILITIES");
+        titleFont.draw(batch, titleLayout,
+            menuX + menuWidth / 2 - titleLayout.width / 2,
+            menuY + menuHeight - 30);
+
+        // خط جداکننده زیر عنوان
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        batch.draw(pixelTexture, menuX + 20, menuY + menuHeight - 70, menuWidth - 40, 1);
+
+        // رسم لیست توانایی‌ها
+        if (playerAbilities.size == 0) {
+            descriptionFont.setColor(Color.LIGHT_GRAY);
+            descriptionFont.draw(batch, "You haven't acquired any abilities yet.",
+                menuX + 20, menuY + menuHeight - 80);
+        } else {
+            float abilityCardWidth = 460;
+            float abilityCardHeight = 60;
+            float abilityCardSpacing = 10;
+            float abilitiesStartY = menuY + menuHeight - 80;
+
+            for (int i = 0; i < playerAbilities.size; i++) {
+                AbilityType ability = playerAbilities.get(i);
+                float cardY = abilitiesStartY - i * (abilityCardHeight + abilityCardSpacing);
+
+                // رسم پس‌زمینه کارت توانایی
+                batch.setColor(ability.getCategoryColor());
+                batch.draw(pixelTexture, menuX + 20, cardY - abilityCardHeight, abilityCardWidth, abilityCardHeight);
+
+                // رسم آیکون توانایی
+                TextureRegion icon = ability.getTextureRegion();
+                if (icon != null) {
+                    batch.setColor(Color.WHITE);
+                    batch.draw(icon, menuX + 30, cardY - abilityCardHeight + 10, 40, 40);
+                }
+
+                // رسم نام توانایی
+                optionFont.setColor(Color.WHITE);
+                optionFont.draw(batch, ability.getName(), menuX + 80, cardY - 20);
+
+                // رسم توضیحات توانایی
+                descriptionFont.setColor(Color.LIGHT_GRAY);
+                descriptionFont.draw(batch, ability.getEnglishDescription(),
+                    menuX + 80, cardY - 40, 380, -1, true);
+            }
+        }
+
+        // رسم دکمه بازگشت
+        batch.setColor(0.3f, 0.3f, 0.5f, 0.9f);
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 80, 40);
+
+        // حاشیه دکمه بازگشت
+        batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
+        // حاشیه بالا
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50 + 40, 80, 1);
+        // حاشیه پایین
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 80, 1);
+        // حاشیه چپ
+        batch.draw(pixelTexture, WORLD_WIDTH - 100, 50, 1, 40);
+        // حاشیه راست
+        batch.draw(pixelTexture, WORLD_WIDTH - 100 + 80 - 1, 50, 1, 40);
+
+        optionFont.setColor(Color.WHITE);
+        GlyphLayout backLayout = new GlyphLayout(optionFont, "Back");
+        optionFont.draw(batch, backLayout,
+            WORLD_WIDTH - 100 + 40 - backLayout.width / 2,
+            50 + 25);
     }
 
     private void checkAbilityClick(int screenX, int screenY) {
@@ -388,6 +889,11 @@ public class GameView implements Screen {
         if (showAbilitySelection) {
             renderAbilitySelection();
         }
+
+        // رسم منوی pause اگر فعال است
+        if (isPaused) {
+            renderPauseMenu();
+        }
     }
 
     private void updateMousePosition() {
@@ -433,6 +939,11 @@ public class GameView implements Screen {
 
     private void update(float delta) {
         if (gameOver) return;
+
+        if (isPaused) {
+            menuAnimationTime += delta;
+            return;
+        }
 
         // اگر صفحه انتخاب توانایی نمایش داده می‌شود، بازی را بروز نکن
         if (showAbilitySelection) {
@@ -638,23 +1149,17 @@ public class GameView implements Screen {
         batch.begin();
 
         // رسم پس‌زمینه نیمه‌شفاف
-        Texture pixelTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
         batch.setColor(0, 0, 0, 0.7f);
         batch.draw(pixelTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         batch.setColor(Color.WHITE);
 
         // رسم عنوان
-        BitmapFont titleFont = new BitmapFont();
-        titleFont.getData().setScale(2);
         titleFont.setColor(Color.GOLD);
         String title = "LEVEL UP! Choose an ability:";
         GlyphLayout layout = new GlyphLayout(titleFont, title);
         titleFont.draw(batch, title, WORLD_WIDTH / 2 - layout.width / 2, WORLD_HEIGHT - 100);
 
         // رسم گزینه‌های توانایی
-        BitmapFont font = new BitmapFont();
-        font.getData().setScale(1.2f);
-
         if (abilityChoices != null) {
             float cardWidth = 200;
             float cardHeight = 150;
@@ -669,6 +1174,19 @@ public class GameView implements Screen {
                 // رسم کارت توانایی با رنگ دسته‌بندی
                 batch.setColor(ability.getCategoryColor());
                 batch.draw(pixelTexture, x, y, cardWidth, cardHeight);
+
+                // حاشیه کارت
+                batch.setColor(Color.WHITE);
+                float borderThickness = 1;
+                // حاشیه بالا
+                batch.draw(pixelTexture, x, y + cardHeight - borderThickness, cardWidth, borderThickness);
+                // حاشیه پایین
+                batch.draw(pixelTexture, x, y, cardWidth, borderThickness);
+                // حاشیه چپ
+                batch.draw(pixelTexture, x, y, borderThickness, cardHeight);
+                // حاشیه راست
+                batch.draw(pixelTexture, x + cardWidth - borderThickness, y, borderThickness, cardHeight);
+
                 batch.setColor(Color.WHITE);
 
                 // رسم آیکون توانایی
@@ -678,6 +1196,8 @@ public class GameView implements Screen {
                 }
 
                 // رسم عنوان توانایی
+                BitmapFont font = new BitmapFont();
+                font.getData().setScale(1.2f);
                 font.setColor(Color.WHITE);
                 font.draw(batch, ability.getName(), x + 60, y + cardHeight - 30);
 
@@ -904,7 +1424,6 @@ public class GameView implements Screen {
             float y = startY - (i * (abilityIconSize + abilitySpacing));
 
             // رسم پس‌زمینه با رنگ دسته‌بندی
-            Texture pixelTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
             batch.setColor(ability.getCategoryColor());
             batch.draw(pixelTexture, x, y, abilityIconSize, abilityIconSize);
 
@@ -959,6 +1478,7 @@ public class GameView implements Screen {
     @Override
     public void show() {
         // Called when this screen becomes the current screen
+        loadMenuAssets();
     }
 
     @Override
@@ -966,6 +1486,22 @@ public class GameView implements Screen {
         batch.dispose();
         backgroundTexture.dispose();
         playerTexture.dispose();
+
+        if (pixelTexture != null) {
+            pixelTexture.dispose();
+        }
+
+        if (titleFont != null) {
+            titleFont.dispose();
+        }
+
+        if (optionFont != null) {
+            optionFont.dispose();
+        }
+
+        if (descriptionFont != null) {
+            descriptionFont.dispose();
+        }
 
         if (currentWeapon != null) {
             currentWeapon.dispose();

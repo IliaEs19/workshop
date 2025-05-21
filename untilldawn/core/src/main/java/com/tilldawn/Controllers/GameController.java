@@ -42,6 +42,12 @@ public class GameController {
         Main.getMain().setScreen(gameView);
     }
 
+    public void exitGame() {
+        // کد خروج از بازی
+        // می‌تواند به صفحه اصلی برگردد یا بازی را کاملاً ببندد
+        Gdx.app.exit();
+    }
+
     public void endGame() {
         // Save game results
         SaveData saveData = SaveData.getInstance();
