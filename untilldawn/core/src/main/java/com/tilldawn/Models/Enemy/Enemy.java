@@ -165,15 +165,4 @@ public abstract class Enemy {
     public Array<Bullet> getBullets() {
         return bullets;
     }
-
-    public ItemType getRandomDropItem() {
-        // شانس 30% برای دراپ آیتم
-        if (Math.random() < 0.3) {
-            // انتخاب تصادفی یک آیتم
-            ItemType[] items = ItemType.values();
-            int index = (int)(Math.random() * items.length);
-            return items[index];
-        }
-        return null;
-    }
 }

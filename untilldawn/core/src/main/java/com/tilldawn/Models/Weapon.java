@@ -18,7 +18,9 @@ public class Weapon {
     private boolean isReloading = false;
     private Array<Bullet> bullets;
     private float shootTimer = 0;
-    private static final float SHOOT_DELAY = 0.1f; // حداقل زمان بین شلیک‌ها
+    private static final float SHOOT_DELAY = 0.05f; // حداقل زمان بین شلیک‌ها
+    private int additionalProjectileCount = 0;
+    private int additionalMaxAmmo = 0;
 
     // فاصله تفنگ از مرکز بازیکن
     private static final float WEAPON_OFFSET_X = 20;
@@ -37,8 +39,8 @@ public class Weapon {
         this.currentAmmo = type.getMaxAmmo();
         this.position = new Vector2();
         this.bullets = new Array<>();
-
-        // لود تکسچر تفنگ
+        this.additionalProjectileCount = 0;
+        this.additionalMaxAmmo = 0;
         loadTexture();
     }
 
@@ -129,25 +131,7 @@ public class Weapon {
     }
 
     public boolean shoot(Vector2 playerPosition, float targetX, float targetY) {
-        lastShootAttemptFailed = false;
-
-        // بررسی شرایط شلیک
-        if (isReloading) {
-            lastShootAttemptFailed = true;
-            shootFailReason = "Reloading";
-            return false;
-        }
-
-        if (shootTimer > 0) {
-            lastShootAttemptFailed = true;
-            shootFailReason = "Cooldown";
-            return false;
-        }
-
-        if (currentAmmo <= 0) {
-            lastShootAttemptFailed = true;
-            shootFailReason = "No Ammo";
-            startReload(); // ریلود اتوماتیک
+        if (isReloading || shootTimer > 0 || currentAmmo <= 0) {
             return false;
         }
 
@@ -156,11 +140,10 @@ public class Weapon {
         shootTimer = SHOOT_DELAY;
 
         // محاسبه جهت شلیک
-        float dx = targetX - position.x; // استفاده از موقعیت تفنگ به جای بازیکن
+        float dx = targetX - position.x;
         float dy = targetY - position.y;
         float length = (float) Math.sqrt(dx * dx + dy * dy);
 
-        // اطمینان از صفر نبودن طول
         if (length < 0.0001f) {
             dx = 1;
             dy = 0;
@@ -170,11 +153,12 @@ public class Weapon {
         }
 
         // ایجاد گلوله‌ها بر اساس تعداد پروجکتایل سلاح
-        for (int i = 0; i < type.getProjectileCount(); i++) {
+        int totalProjectiles = getTotalProjectileCount();
+        for (int i = 0; i < totalProjectiles; i++) {
             float spreadAngle = 0;
-            if (type.getProjectileCount() > 1) {
+            if (totalProjectiles > 1) {
                 // پخش گلوله‌ها برای سلاح‌هایی مثل شاتگان
-                spreadAngle = (i - (type.getProjectileCount() - 1) / 2f) * 10;
+                spreadAngle = (i - (totalProjectiles - 1) / 2f) * 10;
             }
 
             float radians = (float) Math.toRadians(spreadAngle);
@@ -185,7 +169,7 @@ public class Weapon {
                 Bullet bullet = new Bullet(position.x, position.y, spreadDx, spreadDy, type.getDamage());
                 bullets.add(bullet);
             } catch (Exception e) {
-                Gdx.app.error("Weapon", "Error creating bullet: " + e.getMessage());
+                System.err.println("Error creating bullet: " + e.getMessage());
             }
         }
 
@@ -240,12 +224,72 @@ public class Weapon {
     }
 
     public void addAmmo(int amount) {
-        currentAmmo = Math.min(currentAmmo + amount, type.getMaxAmmo() * 2); // اجازه داشتن حداکثر دو برابر ظرفیت عادی
+        currentAmmo = Math.min(currentAmmo + amount, getTotalMaxAmmo());
     }
 
     public void dispose() {
         if (texture != null && texture.getTexture() != null) {
             texture.getTexture().dispose();
         }
+    }
+
+    public void increaseProjectileCount(int amount) {
+        // ما نیاز داریم یک متغیر جدید در کلاس Weapon اضافه کنیم که تعداد پروجکتایل اضافی را نگهداری کند
+        // چون WeaponType یک enum است و مقادیر آن غیرقابل تغییر هستند
+
+        if (additionalProjectileCount == 0) {
+            // اگر این اولین افزایش است، یک متغیر جدید را مقداردهی می‌کنیم
+            additionalProjectileCount = amount;
+        } else {
+            // در غیر این صورت، مقدار موجود را افزایش می‌دهیم
+            additionalProjectileCount += amount;
+        }
+
+        System.out.println("Increased projectile count by " + amount +
+            ". Total projectiles: " + getTotalProjectileCount());
+    }
+
+    /**
+     * افزایش حداکثر مهمات سلاح
+     * @param amount مقدار افزایش
+     */
+    public void increaseMaxAmmo(int amount) {
+        // مشابه با تعداد پروجکتایل، نیاز داریم یک متغیر جدید برای مهمات اضافی اضافه کنیم
+
+        if (additionalMaxAmmo == 0) {
+            // اگر این اولین افزایش است، متغیر جدید را مقداردهی می‌کنیم
+            additionalMaxAmmo = amount;
+        } else {
+            // در غیر این صورت، مقدار موجود را افزایش می‌دهیم
+            additionalMaxAmmo += amount;
+        }
+
+        // اگر مهمات فعلی کمتر از حداکثر جدید است، مهمات را اضافه می‌کنیم
+        if (currentAmmo < getTotalMaxAmmo()) {
+            currentAmmo += amount;
+        }
+
+        // اطمینان حاصل می‌کنیم که مهمات فعلی از حداکثر بیشتر نباشد
+        currentAmmo = Math.min(currentAmmo, getTotalMaxAmmo());
+
+        System.out.println("Increased max ammo by " + amount +
+            ". New max ammo: " + getTotalMaxAmmo() +
+            ", Current ammo: " + currentAmmo);
+    }
+
+    /**
+     * گرفتن کل تعداد پروجکتایل (پایه + اضافی)
+     * @return کل تعداد پروجکتایل
+     */
+    public int getTotalProjectileCount() {
+        return type.getProjectileCount() + additionalProjectileCount;
+    }
+
+    /**
+     * گرفتن کل حداکثر مهمات (پایه + اضافی)
+     * @return کل حداکثر مهمات
+     */
+    public int getTotalMaxAmmo() {
+        return type.getMaxAmmo() + additionalMaxAmmo;
     }
 }

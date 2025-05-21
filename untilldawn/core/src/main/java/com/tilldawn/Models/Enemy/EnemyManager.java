@@ -65,11 +65,19 @@ public class EnemyManager {
 
             // حذف دشمن‌های مرده و دراپ آیتم
             if (!enemy.isAlive()) {
-                // دراپ آیتم با احتمال مشخص
-                ItemType dropItem = enemy.getRandomDropItem();
-                if (dropItem != null) {
-                    Item item = new Item(dropItem, enemy.getPosition().x, enemy.getPosition().y);
-                    items.add(item);
+                // دراپ آیتم تجربه با احتمال 100%
+                Item xpItem = new Item(ItemType.EXPERIENCE, enemy.getPosition().x, enemy.getPosition().y);
+                items.add(xpItem);
+
+                // دراپ آیتم دیگر با احتمال کمتر
+                if (Math.random() < 0.3) { // 30% احتمال
+                    ItemType randomItemType = getRandomItemType();
+                    if (randomItemType != null && randomItemType != ItemType.EXPERIENCE) {
+                        Item item = new Item(randomItemType,
+                            enemy.getPosition().x + (float)(Math.random() * 20 - 10),
+                            enemy.getPosition().y + (float)(Math.random() * 20 - 10));
+                        items.add(item);
+                    }
                 }
 
                 enemies.removeIndex(i);
@@ -115,6 +123,12 @@ public class EnemyManager {
             spawnElder(playerPosition);
             bossSpawned = true;
         }
+    }
+
+    private ItemType getRandomItemType() {
+        ItemType[] types = ItemType.values();
+        int index = (int)(Math.random() * types.length);
+        return types[index];
     }
 
     private void spawnTentacleMonster(Vector2 playerPosition) {

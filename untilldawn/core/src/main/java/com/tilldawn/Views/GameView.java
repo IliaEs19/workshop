@@ -5,13 +5,11 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -23,10 +21,13 @@ import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Models.Bullet;
 import com.tilldawn.Models.Enemy.Enemy;
 import com.tilldawn.Models.Enemy.EnemyManager;
+import com.tilldawn.Models.Hero.AbilityType;
 import com.tilldawn.Models.Hero.HeroType;
 import com.tilldawn.Models.Hero.WeaponType;
 import com.tilldawn.Models.Item.Item;
 import com.tilldawn.Models.Weapon;
+
+import static com.tilldawn.Models.Item.ItemType.DAMAGE_BOOST;
 
 public class GameView implements Screen {
     // Constants
@@ -77,13 +78,20 @@ public class GameView implements Screen {
     private float playerMaxHealth;
     private float playerSpeed;
     private float basePlayerSpeed; // سرعت پایه بدون بوست
-    private float damageBoostTimer = 0;
-    private float speedBoostTimer = 0;
     private float damageMultiplier = 1.0f;
     private float speedMultiplier = 1.0f;
     private float invincibilityTimer = 0; // زمان نامیرایی پس از آسیب دیدن
     private static final float INVINCIBILITY_DURATION = 1.0f;
     private EnemyManager enemyManager;
+
+    private int playerLevel = 1;
+    private int playerXP = 0;
+    private int xpToNextLevel = 20;
+    private Array<AbilityType> playerAbilities = new Array<>();
+    private boolean showAbilitySelection = false;
+    private AbilityType[] abilityChoices;
+    private float damageBoostTimer = 0;
+    private float speedBoostTimer = 0;
 
 
     // Input handling
@@ -176,10 +184,78 @@ public class GameView implements Screen {
         walkAnimation = new Animation<>(0.1f, frames);
     }
 
+    public void selectAbility(int index) {
+        if (showAbilitySelection && abilityChoices != null && index >= 0 && index < abilityChoices.length) {
+            // اضافه کردن توانایی انتخاب شده به لیست توانایی‌های بازیکن
+            playerAbilities.add(abilityChoices[index]);
+
+            // اعمال اثرات توانایی انتخاب شده
+            applyAbilityEffects(abilityChoices[index]);
+
+            // بستن صفحه انتخاب توانایی
+            showAbilitySelection = false;
+            abilityChoices = null;
+
+            // ادامه بازی
+            controller.resumeGame();
+        }
+    }
+
+    private void applyAbilityEffects(AbilityType ability) {
+        switch (ability) {
+            case VITALITY:
+                // افزایش سلامتی حداکثر به اندازه یک واحد (25 نقطه)
+                playerMaxHealth += 25;
+                playerHealth += 25; // سلامتی فعلی نیز افزایش می‌یابد
+                break;
+            case DAMAGER:
+                // افزایش 25 درصدی میزان دمیج سلاح به مدت 10 ثانیه
+                damageMultiplier = 1.25f;
+                damageBoostTimer = 10;
+                break;
+            case PROCREASE:
+                // افزایش یک واحدی Projectile سلاح
+                if (currentWeapon != null) {
+                    currentWeapon.increaseProjectileCount(1);
+                }
+                break;
+            case AMOCREASE:
+                // افزایش 5 واحدی حداکثر تعداد تیرهای سلاح
+                if (currentWeapon != null) {
+                    currentWeapon.increaseMaxAmmo(5);
+                    currentWeapon.addAmmo(5);
+                }
+                break;
+            case SPEEDY:
+                // 2 برابر شدن سرعت حرکت بازیکن به مدت 10 ثانیه
+                speedMultiplier = 2.0f;
+                playerSpeed = basePlayerSpeed * speedMultiplier;
+                speedBoostTimer = 10;
+                break;
+        }
+    }
+
     private void setupInput() {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
+                // اگر صفحه انتخاب قابلیت نمایش داده می‌شود، کلیدهای 1، 2، 3 را بررسی کن
+                if (showAbilitySelection) {
+                    switch (keycode) {
+                        case Keys.NUM_1:
+                            selectAbility(0);
+                            return true;
+                        case Keys.NUM_2:
+                            selectAbility(1);
+                            return true;
+                        case Keys.NUM_3:
+                            selectAbility(2);
+                            return true;
+                    }
+                    return false;
+                }
+
+                // کلیدهای عادی بازی
                 switch (keycode) {
                     case Keys.W: keyW = true; break;
                     case Keys.A: keyA = true; break;
@@ -208,9 +284,16 @@ public class GameView implements Screen {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (button == Buttons.LEFT) {
                     mouseLeft = true;
+
+                    // اگر صفحه انتخاب توانایی نمایش داده می‌شود، بررسی کن که آیا روی یک توانایی کلیک شده است
+                    if (showAbilitySelection) {
+                        checkAbilityClick(screenX, screenY);
+                        return true;
+                    }
                 }
                 return true;
             }
+
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -220,6 +303,30 @@ public class GameView implements Screen {
                 return true;
             }
         });
+    }
+
+    private void checkAbilityClick(int screenX, int screenY) {
+        // تبدیل مختصات صفحه به مختصات دوربین UI
+        Vector3 touchPoint = new Vector3(screenX, screenY, 0);
+        uiViewport.unproject(touchPoint);
+
+        // محاسبه موقعیت کارت‌های توانایی
+        float cardWidth = 200;
+        float cardHeight = 150;
+        float startX = WORLD_WIDTH / 2 - (abilityChoices.length * cardWidth + (abilityChoices.length - 1) * 20) / 2;
+        float startY = WORLD_HEIGHT / 2 - cardHeight / 2;
+
+        // بررسی کلیک روی هر کارت
+        for (int i = 0; i < abilityChoices.length; i++) {
+            float x = startX + i * (cardWidth + 20);
+            float y = startY;
+
+            if (touchPoint.x >= x && touchPoint.x <= x + cardWidth &&
+                touchPoint.y >= y && touchPoint.y <= y + cardHeight) {
+                selectAbility(i);
+                return;
+            }
+        }
     }
 
     private void toggleAutoAim() {
@@ -276,6 +383,11 @@ public class GameView implements Screen {
 
         // رسم UI
         drawUI();
+
+        // رسم صفحه انتخاب توانایی اگر فعال است
+        if (showAbilitySelection) {
+            renderAbilitySelection();
+        }
     }
 
     private void updateMousePosition() {
@@ -322,6 +434,11 @@ public class GameView implements Screen {
     private void update(float delta) {
         if (gameOver) return;
 
+        // اگر صفحه انتخاب توانایی نمایش داده می‌شود، بازی را بروز نکن
+        if (showAbilitySelection) {
+            return;
+        }
+
         // بروزرسانی زمان بازی
         gameTimeElapsed += delta;
         if (gameTimeElapsed >= gameTimeMinutes * 60) {
@@ -333,6 +450,22 @@ public class GameView implements Screen {
         // بروزرسانی تایمر نامیرایی
         if (invincibilityTimer > 0) {
             invincibilityTimer -= delta;
+        }
+
+        // بروزرسانی تایمرهای بوست
+        if (damageBoostTimer > 0) {
+            damageBoostTimer -= delta;
+            if (damageBoostTimer <= 0) {
+                damageMultiplier = 1.0f;
+            }
+        }
+
+        if (speedBoostTimer > 0) {
+            speedBoostTimer -= delta;
+            if (speedBoostTimer <= 0) {
+                speedMultiplier = 1.0f;
+                playerSpeed = basePlayerSpeed;
+            }
         }
 
         // بروزرسانی موقعیت ماوس و هدف
@@ -354,17 +487,14 @@ public class GameView implements Screen {
         if (currentWeapon != null) {
             currentWeapon.update(delta, playerPosition, targetX, targetY);
 
-            // شلیک با کلیک چپ ماوس - مستقل از حرکت بازیکن
+            // شلیک با کلیک چپ ماوس
             if (mouseLeft) {
                 boolean shotFired = currentWeapon.shoot(playerPosition, targetX, targetY);
 
-                if (shotFired) {
-                    // اعمال ضریب آسیب اگر بوست فعال است
-                    if (damageMultiplier > 1.0f) {
-                        // این متد باید به کلاس Bullet اضافه شود
-                        for (Bullet bullet : currentWeapon.getBullets()) {
-                            bullet.setDamageMultiplier(damageMultiplier);
-                        }
+                if (shotFired && damageMultiplier > 1.0f) {
+                    // اعمال ضریب آسیب به گلوله‌ها
+                    for (Bullet bullet : currentWeapon.getBullets()) {
+                        bullet.setDamageMultiplier(damageMultiplier);
                     }
                 }
             }
@@ -383,6 +513,22 @@ public class GameView implements Screen {
             enemyManager.checkBulletCollisions(currentWeapon.getBullets());
         }
 
+        // بررسی برخورد گلوله‌های دشمن با بازیکن
+        if (invincibilityTimer <= 0) {
+            for (Enemy enemy : enemyManager.getEnemies()) {
+                if (enemy.getBullets() != null) {
+                    for (int i = enemy.getBullets().size - 1; i >= 0; i--) {
+                        Bullet bullet = enemy.getBullets().get(i);
+                        if (bullet.getBounds().overlaps(playerBounds)) {
+                            takeDamage(bullet.getDamage());
+                            enemy.getBullets().removeIndex(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         // بررسی برخورد بازیکن با دشمن‌ها (فقط اگر نامیرا نباشد)
         if (invincibilityTimer <= 0) {
             if (enemyManager.checkPlayerCollisions(playerBounds)) {
@@ -395,22 +541,6 @@ public class GameView implements Screen {
         Array<Item> collectedItems = enemyManager.checkItemCollisions(playerBounds);
         for (Item item : collectedItems) {
             applyItemEffect(item);
-        }
-
-        // بروزرسانی تایمرهای بوست
-        if (damageBoostTimer > 0) {
-            damageBoostTimer -= delta;
-            if (damageBoostTimer <= 0) {
-                damageMultiplier = 1.0f;
-            }
-        }
-
-        if (speedBoostTimer > 0) {
-            speedBoostTimer -= delta;
-            if (speedBoostTimer <= 0) {
-                speedMultiplier = 1.0f;
-                playerSpeed = basePlayerSpeed;
-            }
         }
 
         // محاسبه جهت حرکت بازیکن
@@ -444,11 +574,14 @@ public class GameView implements Screen {
 
     private void takeDamage(float amount) {
         // اگر بازیکن نامیراست، آسیب نمی‌بیند
-        if (invincibilityTimer > 0) return;
+        if (invincibilityTimer > 0) {
+            return;
+        }
 
+        // کاهش سلامتی بازیکن
         playerHealth -= amount;
 
-        // فعال کردن حالت نامیرایی موقت
+        // فعال کردن حالت نامیرایی موقت پس از آسیب دیدن
         invincibilityTimer = INVINCIBILITY_DURATION;
 
         // بررسی پایان بازی
@@ -458,6 +591,24 @@ public class GameView implements Screen {
             controller.endGame();
         }
     }
+
+    private void updatePlayerSpeed() {
+        // سرعت پایه از نوع قهرمان
+        playerSpeed = basePlayerSpeed;
+
+        // اعمال قابلیت Speed Boost
+        if (hasAbility(AbilityType.SPEEDY)) {
+            playerSpeed *= 1.2f;
+        }
+
+        // اعمال ضریب سرعت موقت
+        playerSpeed *= speedMultiplier;
+    }
+
+    private boolean hasAbility(AbilityType type) {
+        return playerAbilities.contains(type, true);
+    }
+
 
     private Enemy findNearestEnemy() {
         Enemy nearest = null;
@@ -480,27 +631,152 @@ public class GameView implements Screen {
         return nearest;
     }
 
+    private void renderAbilitySelection() {
+        // تنظیم دوربین UI
+        uiViewport.apply();
+        batch.setProjectionMatrix(uiCamera.combined);
+        batch.begin();
+
+        // رسم پس‌زمینه نیمه‌شفاف
+        Texture pixelTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+        batch.setColor(0, 0, 0, 0.7f);
+        batch.draw(pixelTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        batch.setColor(Color.WHITE);
+
+        // رسم عنوان
+        BitmapFont titleFont = new BitmapFont();
+        titleFont.getData().setScale(2);
+        titleFont.setColor(Color.GOLD);
+        String title = "LEVEL UP! Choose an ability:";
+        GlyphLayout layout = new GlyphLayout(titleFont, title);
+        titleFont.draw(batch, title, WORLD_WIDTH / 2 - layout.width / 2, WORLD_HEIGHT - 100);
+
+        // رسم گزینه‌های توانایی
+        BitmapFont font = new BitmapFont();
+        font.getData().setScale(1.2f);
+
+        if (abilityChoices != null) {
+            float cardWidth = 200;
+            float cardHeight = 150;
+            float startX = WORLD_WIDTH / 2 - (abilityChoices.length * cardWidth + (abilityChoices.length - 1) * 20) / 2;
+            float startY = WORLD_HEIGHT / 2 - cardHeight / 2;
+
+            for (int i = 0; i < abilityChoices.length; i++) {
+                AbilityType ability = abilityChoices[i];
+                float x = startX + i * (cardWidth + 20);
+                float y = startY;
+
+                // رسم کارت توانایی با رنگ دسته‌بندی
+                batch.setColor(ability.getCategoryColor());
+                batch.draw(pixelTexture, x, y, cardWidth, cardHeight);
+                batch.setColor(Color.WHITE);
+
+                // رسم آیکون توانایی
+                TextureRegion icon = ability.getTextureRegion();
+                if (icon != null) {
+                    batch.draw(icon, x + 10, y + cardHeight - 60, 40, 40);
+                }
+
+                // رسم عنوان توانایی
+                font.setColor(Color.WHITE);
+                font.draw(batch, ability.getName(), x + 60, y + cardHeight - 30);
+
+                // رسم توضیحات توانایی
+                font.setColor(Color.LIGHT_GRAY);
+                font.draw(batch, ability.getEnglishDescription(), x + 10, y + cardHeight - 70, cardWidth - 20, -1, true);
+
+                // رسم شماره گزینه
+                font.setColor(Color.YELLOW);
+                font.draw(batch, "Press " + (i + 1) + " to select", x + 10, y + 30);
+            }
+        }
+
+        batch.end();
+    }
+
     private void applyItemEffect(Item item) {
         switch (item.getType()) {
             case HEALTH:
+                // افزایش سلامتی
                 playerHealth = Math.min(playerHealth + 25, playerMaxHealth);
                 break;
+
             case AMMO:
+                // افزایش مهمات
                 if (currentWeapon != null) {
-                    // افزایش مهمات
                     currentWeapon.addAmmo(10);
                 }
                 break;
+
             case SPEED_BOOST:
+                // افزایش سرعت موقت
                 speedMultiplier = 1.5f;
                 playerSpeed = basePlayerSpeed * speedMultiplier;
                 speedBoostTimer = 10; // 10 ثانیه بوست سرعت
                 break;
+
             case DAMAGE_BOOST:
+                // افزایش آسیب موقت
                 damageMultiplier = 2.0f;
                 damageBoostTimer = 10; // 10 ثانیه بوست آسیب
                 break;
+
+            case EXPERIENCE:
+                // افزایش XP
+                addXP(3); // هر دانه XP، 3 امتیاز تجربه می‌دهد
+                break;
         }
+    }
+
+    private void addXP(int amount) {
+        playerXP += amount;
+
+        // بررسی لول آپ
+        if (playerXP >= xpToNextLevel) {
+            levelUp();
+        }
+    }
+
+    private void levelUp() {
+        playerLevel++;
+        playerXP -= xpToNextLevel;
+
+        // محاسبه تجربه مورد نیاز برای لول بعدی (فرمول 20i)
+        xpToNextLevel = 20 * playerLevel;
+
+        // نمایش انتخاب توانایی
+        showAbilitySelection = true;
+
+        // انتخاب 3 توانایی تصادفی
+        abilityChoices = getRandomAbilities(3);
+
+        // توقف موقت بازی
+        controller.pauseGame();
+    }
+
+    private AbilityType[] getRandomAbilities(int count) {
+        AbilityType[] allTypes = AbilityType.values();
+
+        // تعداد توانایی‌های موجود را بررسی می‌کنیم
+        if (count > allTypes.length) {
+            count = allTypes.length;
+        }
+
+        // انتخاب تصادفی توانایی‌ها بدون تکرار
+        AbilityType[] abilities = new AbilityType[count];
+        boolean[] used = new boolean[allTypes.length];
+
+        for (int i = 0; i < count; i++) {
+            int index;
+            do {
+                index = (int)(Math.random() * allTypes.length);
+            } while (used[index]);
+
+            used[index] = true;
+            abilities[i] = allTypes[index];
+        }
+
+        return abilities;
     }
 
     private void updatePlayerVelocity() {
@@ -592,28 +868,67 @@ public class GameView implements Screen {
         font.draw(batch, String.format("Health: %.0f/%.0f", playerHealth, playerMaxHealth),
             20, WORLD_HEIGHT - 40);
 
+        // نمایش سطح و تجربه
+        font.draw(batch, String.format("Level: %d | XP: %d/%d",
+                playerLevel, playerXP, xpToNextLevel),
+            20, WORLD_HEIGHT - 60);
+
         // نمایش وضعیت auto-aim
         String autoAimStatus = autoAim ? "ON" : "OFF";
-        font.draw(batch, "Auto-Aim: " + autoAimStatus, 20, WORLD_HEIGHT - 60);
+        font.draw(batch, "Auto-Aim: " + autoAimStatus, 20, WORLD_HEIGHT - 80);
 
         // نمایش بوست‌های فعال
         if (damageBoostTimer > 0) {
             font.draw(batch, String.format("Damage Boost: %.1fs", damageBoostTimer),
-                20, WORLD_HEIGHT - 80);
+                20, WORLD_HEIGHT - 100);
         }
 
         if (speedBoostTimer > 0) {
             font.draw(batch, String.format("Speed Boost: %.1fs", speedBoostTimer),
-                20, WORLD_HEIGHT - 100);
+                20, WORLD_HEIGHT - 120);
+        }
+
+        // نمایش توانایی‌های فعال
+        font.setColor(Color.CYAN);
+        font.draw(batch, "Abilities:", WORLD_WIDTH - 300, WORLD_HEIGHT - 60);
+
+        // نمایش توانایی‌ها با آیکون و رنگ دسته‌بندی
+        float abilityIconSize = 20;
+        float abilitySpacing = 5;
+        float startX = WORLD_WIDTH - 280;
+        float startY = WORLD_HEIGHT - 80;
+
+        for (int i = 0; i < playerAbilities.size; i++) {
+            AbilityType ability = playerAbilities.get(i);
+            float x = startX;
+            float y = startY - (i * (abilityIconSize + abilitySpacing));
+
+            // رسم پس‌زمینه با رنگ دسته‌بندی
+            Texture pixelTexture = new Texture(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+            batch.setColor(ability.getCategoryColor());
+            batch.draw(pixelTexture, x, y, abilityIconSize, abilityIconSize);
+
+            // رسم آیکون توانایی اگر موجود باشد
+            TextureRegion icon = ability.getTextureRegion();
+            if (icon != null) {
+                batch.setColor(Color.WHITE);
+                batch.draw(icon, x, y, abilityIconSize, abilityIconSize);
+            }
+
+            // رسم نام توانایی
+            batch.setColor(Color.WHITE);
+            font.draw(batch, ability.getName(), x + abilityIconSize + 5, y + abilityIconSize - 2);
         }
 
         // نمایش قهرمان انتخاب شده
+        font.setColor(Color.WHITE);
         if (selectedHero != null) {
             font.draw(batch, "Hero: " + selectedHero.getName(),
-                WORLD_WIDTH - 300, WORLD_HEIGHT - 60);
+                WORLD_WIDTH - 300, WORLD_HEIGHT - 100 - (Math.max(playerAbilities.size, 0) * (abilityIconSize + abilitySpacing)));
         }
 
-        // نمایش وضعیت کنترل‌ها
+        // نمایش وضعیت کنترل‌ها در پایین صفحه
+        font.setColor(Color.LIGHT_GRAY);
         font.draw(batch, "WASD: Move | Mouse: Aim | Click: Shoot | R: Reload | Space: Auto-Aim",
             WORLD_WIDTH/2 - 200, 20);
 

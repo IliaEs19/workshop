@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum ItemType {
-    HEALTH("Health", "Items/Health.png"),
-    AMMO("Ammo", "Items/AMMO.png"),
-    SPEED_BOOST("Speed Boost", "Items/SPEED.png"),
-    DAMAGE_BOOST("Damage Boost", "Items/Health.png");
+    HEALTH("Health", "items/health.png"),
+    AMMO("Ammo", "items/AMMO.png"),
+    SPEED_BOOST("Speed Boost", "items/SPEED.png"),
+    DAMAGE_BOOST("Damage Boost", "items/DAMAGE.png"),
+    EXPERIENCE("XP", "items/DAMAGE.png"); // آیتم تجربه جدید
 
     private final String name;
     private final String texturePath;

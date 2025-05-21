@@ -83,7 +83,7 @@ public class RegisterMenuController {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     // انتقال به صفحه PreGameMenu
-                    //Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
+                    Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController()));
                 }
             });
 
