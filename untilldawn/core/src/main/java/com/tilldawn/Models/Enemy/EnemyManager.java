@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import com.tilldawn.Models.Bullet;
 import com.tilldawn.Models.Item.Item;
 import com.tilldawn.Models.Item.ItemType;
+import com.tilldawn.Views.GameView;
 
 public class EnemyManager {
     private Array<Enemy> enemies;
@@ -183,7 +184,7 @@ public class EnemyManager {
         }
     }
 
-    public void checkBulletCollisions(Array<Bullet> bullets) {
+    public void checkBulletCollisions(Array<Bullet> bullets, GameView gameView) {
         if (bullets == null) return;
 
         for (int i = bullets.size - 1; i >= 0; i--) {
@@ -191,8 +192,18 @@ public class EnemyManager {
             Rectangle bulletBounds = bullet.getBounds();
 
             for (Enemy enemy : enemies) {
-                if (enemy.checkBulletCollision(bulletBounds)) {
+                if (enemy.isAlive() && enemy.checkBulletCollision(bulletBounds)) {
+                    // دشمن آسیب می‌بیند
                     enemy.takeDamage(bullet.getDamage());
+
+                    // اگر دشمن کشته شد، تعداد کشته‌ها را افزایش بده
+                    if (!enemy.isAlive()) {
+                        gameView.addKill();
+                        // می‌توانید XP هم اضافه کنید
+                        //gameView.addXP(enemy.getType().getXpValue());
+                    }
+
+                    // حذف گلوله
                     bullets.removeIndex(i);
                     break;
                 }

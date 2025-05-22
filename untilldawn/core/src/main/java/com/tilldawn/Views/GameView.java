@@ -64,6 +64,9 @@ public class GameView implements Screen {
     private Rectangle playerBounds;
     private boolean isPlayerMoving;
     private PlayerDirection playerDirection;
+    private int playerKills = 0; // تعداد kill های بازیکن
+    private float lightRadius = 100f;
+    private Texture lightTexture;
 
     // Weapon system
     private Weapon currentWeapon;
@@ -86,7 +89,7 @@ public class GameView implements Screen {
 
     private int playerLevel = 1;
     private int playerXP = 0;
-    private int xpToNextLevel = 20;
+    private int xpToNextLevel = 3;
     private Array<AbilityType> playerAbilities = new Array<>();
     private boolean showAbilitySelection = false;
     private AbilityType[] abilityChoices;
@@ -244,7 +247,37 @@ public class GameView implements Screen {
         Array<TextureRegion> frames = new Array<>();
         frames.add(currentPlayerFrame);
         walkAnimation = new Animation<>(0.1f, frames);
+        createLightTexture();
     }
+
+    private void createLightTexture() {
+        int size = 512; // اندازه تکسچر نور
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(size, size, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+        // ایجاد گرادیان دایره‌ای
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                float distX = x - size/2f;
+                float distY = y - size/2f;
+                float dist = (float) Math.sqrt(distX * distX + distY * distY);
+
+                // نرمال‌سازی فاصله
+                float normalized = Math.min(dist / (size/2f), 1f);
+
+                // محاسبه آلفا (شفافیت) بر اساس فاصله از مرکز
+                float alpha = 1f - normalized;
+                alpha = Math.max(0, alpha);
+
+                // تنظیم رنگ پیکسل
+                pixmap.setColor(1, 1, 1, alpha * 0.5f); // رنگ سفید با آلفای متغیر
+                pixmap.drawPixel(x, y);
+            }
+        }
+
+        lightTexture = new Texture(pixmap);
+        pixmap.dispose();
+    }
+
 
     public void selectAbility(int index) {
         if (showAbilitySelection && abilityChoices != null && index >= 0 && index < abilityChoices.length) {
@@ -557,7 +590,7 @@ public class GameView implements Screen {
         // افکت انیمیشن ظاهر شدن منو
         float scale = Math.min(1, menuAnimationTime * 3);
         float actualMenuWidth = menuWidth * scale;
-        float actualMenuHeight = menuHeight * scale;
+        float actualMenuHeight = menuHeight * scale + 110;
         float actualMenuX = WORLD_WIDTH / 2 - actualMenuWidth / 2;
         float actualMenuY = WORLD_HEIGHT / 2 - actualMenuHeight / 2;
 
@@ -595,7 +628,7 @@ public class GameView implements Screen {
         batch.draw(pixelTexture, menuX + 20, menuY + menuHeight - 70, menuWidth - 40, 1);
 
         // رسم گزینه‌های منو
-        float optionHeight = 50;
+        float optionHeight = 70;
         float optionSpacing = 10;
         float optionsStartY = menuY + menuHeight - 80;
 
@@ -643,7 +676,7 @@ public class GameView implements Screen {
         // رسم راهنما در پایین منو
         descriptionFont.setColor(Color.LIGHT_GRAY);
         descriptionFont.draw(batch, "Use arrow keys to navigate and Enter to select",
-            menuX + 20, menuY - 10);
+            menuX + 20, menuY - 70);
     }
 
     /**
@@ -754,7 +787,7 @@ public class GameView implements Screen {
                 menuX + 20, menuY + menuHeight - 80);
         } else {
             float abilityCardWidth = 460;
-            float abilityCardHeight = 60;
+            float abilityCardHeight = 75;
             float abilityCardSpacing = 10;
             float abilitiesStartY = menuY + menuHeight - 80;
 
@@ -850,7 +883,6 @@ public class GameView implements Screen {
 
     @Override
     public void render(float delta) {
-        // بروزرسانی منطق بازی
         update(delta);
 
         // پاک کردن صفحه
@@ -868,10 +900,22 @@ public class GameView implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
+        // بازنشانی رنگ batch به حالت پیش‌فرض
         batch.setColor(Color.WHITE);
 
         // رسم پس‌زمینه تکرارشونده
         drawRepeatingBackground();
+
+        // رسم ناحیه روشن اطراف بازیکن
+        if (lightTexture != null) {
+            batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+            float lightSize = lightRadius * 2;
+            batch.draw(lightTexture,
+                playerPosition.x - lightSize/2,
+                playerPosition.y - lightSize/2,
+                lightSize, lightSize);
+            batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
 
         // رسم دشمن‌ها و آیتم‌ها
         enemyManager.render(batch);
@@ -889,6 +933,7 @@ public class GameView implements Screen {
         if (currentWeapon != null) {
             currentWeapon.render(batch);
         }
+
 
         batch.end();
 
@@ -1067,7 +1112,7 @@ public class GameView implements Screen {
 
         // بررسی برخورد گلوله‌های بازیکن با دشمن‌ها
         if (currentWeapon != null) {
-            enemyManager.checkBulletCollisions(currentWeapon.getBullets());
+            enemyManager.checkBulletCollisions(currentWeapon.getBullets(), this);
         }
 
         // بررسی برخورد گلوله‌های دشمن با بازیکن
@@ -1305,6 +1350,10 @@ public class GameView implements Screen {
         }
     }
 
+    public void addKill() {
+        playerKills++;
+    }
+
     private void levelUp() {
         playerLevel++;
         playerXP -= xpToNextLevel;
@@ -1436,24 +1485,46 @@ public class GameView implements Screen {
         font.draw(batch, String.format("Health: %.0f/%.0f", playerHealth, playerMaxHealth),
             20, WORLD_HEIGHT - 40);
 
+        font.draw(batch, String.format("Kills: %d", playerKills),
+            20, WORLD_HEIGHT - 60);
+
         // نمایش سطح و تجربه
         font.draw(batch, String.format("Level: %d | XP: %d/%d",
                 playerLevel, playerXP, xpToNextLevel),
-            20, WORLD_HEIGHT - 60);
+            20, WORLD_HEIGHT - 80);
+
+        float xpBarWidth = 150;
+        float xpBarHeight = 10;
+        float xpBarX = 120;
+        float xpBarY = WORLD_HEIGHT - 85;
+
+        // رسم پس‌زمینه نوار XP
+        batch.setColor(0.3f, 0.3f, 0.3f, 1);
+        batch.draw(pixelTexture, xpBarX + 30, xpBarY - 5, xpBarWidth, xpBarHeight);
+
+        // رسم نوار XP پر شده
+        float fillWidth = (float)playerXP / xpToNextLevel * xpBarWidth;
+        batch.setColor(0.2f, 0.7f, 1f, 1);
+        batch.draw(pixelTexture, xpBarX + 30, xpBarY - 5, fillWidth, xpBarHeight);
+
+        // رسم متن XP
+        font.setColor(1, 1, 1, 1);
+        font.draw(batch, String.format("XP: %d/%d", playerXP, xpToNextLevel),
+            xpBarX + xpBarWidth + 40, xpBarY + xpBarHeight - 2);
 
         // نمایش وضعیت auto-aim
         String autoAimStatus = autoAim ? "ON" : "OFF";
-        font.draw(batch, "Auto-Aim: " + autoAimStatus, 20, WORLD_HEIGHT - 80);
+        font.draw(batch, "Auto-Aim: " + autoAimStatus, 20, WORLD_HEIGHT - 100);
 
         // نمایش بوست‌های فعال
         if (damageBoostTimer > 0) {
             font.draw(batch, String.format("Damage Boost: %.1fs", damageBoostTimer),
-                20, WORLD_HEIGHT - 100);
+                20, WORLD_HEIGHT - 120);
         }
 
         if (speedBoostTimer > 0) {
             font.draw(batch, String.format("Speed Boost: %.1fs", speedBoostTimer),
-                20, WORLD_HEIGHT - 120);
+                20, WORLD_HEIGHT - 140);
         }
 
         // نمایش توانایی‌های فعال
@@ -1464,7 +1535,7 @@ public class GameView implements Screen {
         float abilityIconSize = 20;
         float abilitySpacing = 5;
         float startX = WORLD_WIDTH - 280;
-        float startY = WORLD_HEIGHT - 80;
+        float startY = WORLD_HEIGHT - 100;
 
         for (int i = 0; i < playerAbilities.size; i++) {
             AbilityType ability = playerAbilities.get(i);
@@ -1553,6 +1624,10 @@ public class GameView implements Screen {
 
         if (currentWeapon != null) {
             currentWeapon.dispose();
+        }
+
+        if (lightTexture != null) {
+            lightTexture.dispose();
         }
     }
 
