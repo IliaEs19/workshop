@@ -1661,4 +1661,20 @@ public class GameView implements Screen {
     public Weapon getCurrentWeapon() {
         return currentWeapon;
     }
+
+    public boolean isTimeUp() {
+        return gameTimeElapsed >= gameTimeMinutes * 60;
+    }
+
+    public boolean isPlayerDead() {
+        return playerHealth <= 0;
+    }
+
+    public int getPlayerKills() {
+        return playerKills;
+    }
+
+    public float getSurvivalTime() {
+        return gameTimeElapsed;
+    }
 }
