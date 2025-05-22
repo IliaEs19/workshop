@@ -84,6 +84,11 @@ public class SaveData {
                     int highScore = 0;
                     int totalGamesPlayed = 0;
 
+                    // متغیرهای جدید
+                    int totalKills = 0;
+                    float longestSurvivalTime = 0;
+                    float totalSurvivalTime = 0;
+
                     if (userValue.has("lastWeaponUsed")) {
                         lastWeaponUsed = userValue.getString("lastWeaponUsed");
                     }
@@ -100,6 +105,17 @@ public class SaveData {
                         totalGamesPlayed = userValue.getInt("totalGamesPlayed");
                     }
 
+                    // بارگذاری متغیرهای جدید
+                    if (userValue.has("totalKills")) {
+                        totalKills = userValue.getInt("totalKills");
+                    }
+                    if (userValue.has("longestSurvivalTime")) {
+                        longestSurvivalTime = userValue.getFloat("longestSurvivalTime");
+                    }
+                    if (userValue.has("totalSurvivalTime")) {
+                        totalSurvivalTime = userValue.getFloat("totalSurvivalTime");
+                    }
+
                     User user = new User(username, password, securityQuestion, securityAnswer, avatarPath);
                     user.setLastWeaponUsed(lastWeaponUsed);
                     user.setLastGameTime(lastGameTime);
@@ -112,6 +128,12 @@ public class SaveData {
                             user.incrementTotalGamesPlayed();
                         }
                     }
+
+                    // تنظیم متغیرهای جدید
+                    user.setTotalKills(totalKills);
+                    user.updateLongestSurvivalTime(longestSurvivalTime);
+                    user.addSurvivalTime(totalSurvivalTime);
+
                     users.put(username, user);
                 }
 

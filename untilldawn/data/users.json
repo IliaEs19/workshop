@@ -15,8 +15,14 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
 		"avatarPath": "avatars/character3.jpg",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"highScore": 4790,
+		"totalGamesPlayed": 4,
+		"totalKills": 71,
+		"longestSurvivalTime": 85.54997,
+		"totalSurvivalTime": 129.90155
 	},
 	{
 		"userName": "salam",
@@ -24,8 +30,11 @@
 		"securityQuestion": "",
 		"securityAnswer": "",
 		"avatarPath": "",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"highScore": 181,
+		"totalGamesPlayed": 1
 	},
 	{
 		"userName": "lskal",
@@ -146,10 +155,14 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sslka",
 		"avatarPath": "avatars/character3.jpg",
-		"lastWeaponUsed": "SMGs Dual",
+		"lastWeaponUsed": "Revolver",
 		"lastGameTime": 2,
-		"lastHeroUsed": "Scarlet",
-		"totalGamesPlayed": 19
+		"lastHeroUsed": "Shana",
+		"highScore": 15,
+		"totalGamesPlayed": 21,
+		"totalKills": 1,
+		"longestSurvivalTime": 15.522352,
+		"totalSurvivalTime": 15.522352
 	},
 	{
 		"userName": "oap",
@@ -157,8 +170,14 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "sala",
 		"avatarPath": "",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"highScore": 123,
+		"totalGamesPlayed": 2,
+		"totalKills": 5,
+		"longestSurvivalTime": 24.681269,
+		"totalSurvivalTime": 24.681269
 	},
 	{
 		"userName": "ali",
@@ -169,7 +188,11 @@
 		"lastWeaponUsed": "Revolver",
 		"lastGameTime": 2,
 		"lastHeroUsed": "Shana",
-		"totalGamesPlayed": 15
+		"highScore": 353,
+		"totalGamesPlayed": 17,
+		"totalKills": 12,
+		"longestSurvivalTime": 29.464453,
+		"totalSurvivalTime": 29.464453
 	}
 ]
 }

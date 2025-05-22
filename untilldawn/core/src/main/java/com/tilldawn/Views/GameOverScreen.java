@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.SaveData;
 
 public class GameOverScreen implements Screen {
     private static final float WORLD_WIDTH = 800;
@@ -303,7 +304,9 @@ public class GameOverScreen implements Screen {
 
             String finalMessage = isVictory ?
                 "Congratulations! You survived till the end!" :
-                "Better luck next time, warrior!";
+                "Better luck next time, warrior!\n";
+            finalMessage = finalMessage + "USERNAME: ";
+            finalMessage = finalMessage + (SaveData.getCurrentUser() != null ? SaveData.getCurrentUser().getUserName() : "guest");
             GlyphLayout layout = new GlyphLayout(regularFont, finalMessage);
             regularFont.draw(batch, finalMessage, WORLD_WIDTH / 2 - layout.width / 2, titleY - itemSpacing * 4);
         }

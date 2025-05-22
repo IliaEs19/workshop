@@ -6,6 +6,7 @@ import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.Hero.HeroType;
 import com.tilldawn.Models.Hero.WeaponType;
 import com.tilldawn.Models.SaveData;
+import com.tilldawn.Models.User;
 import com.tilldawn.Views.GameOverScreen;
 import com.tilldawn.Views.GameView;
 import com.tilldawn.Views.MainMenu;
@@ -48,10 +49,6 @@ public class GameController {
         returnToMainMenu();
     }
 
-    /**
-     * این متد زمانی فراخوانی می‌شود که بازی به پایان رسیده است
-     * (به دلیل اتمام زمان یا از بین رفتن سلامتی بازیکن)
-     */
     public void endGame() {
         // بررسی شرایط پایان بازی
         boolean isVictory = false;
@@ -71,8 +68,23 @@ public class GameController {
         // ذخیره نتایج بازی
         SaveData saveData = SaveData.getInstance();
         if (saveData.getCurrentUser() != null) {
-            saveData.getCurrentUser().setHighScore(Math.max(saveData.getCurrentUser().getHighScore(), score));
-            saveData.updateUser(saveData.getCurrentUser());
+            User currentUser = saveData.getCurrentUser();
+
+            // ذخیره امتیاز
+            currentUser.setHighScore(Math.max(currentUser.getHighScore(), score));
+
+            // ذخیره تعداد کشته‌ها
+            currentUser.addKills(kills);
+
+            // ذخیره مدت زمان زنده ماندن
+            currentUser.updateLongestSurvivalTime(survivalTime);
+            currentUser.addSurvivalTime(survivalTime);
+
+            // افزایش تعداد بازی‌های انجام شده
+            currentUser.incrementTotalGamesPlayed();
+
+            // ذخیره اطلاعات کاربر
+            saveData.updateUser(currentUser);
         }
 
         // نمایش صفحه پایان بازی
@@ -86,9 +98,6 @@ public class GameController {
     public void giveUp() {
         // زمانی که بازیکن تسلیم می‌شود
         if (gameView != null) {
-            // اطمینان حاصل کنید که بازی از حالت pause خارج شده است
-            isPaused = false;
-
             int kills = gameView.getPlayerKills();
             float survivalTime = gameView.getSurvivalTime();
 
@@ -98,8 +107,23 @@ public class GameController {
             // ذخیره نتایج بازی
             SaveData saveData = SaveData.getInstance();
             if (saveData.getCurrentUser() != null) {
-                saveData.getCurrentUser().setHighScore(Math.max(saveData.getCurrentUser().getHighScore(), score));
-                saveData.updateUser(saveData.getCurrentUser());
+                User currentUser = saveData.getCurrentUser();
+
+                // ذخیره امتیاز
+                currentUser.setHighScore(Math.max(currentUser.getHighScore(), score));
+
+                // ذخیره تعداد کشته‌ها
+                currentUser.addKills(kills);
+
+                // ذخیره مدت زمان زنده ماندن
+                currentUser.updateLongestSurvivalTime(survivalTime);
+                currentUser.addSurvivalTime(survivalTime);
+
+                // افزایش تعداد بازی‌های انجام شده
+                currentUser.incrementTotalGamesPlayed();
+
+                // ذخیره اطلاعات کاربر
+                saveData.updateUser(currentUser);
             }
 
             // نمایش صفحه پایان بازی با وضعیت شکست
@@ -107,9 +131,7 @@ public class GameController {
         }
     }
 
-    /**
-     * این متد برای بازگشت به منوی اصلی از صفحه پایان بازی استفاده می‌شود
-     */
+
     public void returnToMainMenu() {
         // بازگشت به منوی اصلی
         Main.getMain().setScreen(new MainMenu(new MainMenuController(),

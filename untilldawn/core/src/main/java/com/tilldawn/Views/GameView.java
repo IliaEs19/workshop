@@ -89,7 +89,7 @@ public class GameView implements Screen {
 
     private int playerLevel = 1;
     private int playerXP = 0;
-    private int xpToNextLevel = 3;
+    private int xpToNextLevel = 20;
     private Array<AbilityType> playerAbilities = new Array<>();
     private boolean showAbilitySelection = false;
     private AbilityType[] abilityChoices;
