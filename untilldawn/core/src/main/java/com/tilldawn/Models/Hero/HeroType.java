@@ -18,7 +18,7 @@ public enum HeroType {
         "A slow but durable character with high health.",
         7,  // HP
         1,  // Speed
-        "assets/heroes/diamond.png"
+        "heroes/character2.png"
     ),
 
     SCARLET(

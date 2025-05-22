@@ -49,6 +49,7 @@ public class MainMenu implements Screen {
         menus.add(new TextButton("SettingMenu", skin));
         menus.add(new TextButton("PreGameMenu", skin));
         menus.add(new TextButton("TalentMenu", skin));
+        menus.add(new TextButton("ScoreBoard",skin));
         this.exit = new TextButton("Exit", skin);
         this.menuTitle = new Label("MainMenu", skin);
         this.table = new Table();

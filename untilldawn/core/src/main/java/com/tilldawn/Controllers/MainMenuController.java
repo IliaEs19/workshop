@@ -45,6 +45,9 @@ public class MainMenuController {
                         case "TalentMenu":
                             Main.getMain().setScreen(new TalentMenu(new TalentMenuController()));
                             break;
+                        case "ScoreBoard":
+                            Main.getMain().setScreen(new ScoreBoardMenu(this));
+                            break;
                         case "Exit":
                             Gdx.app.exit();
                             break;

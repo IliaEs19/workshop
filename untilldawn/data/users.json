@@ -129,7 +129,10 @@
 		"lastGameTime": 2,
 		"lastHeroUsed": "Shana",
 		"highScore": 12721,
-		"totalGamesPlayed": 37
+		"totalGamesPlayed": 39,
+		"totalKills": 14,
+		"longestSurvivalTime": 31.119461,
+		"totalSurvivalTime": 31.119461
 	},
 	{
 		"userName": "salammm",
