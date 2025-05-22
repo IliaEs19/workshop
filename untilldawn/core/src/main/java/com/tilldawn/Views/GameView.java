@@ -832,6 +832,14 @@ public class GameView implements Screen {
 
     private void toggleAutoAim() {
         autoAim = !autoAim;
+
+        // اگر auto-aim غیرفعال شد، کرسر را به موقعیت قبلی برگردان
+        if (!autoAim) {
+            // موقعیت فعلی موس را حفظ کن
+            Vector3 mouseScreenPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            viewport.unproject(mouseScreenPos);
+            mousePosition.set(mouseScreenPos);
+        }
     }
 
     private void startReload() {
@@ -860,6 +868,8 @@ public class GameView implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
+        batch.setColor(Color.WHITE);
+
         // رسم پس‌زمینه تکرارشونده
         drawRepeatingBackground();
 
@@ -885,6 +895,13 @@ public class GameView implements Screen {
         // رسم UI
         drawUI();
 
+        if (autoAim) {
+            Enemy target = findNearestEnemy();
+            if (target != null) {
+                drawTargetIndicator(target);
+            }
+        }
+
         // رسم صفحه انتخاب توانایی اگر فعال است
         if (showAbilitySelection) {
             renderAbilitySelection();
@@ -894,6 +911,29 @@ public class GameView implements Screen {
         if (isPaused) {
             renderPauseMenu();
         }
+    }
+
+    private void drawTargetIndicator(Enemy target) {
+        // تنظیم دوربین بازی
+        viewport.apply();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+        // رسم نشانگر هدف
+        batch.setColor(1, 0, 0, 0.7f);
+        Vector2 pos = target.getPosition();
+        float size = 15;
+
+        // استفاده از نسخه متد draw که با Texture کار می‌کند
+        if (pixelTexture != null) {
+            batch.draw(pixelTexture,
+                pos.x - size/2, pos.y - size/2,
+                size, size);
+        }
+
+        // بازنشانی رنگ
+        batch.setColor(Color.WHITE);
+        batch.end();
     }
 
     private void updateMousePosition() {
@@ -984,22 +1024,28 @@ public class GameView implements Screen {
         float targetX = mousePosition.x;
         float targetY = mousePosition.y;
 
+        Enemy nearestEnemy = null;
         if (autoAim) {
-            // در اینجا باید نزدیکترین دشمن را پیدا کنید
-            Enemy nearestEnemy = findNearestEnemy();
+            nearestEnemy = findNearestEnemy();
             if (nearestEnemy != null) {
                 Vector2 enemyPos = nearestEnemy.getPosition();
                 targetX = enemyPos.x;
                 targetY = enemyPos.y;
+
+                // تنظیم موقعیت ماوس روی دشمن هدف (این بخش اضافه شده)
+                Vector3 screenPos = new Vector3(targetX, targetY, 0);
+                camera.project(screenPos);
+                Gdx.input.setCursorPosition((int)screenPos.x, (int)screenPos.y);
             }
         }
+
 
         // بروزرسانی سلاح - مستقل از حرکت بازیکن
         if (currentWeapon != null) {
             currentWeapon.update(delta, playerPosition, targetX, targetY);
 
-            // شلیک با کلیک چپ ماوس
-            if (mouseLeft) {
+            // شلیک با کلیک چپ ماوس یا در حالت auto-aim
+            if (mouseLeft || (autoAim && nearestEnemy != null)) {
                 boolean shotFired = currentWeapon.shoot(playerPosition, targetX, targetY);
 
                 if (shotFired && damageMultiplier > 1.0f) {
@@ -1124,6 +1170,7 @@ public class GameView implements Screen {
     private Enemy findNearestEnemy() {
         Enemy nearest = null;
         float minDistanceSquared = Float.MAX_VALUE;
+        float maxRange = 800f; // حداکثر فاصله برای هدف‌گیری خودکار
 
         for (Enemy enemy : enemyManager.getEnemies()) {
             if (enemy.isAlive()) {
@@ -1132,7 +1179,8 @@ public class GameView implements Screen {
                 float dy = enemyPos.y - playerPosition.y;
                 float distanceSquared = dx * dx + dy * dy;
 
-                if (distanceSquared < minDistanceSquared) {
+                // فقط دشمنانی که در محدوده مشخصی هستند را در نظر بگیر
+                if (distanceSquared < maxRange * maxRange && distanceSquared < minDistanceSquared) {
                     minDistanceSquared = distanceSquared;
                     nearest = enemy;
                 }

@@ -94,6 +94,7 @@ public class Weapon {
         }
     }
 
+
     private void updateRotation(Vector2 playerPosition, float targetX, float targetY) {
         // محاسبه زاویه بین بازیکن و هدف
         float dx = targetX - playerPosition.x;
@@ -131,13 +132,30 @@ public class Weapon {
     }
 
     public boolean shoot(Vector2 playerPosition, float targetX, float targetY) {
-        if (isReloading || shootTimer > 0 || currentAmmo <= 0) {
+        // بررسی شرایط شلیک
+        if (isReloading) {
+            lastShootAttemptFailed = true;
+            shootFailReason = "Reloading";
+            return false;
+        }
+
+        if (shootTimer > 0) {
+            lastShootAttemptFailed = true;
+            shootFailReason = "Cooldown";
+            return false;
+        }
+
+        if (currentAmmo <= 0) {
+            lastShootAttemptFailed = true;
+            shootFailReason = "No ammo";
+            startReload(); // شروع ریلود اتوماتیک
             return false;
         }
 
         // کاهش مهمات
         currentAmmo--;
         shootTimer = SHOOT_DELAY;
+        lastShootAttemptFailed = false;
 
         // محاسبه جهت شلیک
         float dx = targetX - position.x;
