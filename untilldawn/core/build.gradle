@@ -8,3 +8,10 @@ dependencies {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
 }
+
+project(":core") {
+  dependencies {
+    // افزودن وابستگی SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+  }
+}

@@ -171,6 +171,10 @@ public class User {
         return longestSurvivalTime;
     }
 
+    public void setTotalGamesPlayed(int totalGamesPlayed) {
+        this.totalGamesPlayed = totalGamesPlayed;
+    }
+
     /**
      * تنظیم بیشترین مدت زمان زنده ماندن
      * @param survivalTime مدت زمان زنده ماندن جدید (به ثانیه)

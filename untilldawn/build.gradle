@@ -70,5 +70,11 @@ subprojects {
   }
 }
 
+project(":core") {
+  dependencies {
+    // افزودن وابستگی SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+  }
+}
 
 eclipse.project.name = 'عدفهممیشصدuntildawn' + '-parent'
