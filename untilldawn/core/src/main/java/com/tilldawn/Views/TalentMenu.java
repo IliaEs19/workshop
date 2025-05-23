@@ -930,6 +930,14 @@ public class TalentMenu implements Screen {
             }
         });
 
+        achievementsTabButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Switch to CheatCodesScreen instead of switching tab
+                Main.getMain().setScreen(new CheatCodesScreen(controller));
+            }
+        });
+
         skillsTabButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
