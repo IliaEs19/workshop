@@ -39,8 +39,11 @@
 		"lastWeaponUsed": "Revolver",
 		"lastGameTime": 2,
 		"lastHeroUsed": "Shana",
-		"highScore": 181,
-		"totalGamesPlayed": 1
+		"highScore": 15001,
+		"totalGamesPlayed": 8,
+		"totalKills": 216,
+		"longestSurvivalTime": 120.011185,
+		"totalSurvivalTime": 354.0575
 	},
 	{
 		"userName": "lskal",
@@ -48,8 +51,10 @@
 		"securityQuestion": "",
 		"securityAnswer": "",
 		"avatarPath": "",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"totalGamesPlayed": 4
 	},
 	{
 		"userName": "ilia",

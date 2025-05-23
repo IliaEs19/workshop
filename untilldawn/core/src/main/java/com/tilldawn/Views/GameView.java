@@ -19,6 +19,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Models.Bullet;
+import com.tilldawn.Models.CheatCode;
+import com.tilldawn.Models.CheatManager;
 import com.tilldawn.Models.Enemy.Enemy;
 import com.tilldawn.Models.Enemy.EnemyManager;
 import com.tilldawn.Models.Hero.AbilityType;
@@ -158,11 +160,15 @@ public class GameView implements Screen {
         UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
     }
 
+    private CheatManager cheatManager;
+
+
     public GameView(GameController controller, HeroType hero, WeaponType weapon, int timeMinutes) {
         this.controller = controller;
         this.selectedHero = hero;
         this.selectedWeapon = weapon;
         this.gameTimeMinutes = timeMinutes;
+        cheatManager = new CheatManager(this);
         if (hero != null) {
             // تبدیل مقادیر عددی به مقادیر بازی
             this.playerMaxHealth = hero.getHealthPoints() * 25; // هر واحد سلامتی = 25 نقطه
@@ -375,6 +381,15 @@ public class GameView implements Screen {
                             break;
                     }
                     return false;
+                }
+
+                // بررسی کلیدهای چیت (4 تا 8)
+                if (keycode >= Keys.NUM_4 && keycode <= Keys.NUM_8) {
+                    int cheatKey = keycode - Keys.NUM_0; // تبدیل کد کلید به عدد
+                    if (CheatCode.isValidCheatKeyCode(cheatKey)) {
+                        cheatManager.processCheatKey(cheatKey);
+                        return true;
+                    }
                 }
 
                 // کلیدهای عادی بازی
@@ -685,7 +700,7 @@ public class GameView implements Screen {
     private void renderCheatCodes() {
         // محاسبه موقعیت و اندازه منو
         float menuWidth = 500;
-        float menuHeight = 400;
+        float menuHeight = 500;
         float menuX = WORLD_WIDTH / 2 - menuWidth / 2;
         float menuY = WORLD_HEIGHT / 2 - menuHeight / 2;
 
@@ -705,10 +720,14 @@ public class GameView implements Screen {
         // حاشیه راست
         batch.draw(pixelTexture, menuX + menuWidth - borderThickness, menuY, borderThickness, menuHeight);
 
-        // رسم عنوان
-        titleFont.setColor(MENU_TITLE_COLOR);
-        GlyphLayout titleLayout = new GlyphLayout(titleFont, "CHEAT CODES");
-        titleFont.draw(batch, titleLayout,
+        // رسم عنوان با فونت موجود
+        BitmapFont font = new BitmapFont();
+        font.setColor(1, 0.8f, 0.2f, 1); // رنگ طلایی برای عنوان
+        font.getData().setScale(2.0f); // افزایش مقیاس فونت
+
+        String title = "CHEAT CODES";
+        GlyphLayout titleLayout = new GlyphLayout(font, title);
+        font.draw(batch, title,
             menuX + menuWidth / 2 - titleLayout.width / 2,
             menuY + menuHeight - 30);
 
@@ -716,10 +735,35 @@ public class GameView implements Screen {
         batch.setColor(0.5f, 0.5f, 0.8f, 0.9f);
         batch.draw(pixelTexture, menuX + 20, menuY + menuHeight - 70, menuWidth - 40, 1);
 
-        // رسم توضیحات
-        descriptionFont.setColor(Color.WHITE);
-        descriptionFont.draw(batch, "This section will be implemented later.",
-            menuX + 20, menuY + menuHeight - 80);
+        // تنظیم فونت برای متن
+        font.getData().setScale(1.2f); // مقیاس کوچکتر برای متن
+
+        // رسم توضیحات چیت‌کدها
+        float textY = menuY + menuHeight - 100;
+        float lineHeight = 35;
+
+        // رسم راهنمای استفاده
+        font.setColor(1, 1, 0, 1); // زرد
+        font.draw(batch, "Press the number key during gameplay to activate a cheat:",
+            menuX + 30, textY);
+        textY -= lineHeight * 1.5f;
+
+        // رسم لیست چیت‌کدها
+        for (CheatCode cheat : CheatCode.values()) {
+            // رسم شماره کلید
+            font.setColor(1, 1, 1, 1); // سفید
+            font.draw(batch, "Key " + cheat.getKeyCode() + ":", menuX + 30, textY);
+
+            // رسم نام چیت
+            font.setColor(0, 1, 1, 1); // فیروزه‌ای
+            font.draw(batch, cheat.getName(), menuX + 100, textY);
+
+            // رسم توضیحات چیت
+            font.setColor(0.8f, 0.8f, 0.8f, 1); // خاکستری روشن
+            font.draw(batch, cheat.getDescription(), menuX + 30, textY - 20);
+
+            textY -= lineHeight * 2.0f;
+        }
 
         // رسم دکمه بازگشت
         batch.setColor(0.3f, 0.3f, 0.5f, 0.9f);
@@ -736,11 +780,17 @@ public class GameView implements Screen {
         // حاشیه راست
         batch.draw(pixelTexture, WORLD_WIDTH - 100 + 80 - 1, 50, 1, 40);
 
-        optionFont.setColor(Color.WHITE);
-        GlyphLayout backLayout = new GlyphLayout(optionFont, "Back");
-        optionFont.draw(batch, backLayout,
+        // رسم متن دکمه
+        font.setColor(1, 1, 1, 1);
+        font.getData().setScale(1.5f);
+        String backText = "Back";
+        GlyphLayout backLayout = new GlyphLayout(font, backText);
+        font.draw(batch, backText,
             WORLD_WIDTH - 100 + 40 - backLayout.width / 2,
             50 + 25);
+
+        // بازگرداندن مقیاس فونت به حالت اولیه
+        font.getData().setScale(1.0f);
     }
 
     /**
@@ -935,6 +985,9 @@ public class GameView implements Screen {
         }
 
 
+        cheatManager.render(batch);
+
+
         batch.end();
 
         // رسم UI
@@ -1035,6 +1088,9 @@ public class GameView implements Screen {
             return;
         }
 
+        cheatManager.update(delta);
+
+
         // بروزرسانی زمان بازی
         gameTimeElapsed += delta;
         if (gameTimeElapsed >= gameTimeMinutes * 60) {
@@ -1091,7 +1147,8 @@ public class GameView implements Screen {
 
             // شلیک با کلیک چپ ماوس یا در حالت auto-aim
             if (mouseLeft || (autoAim && nearestEnemy != null)) {
-                boolean shotFired = currentWeapon.shoot(playerPosition, targetX, targetY);
+                // ارسال وضعیت چیت کد شلیک بی‌نهایت به متد shoot
+                boolean shotFired = currentWeapon.shoot(playerPosition, targetX, targetY, cheatManager.isInfiniteShootingEnabled());
 
                 if (shotFired && damageMultiplier > 1.0f) {
                     // اعمال ضریب آسیب به گلوله‌ها
@@ -1101,8 +1158,8 @@ public class GameView implements Screen {
                 }
             }
 
-            // ریلود با کلید R
-            if (keyR) {
+            // ریلود با کلید R (فقط اگر چیت کد شلیک بی‌نهایت فعال نباشد)
+            if (keyR && !cheatManager.isInfiniteShootingEnabled()) {
                 currentWeapon.startReload();
             }
         }
@@ -1467,14 +1524,22 @@ public class GameView implements Screen {
 
         // نمایش اطلاعات سلاح
         if (currentWeapon != null) {
-            font.draw(batch, String.format("Weapon: %s | Ammo: %d/%d",
-                    currentWeapon.getType().getName(),
-                    currentWeapon.getCurrentAmmo(),
-                    currentWeapon.getType().getMaxAmmo()),
-                WORLD_WIDTH - 300, WORLD_HEIGHT - 20);
+            if (cheatManager.isInfiniteShootingEnabled()) {
+                // نمایش وضعیت شلیک بی‌نهایت
+                font.draw(batch, String.format("Weapon: %s | Ammo: infinity",
+                        currentWeapon.getType().getName()),
+                    WORLD_WIDTH - 300, WORLD_HEIGHT - 20);
+            } else {
+                // نمایش عادی مهمات
+                font.draw(batch, String.format("Weapon: %s | Ammo: %d/%d",
+                        currentWeapon.getType().getName(),
+                        currentWeapon.getCurrentAmmo(),
+                        currentWeapon.getType().getMaxAmmo()),
+                    WORLD_WIDTH - 300, WORLD_HEIGHT - 20);
+            }
 
-            // نمایش وضعیت ریلود
-            if (currentWeapon.isReloading()) {
+            // نمایش وضعیت ریلود (فقط اگر چیت کد شلیک بی‌نهایت فعال نباشد)
+            if (!cheatManager.isInfiniteShootingEnabled() && currentWeapon.isReloading()) {
                 font.draw(batch, "Reloading... " +
                         (int)(currentWeapon.getReloadProgress() * 100) + "%",
                     WORLD_WIDTH - 300, WORLD_HEIGHT - 40);
@@ -1614,6 +1679,10 @@ public class GameView implements Screen {
             titleFont.dispose();
         }
 
+        if (cheatManager != null) {
+            cheatManager.dispose();
+        }
+
         if (optionFont != null) {
             optionFont.dispose();
         }
@@ -1677,4 +1746,68 @@ public class GameView implements Screen {
     public float getSurvivalTime() {
         return gameTimeElapsed;
     }
+
+    public boolean decreaseGameTime(float seconds) {
+        // بررسی می‌کنیم که زمان باقی‌مانده بیشتر از مقدار کاهش باشد
+        float remainingTime = gameTimeMinutes * 60 - gameTimeElapsed;
+        if (remainingTime > seconds) {
+            gameTimeElapsed += seconds;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * افزایش اجباری سطح بازیکن
+     */
+    public void forceLevelUp() {
+        playerLevel++;
+        // محاسبه تجربه مورد نیاز برای لول بعدی (فرمول 20i)
+        xpToNextLevel = 20 * playerLevel;
+
+        // نمایش انتخاب توانایی
+        showAbilitySelection = true;
+
+        // انتخاب 3 توانایی تصادفی
+        abilityChoices = getRandomAbilities(3);
+
+        // توقف موقت بازی
+        controller.pauseGame();
+    }
+
+    /**
+     * پر کردن جان بازیکن
+     */
+    public void refillPlayerHealth() {
+        playerHealth = playerMaxHealth;
+    }
+
+    /**
+     * دریافت مقدار جان فعلی بازیکن
+     */
+    public float getPlayerHealth() {
+        return playerHealth;
+    }
+
+    /**
+     * دریافت حداکثر جان بازیکن
+     */
+    public float getPlayerMaxHealth() {
+        return playerMaxHealth;
+    }
+
+    /**
+     * دریافت زمان باقی‌مانده بازی به ثانیه
+     */
+    public float getRemainingGameTime() {
+        return gameTimeMinutes * 60 - gameTimeElapsed;
+    }
+
+    /**
+     * دریافت مدیریت‌کننده دشمنان
+     */
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
+
 }

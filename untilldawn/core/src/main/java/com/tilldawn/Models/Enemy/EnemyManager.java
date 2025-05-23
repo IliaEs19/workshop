@@ -242,6 +242,17 @@ public class EnemyManager {
         return items;
     }
 
+    public void clearAllEnemies() {
+        enemies.clear();
+    }
+
+    /**
+     * اضافه کردن یک دشمن سفارشی
+     */
+    public void addCustomEnemy(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
     public void dispose() {
         EnemyType.disposeTextures();
         ItemType.disposeTextures();

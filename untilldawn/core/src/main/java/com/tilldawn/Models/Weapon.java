@@ -131,31 +131,37 @@ public class Weapon {
             1, 1, rotation);
     }
 
-    public boolean shoot(Vector2 playerPosition, float targetX, float targetY) {
-        // بررسی شرایط شلیک
-        if (isReloading) {
+    public boolean shoot(Vector2 playerPosition, float targetX, float targetY, boolean infiniteShootingEnabled) {
+        // اگر در حال ریلود هستیم و حالت شلیک بی‌نهایت فعال نیست، امکان شلیک نداریم
+        if (!infiniteShootingEnabled && isReloading) {
             lastShootAttemptFailed = true;
             shootFailReason = "Reloading";
             return false;
         }
 
+        // اگر زمان بین دو شلیک هنوز نگذشته، امکان شلیک نداریم
         if (shootTimer > 0) {
             lastShootAttemptFailed = true;
             shootFailReason = "Cooldown";
             return false;
         }
 
-        if (currentAmmo <= 0) {
+        // اگر مهمات نداریم و حالت شلیک بی‌نهایت فعال نیست، امکان شلیک نداریم
+        if (!infiniteShootingEnabled && currentAmmo <= 0) {
             lastShootAttemptFailed = true;
             shootFailReason = "No ammo";
             startReload(); // شروع ریلود اتوماتیک
             return false;
         }
 
-        // کاهش مهمات
-        currentAmmo--;
+        // تنظیم تایمر شلیک
         shootTimer = SHOOT_DELAY;
         lastShootAttemptFailed = false;
+
+        // کاهش مهمات (فقط اگر حالت شلیک بی‌نهایت فعال نباشد)
+        if (!infiniteShootingEnabled) {
+            currentAmmo--;
+        }
 
         // محاسبه جهت شلیک
         float dx = targetX - position.x;
@@ -191,12 +197,18 @@ public class Weapon {
             }
         }
 
-        // اگر مهمات تمام شد، ریلود اتوماتیک
-        if (currentAmmo <= 0) {
+        // اگر مهمات تمام شد و حالت شلیک بی‌نهایت فعال نیست، ریلود اتوماتیک
+        if (!infiniteShootingEnabled && currentAmmo <= 0) {
             startReload();
         }
 
         return true;
+    }
+
+    // متد قبلی shoot را حفظ می‌کنیم برای سازگاری با کدهای موجود
+    public boolean shoot(Vector2 playerPosition, float targetX, float targetY) {
+        // به طور پیش‌فرض، حالت شلیک بی‌نهایت غیرفعال است
+        return shoot(playerPosition, targetX, targetY, false);
     }
 
     public void startReload() {
@@ -309,5 +321,9 @@ public class Weapon {
      */
     public int getTotalMaxAmmo() {
         return type.getMaxAmmo() + additionalMaxAmmo;
+    }
+
+    public void refillAmmo() {
+        currentAmmo = getTotalMaxAmmo();
     }
 }
