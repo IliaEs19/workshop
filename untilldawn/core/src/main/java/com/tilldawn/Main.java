@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.GameCursor;
 import com.tilldawn.Models.MusicManager;
 import com.tilldawn.Models.SaveData;
 import com.tilldawn.Views.MainMenu;
@@ -28,6 +29,7 @@ public class Main extends Game {
 
         main = this;
         batch = new SpriteBatch();
+        GameCursor.initialize();
         SaveData.getInstance();
         main.setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
     }
@@ -41,6 +43,7 @@ public class Main extends Game {
     public void dispose() {
         MusicManager.getInstance().dispose();
         GameAssetManager.getGameAssetManager().dispose();
+        GameCursor.dispose();
         batch.dispose();
     }
 
