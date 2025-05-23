@@ -36,8 +36,14 @@
 		"securityQuestion": "What was the name of your first pet?",
 		"securityAnswer": "salam",
 		"avatarPath": "avatars/character4.jpg",
-		"lastWeaponUsed": "",
-		"lastHeroUsed": ""
+		"lastWeaponUsed": "Revolver",
+		"lastGameTime": 2,
+		"lastHeroUsed": "Shana",
+		"highScore": 13535,
+		"totalGamesPlayed": 23,
+		"totalKills": 486,
+		"longestSurvivalTime": 115.68829,
+		"totalSurvivalTime": 712.5047
 	},
 	{
 		"userName": "salam",

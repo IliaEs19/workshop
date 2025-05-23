@@ -20,6 +20,7 @@ import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Controllers.SettingMenuController;
 import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
+import com.tilldawn.Models.GameSettings;
 import com.tilldawn.Models.MusicManager;
 
 public class SettingMenu implements Screen {
@@ -158,6 +159,67 @@ public class SettingMenu implements Screen {
         volumeBar.setValue(volumeSlider.getValue());
         volumeBar.setAnimateDuration(0.3f);
         panelTable.add(volumeBar).colspan(2).pad(PADDING / 2).width(SLIDER_WIDTH).height(15).row();
+
+        Label controlSettingsLabel = new Label("CONTROL SETTINGS", GameAssetManager.getGameAssetManager().getSkin());
+        controlSettingsLabel.setFontScale(1.5f);
+        controlSettingsLabel.setColor(SECTION_TITLE_COLOR);
+        panelTable.add(controlSettingsLabel).colspan(2).pad(PADDING).expandX().fillX().row();
+
+// عنوان بخش کنترل حرکت
+        Label movementControlLabel = new Label("MOVEMENT CONTROL:", GameAssetManager.getGameAssetManager().getSkin());
+        movementControlLabel.setFontScale(1.2f);
+        panelTable.add(movementControlLabel).colspan(2).pad(PADDING).left().row();
+
+// گزینه‌های کنترل حرکت
+        Table controlOptionsTable = new Table();
+
+// دکمه‌های انتخاب نوع کنترل
+        final TextButton wasdButton = new TextButton("WASD Keys", GameAssetManager.getGameAssetManager().getSkin());
+        final TextButton arrowsButton = new TextButton("Arrow Keys", GameAssetManager.getGameAssetManager().getSkin());
+
+// تنظیم وضعیت دکمه‌ها بر اساس تنظیمات فعلی
+        if (controller.getControlType() == GameSettings.ControlType.WASD) {
+            wasdButton.setColor(ACTIVE_BUTTON_COLOR);
+            arrowsButton.setColor(BUTTON_COLOR);
+        } else {
+            wasdButton.setColor(BUTTON_COLOR);
+            arrowsButton.setColor(ACTIVE_BUTTON_COLOR);
+        }
+
+// اضافه کردن لیسنرها برای دکمه‌ها
+        wasdButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.setControlType(GameSettings.ControlType.WASD);
+                wasdButton.setColor(ACTIVE_BUTTON_COLOR);
+                arrowsButton.setColor(BUTTON_COLOR);
+            }
+        });
+
+        arrowsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.setControlType(GameSettings.ControlType.ARROWS);
+                wasdButton.setColor(BUTTON_COLOR);
+                arrowsButton.setColor(ACTIVE_BUTTON_COLOR);
+            }
+        });
+
+// اضافه کردن استایل به دکمه‌ها
+        styleButton(wasdButton, BUTTON_COLOR, BUTTON_HOVER_COLOR);
+        styleButton(arrowsButton, BUTTON_COLOR, BUTTON_HOVER_COLOR);
+
+// اضافه کردن دکمه‌ها به جدول گزینه‌ها
+        controlOptionsTable.add(wasdButton).width(BUTTON_WIDTH / 2 - 10).height(BUTTON_HEIGHT / 1.5f).pad(5);
+        controlOptionsTable.add(arrowsButton).width(BUTTON_WIDTH / 2 - 10).height(BUTTON_HEIGHT / 1.5f).pad(5);
+
+// اضافه کردن جدول گزینه‌ها به پنل اصلی
+        panelTable.add(controlOptionsTable).colspan(2).pad(PADDING / 2).expandX().fillX().row();
+
+// خط جداکننده بعد از تنظیمات کنترل
+        Image controlSeparator = createSeparator(1, new Color(0.5f, 0.5f, 0.5f, 1f));
+        panelTable.add(controlSeparator).colspan(2).pad(PADDING).expandX().fillX().row();
+
 
         // خط جداکننده قبل از دکمه بازگشت
         Image bottomSeparator = createSeparator(1, new Color(0.5f, 0.5f, 0.5f, 1f));

@@ -18,16 +18,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tilldawn.Controllers.GameController;
-import com.tilldawn.Models.Bullet;
-import com.tilldawn.Models.CheatCode;
-import com.tilldawn.Models.CheatManager;
+import com.tilldawn.Models.*;
 import com.tilldawn.Models.Enemy.Enemy;
 import com.tilldawn.Models.Enemy.EnemyManager;
 import com.tilldawn.Models.Hero.AbilityType;
 import com.tilldawn.Models.Hero.HeroType;
 import com.tilldawn.Models.Hero.WeaponType;
 import com.tilldawn.Models.Item.Item;
-import com.tilldawn.Models.Weapon;
 
 import static com.tilldawn.Models.Item.ItemType.DAMAGE_BOOST;
 
@@ -99,15 +96,6 @@ public class GameView implements Screen {
     private float speedBoostTimer = 0;
 
 
-    // Input handling
-    private boolean keyW = false;
-    private boolean keyA = false;
-    private boolean keyS = false;
-    private boolean keyD = false;
-    private boolean mouseLeft = false;
-    private boolean keySpace = false;
-    private boolean keyR = false;
-
     // Game settings
     private HeroType selectedHero;
     private WeaponType selectedWeapon;
@@ -159,6 +147,19 @@ public class GameView implements Screen {
     private enum PlayerDirection {
         UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT
     }
+
+    // Input handling
+    private boolean keyW = false;
+    private boolean keyA = false;
+    private boolean keyS = false;
+    private boolean keyD = false;
+    private boolean keyUp = false;
+    private boolean keyDown = false;
+    private boolean keyLeft = false;
+    private boolean keyRight = false;
+    private boolean mouseLeft = false;
+    private boolean keySpace = false;
+    private boolean keyR = false;
 
     private CheatManager cheatManager;
 
@@ -394,10 +395,19 @@ public class GameView implements Screen {
 
                 // کلیدهای عادی بازی
                 switch (keycode) {
+                    // کلیدهای WASD
                     case Keys.W: keyW = true; break;
                     case Keys.A: keyA = true; break;
                     case Keys.S: keyS = true; break;
                     case Keys.D: keyD = true; break;
+
+                    // کلیدهای جهت‌دار
+                    case Keys.UP: keyUp = true; break;
+                    case Keys.DOWN: keyDown = true; break;
+                    case Keys.LEFT: keyLeft = true; break;
+                    case Keys.RIGHT: keyRight = true; break;
+
+                    // سایر کلیدها
                     case Keys.P: togglePauseMenu(); break;
                     case Keys.ESCAPE: togglePauseMenu(); break;
                     case Keys.SPACE: toggleAutoAim(); break;
@@ -414,10 +424,18 @@ public class GameView implements Screen {
                 }
 
                 switch (keycode) {
+                    // کلیدهای WASD
                     case Keys.W: keyW = false; break;
                     case Keys.A: keyA = false; break;
                     case Keys.S: keyS = false; break;
                     case Keys.D: keyD = false; break;
+
+                    // کلیدهای جهت‌دار
+                    case Keys.UP: keyUp = false; break;
+                    case Keys.DOWN: keyDown = false; break;
+                    case Keys.LEFT: keyLeft = false; break;
+                    case Keys.RIGHT: keyRight = false; break;
+
                     case Keys.R: keyR = false; break;
                 }
                 return true;
@@ -505,7 +523,7 @@ public class GameView implements Screen {
                 break;
             case 3: // Exit Game
                 gameOver = true;
-                controller.exitGame();
+                controller.giveUp();
                 break;
         }
     }
@@ -1456,11 +1474,20 @@ public class GameView implements Screen {
     private void updatePlayerVelocity() {
         playerVelocity.set(0, 0);
 
-        // حرکت 8 جهته
-        if (keyW) playerVelocity.y += 1;
-        if (keyS) playerVelocity.y -= 1;
-        if (keyA) playerVelocity.x -= 1;
-        if (keyD) playerVelocity.x += 1;
+        // بررسی نوع کنترل فعلی
+        if (GameSettings.getInstance().isUsingWASD()) {
+            // استفاده از کلیدهای WASD
+            if (keyW) playerVelocity.y += 1;
+            if (keyS) playerVelocity.y -= 1;
+            if (keyA) playerVelocity.x -= 1;
+            if (keyD) playerVelocity.x += 1;
+        } else {
+            // استفاده از کلیدهای جهت‌دار
+            if (keyUp) playerVelocity.y += 1;
+            if (keyDown) playerVelocity.y -= 1;
+            if (keyLeft) playerVelocity.x -= 1;
+            if (keyRight) playerVelocity.x += 1;
+        }
     }
 
     private void updatePlayerDirection() {
@@ -1630,10 +1657,14 @@ public class GameView implements Screen {
                 WORLD_WIDTH - 300, WORLD_HEIGHT - 100 - (Math.max(playerAbilities.size, 0) * (abilityIconSize + abilitySpacing)));
         }
 
-        // نمایش وضعیت کنترل‌ها در پایین صفحه
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(batch, "WASD: Move | Mouse: Aim | Click: Shoot | R: Reload | Space: Auto-Aim",
-            WORLD_WIDTH/2 - 200, 20);
+        if (GameSettings.getInstance().isUsingWASD()) {
+            font.draw(batch, "WASD: Move | Mouse: Aim | Click: Shoot | R: Reload | Space: Auto-Aim",
+                WORLD_WIDTH/2 - 200, 20);
+        } else {
+            font.draw(batch, "Arrow Keys: Move | Mouse: Aim | Click: Shoot | R: Reload | Space: Auto-Aim",
+                WORLD_WIDTH/2 - 200, 20);
+        }
 
         batch.end();
     }
