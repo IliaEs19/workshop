@@ -23,11 +23,7 @@ public class SoundManager implements Disposable {
     public static final String WEAPON_FIRE = "weapon_fire";
     public static final String WEAPON_RELOAD = "weapon_reload";
     public static final String PLAYER_HURT = "player_hurt";
-    public static final String PLAYER_DEATH = "player_death";
-    public static final String ENEMY_HURT = "enemy_hurt";
-    public static final String ENEMY_DEATH = "enemy_death";
     public static final String LEVEL_UP = "level_up";
-    public static final String GAME_START = "game_start";
     public static final String YOU_LOSE = "you_lose";
     public static final String YOU_WIN = "you_win";
 
@@ -49,11 +45,7 @@ public class SoundManager implements Disposable {
             sounds.put(WEAPON_FIRE, Gdx.audio.newSound(Gdx.files.internal("Music/weapon_fire.wav")));
             sounds.put(WEAPON_RELOAD, Gdx.audio.newSound(Gdx.files.internal("Music/weapon_reload.wav")));
             sounds.put(PLAYER_HURT, Gdx.audio.newSound(Gdx.files.internal("Music/Blood_Splash_Quick_01.wav")));
-//            sounds.put(PLAYER_DEATH, Gdx.audio.newSound(Gdx.files.internal("sounds/player_death.wav")));
-//            sounds.put(ENEMY_HURT, Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_hurt.wav")));
-//            sounds.put(ENEMY_DEATH, Gdx.audio.newSound(Gdx.files.internal("sounds/enemy_death.wav")));
             sounds.put(LEVEL_UP, Gdx.audio.newSound(Gdx.files.internal("Music/Special & Powerup (13).wav")));
-//            sounds.put(GAME_START, Gdx.audio.newSound(Gdx.files.internal("sounds/game_start.wav")));
             sounds.put(YOU_LOSE, Gdx.audio.newSound(Gdx.files.internal("Music/You Lose (4).wav")));
             sounds.put(YOU_WIN, Gdx.audio.newSound(Gdx.files.internal("Music/You Win (2).wav")));
         } catch (Exception e) {
