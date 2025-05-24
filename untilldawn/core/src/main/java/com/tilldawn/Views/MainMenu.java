@@ -28,8 +28,8 @@ public class MainMenu implements Screen {
     public Table table;
     private final MainMenuController controller;
 
-    private Texture backgroundTexture; // تصویر پس‌زمینه
-    private SpriteBatch batch; // برای رندر کردن تصویر پس‌زمینه
+    private Texture backgroundTexture;
+    private SpriteBatch batch;
 
     private Table userInfoTable;
     private Image userAvatar;
@@ -46,9 +46,9 @@ public class MainMenu implements Screen {
     private ArrayList<TextButton> menus = new ArrayList<>();
     private TextButton exit;
 
-    // رنگ یکسان برای همه دکمه‌ها
-    private final Color buttonColor = new Color(0.8f, 0.9f, 1f, 1f);  // آبی روشن
-    private final Color hoverColor = new Color(0.9f, 1f, 0.9f, 1f);   // سبز روشن
+
+    private final Color buttonColor = new Color(0.8f, 0.9f, 1f, 1f);
+    private final Color hoverColor = new Color(0.9f, 1f, 0.9f, 1f);
 
     public MainMenu(MainMenuController controller, Skin skin) {
         this.backgroundTexture = GameAssetManager.getGameAssetManager().getMainMenuBackground();
@@ -78,7 +78,7 @@ public class MainMenu implements Screen {
         table.center();
         menuTitle.setColor(Color.GREEN);
         menuTitle.setFontScale(1.5f);
-        //table.add(menuTitle).padBottom(100).padLeft(900);
+
         table.row().pad(15, 0, 15, 0);
 
         for (TextButton button : menus) {
@@ -153,21 +153,21 @@ public class MainMenu implements Screen {
         table.add(exit).width(420).height(100).padLeft(1100);
         stage.addActor(table);
 
-        // اضافه کردن پنل اطلاعات کاربر
+
         createUserInfoPanel();
     }
 
-    // متد جدید برای ایجاد پنل اطلاعات کاربر
+
     private void createUserInfoPanel() {
         Skin skin = GameAssetManager.getGameAssetManager().getSkin();
 
-        // ایجاد پنل اطلاعات کاربر با اندازه بزرگتر
+
         userInfoTable = new Table();
-        //userInfoTable.setBackground(skin.getDrawable("default-window"));
+
         userInfoTable.setSize(250, 220);
         userInfoTable.setPosition(20, Gdx.graphics.getHeight() - 240);
 
-        // عناوین و مقادیر اطلاعات کاربر با فونت بزرگتر
+
         usernameTitleLabel = new Label("username:", skin);
         usernameTitleLabel.setColor(Color.CYAN);
         usernameTitleLabel.setFontScale(1.2f);
@@ -192,16 +192,16 @@ public class MainMenu implements Screen {
         gamePlayedLabel.setColor(Color.WHITE);
         gamePlayedLabel.setFontScale(1.2f);
 
-        // دکمه خروج با اندازه بزرگتر
+
         logoutButton = new TextButton("logout", skin);
         logoutButton.setColor(Color.FIREBRICK);
         logoutButton.getLabel().setFontScale(1.0f);
         logoutButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // عملیات خروج کاربر
+
                 SaveData.setCurrentUser(null);
-                // به‌روزرسانی نمایش پنل
+
                 updateUserInfoPanel();
             }
         });
@@ -211,7 +211,7 @@ public class MainMenu implements Screen {
         logoutButton.getLabel().setFontScale(1.0f);
 
 
-        // چیدمان عناصر در پنل
+
         Table infoTable = new Table();
         infoTable.add(usernameTitleLabel).padRight(10);
         infoTable.add(usernameLabel).left().row();
@@ -220,7 +220,7 @@ public class MainMenu implements Screen {
         infoTable.add(gamePlayedTitleLabel).padRight(10);
         infoTable.add(gamePlayedLabel).left();
 
-        // تصویر آواتار کاربر با اندازه بزرگتر
+
         userAvatar = new Image();
 
         userInfoTable.add(userAvatar).size(60, 60).pad(10).padTop(150).row();
@@ -229,39 +229,39 @@ public class MainMenu implements Screen {
         userInfoTable.add(saveGame).size(255, 65).pad(10).row();
 
 
-        // اضافه کردن پنل به صحنه
+
         stage.addActor(userInfoTable);
 
-        // به‌روزرسانی وضعیت نمایش پنل
+
         updateUserInfoPanel();
     }
 
-    // متد به‌روزرسانی وضعیت نمایش پنل اطلاعات کاربر
+
     private void updateUserInfoPanel() {
         if (SaveData.getCurrentUser() != null) {
             User currentUser = SaveData.getCurrentUser();
 
-            // کاربر لاگین کرده است، نمایش اطلاعات
+
             userInfoTable.setVisible(true);
             usernameLabel.setText(currentUser.getUserName());
             scoreLabel.setText(String.valueOf(currentUser.getHighScore()));
             gamePlayedLabel.setText(String.valueOf(currentUser.getTotalGamesPlayed()));
 
-            // بارگذاری آواتار کاربر اگر موجود باشد
+
             if (currentUser.getAvatarPath() != null && !currentUser.getAvatarPath().isEmpty()) {
                 try {
                     Texture avatarTexture = new Texture(Gdx.files.internal(currentUser.getAvatarPath()));
                     userAvatar.setDrawable(new Image(avatarTexture).getDrawable());
                 } catch (Exception e) {
-                    // اگر بارگذاری آواتار با مشکل مواجه شد، از تصویر پیش‌فرض استفاده کن
+
                     userAvatar.setDrawable(GameAssetManager.getGameAssetManager().getSkin().getDrawable("default-round"));
                 }
             } else {
-                // اگر آواتار تنظیم نشده بود، از تصویر پیش‌فرض استفاده کن
+
                 userAvatar.setDrawable(GameAssetManager.getGameAssetManager().getSkin().getDrawable("default-round"));
             }
         } else {
-            // کاربر لاگین نکرده است، پنهان کردن پنل
+
             userInfoTable.setVisible(false);
         }
     }
@@ -276,7 +276,7 @@ public class MainMenu implements Screen {
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
-        // به‌روزرسانی وضعیت پنل اطلاعات کاربر در هر فریم
+
         updateUserInfoPanel();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -287,7 +287,7 @@ public class MainMenu implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        // تنظیم مجدد موقعیت پنل اطلاعات کاربر در صورت تغییر اندازه صفحه
+
         if (userInfoTable != null) {
             userInfoTable.setPosition(20, height - 240);
         }

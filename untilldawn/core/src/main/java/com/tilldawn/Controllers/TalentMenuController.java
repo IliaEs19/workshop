@@ -17,17 +17,10 @@ public class TalentMenuController {
         this.view = view;
     }
 
-    /**
-     * اضافه کردن یک دکمه بازگشت به منوی اصلی
-     * این متد می‌تواند در صورت نیاز فراخوانی شود
-     */
-    public void addBackButtonListener(ClickListener listener) {
+        public void addBackButtonListener(ClickListener listener) {
     }
 
-    /**
-     * بازگشت به منوی اصلی
-     */
-    public void goToMainMenu() {
+        public void goToMainMenu() {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -37,13 +30,9 @@ public class TalentMenuController {
         });
     }
 
-    /**
-     * انتخاب قهرمان پیش‌فرض بازی
-     * این متد می‌تواند برای ذخیره انتخاب کاربر استفاده شود
-     */
-    public void selectDefaultHero(HeroType hero) {
-        // در اینجا می‌توانید کد ذخیره انتخاب کاربر را اضافه کنید
-        // مثلاً ذخیره در فایل تنظیمات یا پایگاه داده
+        public void selectDefaultHero(HeroType hero) {
+
+
         Gdx.app.log("TalentMenuController", "Selected hero: " + hero.getName());
     }
 }

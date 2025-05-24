@@ -28,7 +28,7 @@ public class ProfileLoginMenu implements Screen {
     private TextButton accessButton;
     private TextButton backButton;
 
-    // اندازه‌های استاندارد برای عناصر فرم
+
     private static final float FIELD_WIDTH = 470;
     private static final float FIELD_HEIGHT = 100;
     private static final float LABEL_SCALE = 1.0f;
@@ -83,20 +83,20 @@ public class ProfileLoginMenu implements Screen {
         table.setFillParent(true);
         table.center();
 
-        // تنظیم فاصله‌ها
+
         table.pad(70);
 
-        // اضافه کردن عنوان
+
         table.add(menuTitle).colspan(2).padBottom(60);
 
-        // توضیحات
+
         Label infoLabel = new Label("Please enter your credentials to access your profile", GameAssetManager.getGameAssetManager().getSkin());
         infoLabel.setColor(Color.LIGHT_GRAY);
         infoLabel.setFontScale(1.0f);
         table.row().pad(PADDING, 0, PADDING * 2, 0);
         table.add(infoLabel).colspan(2).center();
 
-        // بخش نام کاربری
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label userLabel = new Label("USERNAME:", GameAssetManager.getGameAssetManager().getSkin());
         userLabel.setColor(Color.CYAN);
@@ -104,14 +104,14 @@ public class ProfileLoginMenu implements Screen {
         table.add(userLabel).width(200).right().padRight(30);
         table.add(userName).width(FIELD_WIDTH).height(FIELD_HEIGHT).left();
 
-        // بخش رمز عبور
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label passLabel = new Label("PASSWORD:", GameAssetManager.getGameAssetManager().getSkin());
         passLabel.setColor(Color.CYAN);
         passLabel.setFontScale(LABEL_SCALE);
         table.add(passLabel).width(200).right().padRight(30);
 
-        // ایجاد جدول برای قرار دادن فیلد رمز عبور و چک‌باکس
+
         Table passwordTable = new Table();
         passwordTable.add(password).width(FIELD_WIDTH).height(FIELD_HEIGHT);
         passwordTable.row().pad(5, 0, 0, 0);
@@ -119,40 +119,40 @@ public class ProfileLoginMenu implements Screen {
 
         table.add(passwordTable).left();
 
-        // دکمه دسترسی به پروفایل
+
         table.row().pad(PADDING * 2, 0, BUTTON_SPACING, 0);
         accessButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
 
         accessButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                accessButton.setColor(new Color(0.3f, 0.7f, 1f, 1f)); // آبی روشن‌تر
+                accessButton.setColor(new Color(0.3f, 0.7f, 1f, 1f));
                 accessButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                accessButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f)); // برگشت به رنگ اصلی
+                accessButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
                 accessButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
 
         table.add(accessButton).colspan(2).width(BUTTON_WIDTH).height(BUTTON_HEIGHT - 20);
 
-        // دکمه بازگشت
+
         table.row().pad(BUTTON_SPACING, 0, PADDING * 2, 0);
-        backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f)); // رنگ قرمز ملایم
+        backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f));
 
         backButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                backButton.setColor(new Color(1f, 0.4f, 0.4f, 1f)); // قرمز روشن‌تر
+                backButton.setColor(new Color(1f, 0.4f, 0.4f, 1f));
                 backButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f)); // برگشت به رنگ اصلی
+                backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f));
                 backButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
@@ -161,7 +161,7 @@ public class ProfileLoginMenu implements Screen {
 
         stage.addActor(table);
 
-        // تنظیم اندازه فونت برای TextField ها
+
         try {
             userName.getStyle().font.getData().setScale(1.2f);
             password.getStyle().font.getData().setScale(1.2f);
@@ -172,7 +172,7 @@ public class ProfileLoginMenu implements Screen {
 
     @Override
     public void render(float v) {
-        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1); // پس‌زمینه تیره
+        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

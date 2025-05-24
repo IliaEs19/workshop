@@ -17,11 +17,8 @@ public class DialogManager {
 
     private static final float ANIMATION_DURATION = 0.3f;
 
-    /**
-     * نمایش دیالوگ خطا با طراحی زیبا
-     */
-    public static void showErrorDialog(Stage stage, String title, String message, final Runnable onDismiss) {
-        // ایجاد دیالوگ با استایل پیش‌فرض
+        public static void showErrorDialog(Stage stage, String title, String message, final Runnable onDismiss) {
+
         final Dialog dialog = new Dialog("", GameAssetManager.getGameAssetManager().getSkin()) {
             @Override
             protected void result(Object object) {
@@ -35,16 +32,16 @@ public class DialogManager {
             }
         };
 
-        // پاک کردن جدول عنوان و اضافه کردن عنوان سفارشی
+
         dialog.getTitleTable().clear();
 
-        // عنوان سفارشی با رنگ قرمز
+
         Label titleLabel = new Label(title, GameAssetManager.getGameAssetManager().getSkin());
         titleLabel.setColor(Color.FIREBRICK);
         titleLabel.setFontScale(1.2f);
         dialog.getTitleTable().add(titleLabel).expandX().center().padTop(15);
 
-        // اضافه کردن دکمه بستن (X) به عنوان
+
         TextButton closeButton = new TextButton("X", GameAssetManager.getGameAssetManager().getSkin());
         closeButton.setColor(Color.FIREBRICK);
         closeButton.addListener(new ClickListener() {
@@ -59,15 +56,15 @@ public class DialogManager {
         });
         dialog.getTitleTable().add(closeButton).padRight(10).padTop(5).size(30, 30);
 
-        // محتوای دیالوگ
+
         Table contentTable = new Table();
         contentTable.pad(20);
 
-        // ایجاد آیکون خطا (دایره قرمز)
+
         Image errorIcon = createColorCircle(Color.RED, 30);
         contentTable.add(errorIcon).size(48, 48).padRight(20);
 
-        // پیام خطا
+
         Label messageLabel = new Label(message, GameAssetManager.getGameAssetManager().getSkin());
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.left);
@@ -76,31 +73,31 @@ public class DialogManager {
 
         dialog.getContentTable().add(contentTable).pad(20);
 
-        // دکمه OK
-        TextButton okButton = new TextButton("OK", GameAssetManager.getGameAssetManager().getSkin());
-        okButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1)); // رنگ قرمز
 
-        // افکت hover برای دکمه
+        TextButton okButton = new TextButton("OK", GameAssetManager.getGameAssetManager().getSkin());
+        okButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1));
+
+
         okButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                okButton.setColor(new Color(1f, 0.3f, 0.3f, 1)); // قرمز روشن‌تر
+                okButton.setColor(new Color(1f, 0.3f, 0.3f, 1));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                okButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1)); // قرمز اصلی
+                okButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1));
             }
         });
 
-        dialog.button(okButton, true); // true به عنوان نتیجه برگردانده می‌شود
+        dialog.button(okButton, true);
         dialog.getButtonTable().padBottom(15);
 
-        // تنظیمات نهایی دیالوگ
+
         dialog.setModal(true);
         dialog.setMovable(false);
 
-        // نمایش دیالوگ با انیمیشن
+
         dialog.show(stage);
         dialog.setOrigin(Align.center);
         dialog.setScale(0.1f);
@@ -112,20 +109,17 @@ public class DialogManager {
             )
         ));
 
-        // تغییر رنگ پس‌زمینه (اگر امکان‌پذیر باشد)
+
         try {
             Window dialogWindow = (Window) dialog.getChildren().get(0);
-            dialogWindow.setColor(new Color(1f, 0.9f, 0.9f, 0.95f)); // پس‌زمینه قرمز بسیار روشن
+            dialogWindow.setColor(new Color(1f, 0.9f, 0.9f, 0.95f));
         } catch (Exception e) {
             Gdx.app.log("DialogManager", "Could not change background color");
         }
     }
 
-    /**
-     * نمایش دیالوگ موفقیت با طراحی زیبا
-     */
-    public static void showSuccessDialog(Stage stage, String title, String message, final Runnable onDismiss) {
-        // ایجاد دیالوگ با استایل پیش‌فرض
+        public static void showSuccessDialog(Stage stage, String title, String message, final Runnable onDismiss) {
+
         final Dialog dialog = new Dialog("", GameAssetManager.getGameAssetManager().getSkin()) {
             @Override
             protected void result(Object object) {
@@ -139,16 +133,16 @@ public class DialogManager {
             }
         };
 
-        // پاک کردن جدول عنوان و اضافه کردن عنوان سفارشی
+
         dialog.getTitleTable().clear();
 
-        // عنوان سفارشی با رنگ سبز
+
         Label titleLabel = new Label(title, GameAssetManager.getGameAssetManager().getSkin());
         titleLabel.setColor(Color.FOREST);
         titleLabel.setFontScale(1.2f);
         dialog.getTitleTable().add(titleLabel).expandX().center().padTop(15);
 
-        // اضافه کردن دکمه بستن (X) به عنوان
+
         TextButton closeButton = new TextButton("X", GameAssetManager.getGameAssetManager().getSkin());
         closeButton.setColor(Color.FOREST);
         closeButton.addListener(new ClickListener() {
@@ -163,15 +157,15 @@ public class DialogManager {
         });
         dialog.getTitleTable().add(closeButton).padRight(10).padTop(5).size(30, 30);
 
-        // محتوای دیالوگ
+
         Table contentTable = new Table();
         contentTable.pad(20);
 
-        // ایجاد آیکون موفقیت (دایره سبز)
+
         Image successIcon = createColorCircle(Color.GREEN, 30);
         contentTable.add(successIcon).size(48, 48).padRight(20);
 
-        // پیام موفقیت
+
         Label messageLabel = new Label(message, GameAssetManager.getGameAssetManager().getSkin());
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.left);
@@ -180,31 +174,31 @@ public class DialogManager {
 
         dialog.getContentTable().add(contentTable).pad(20);
 
-        // دکمه OK
-        TextButton okButton = new TextButton("OK", GameAssetManager.getGameAssetManager().getSkin());
-        okButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1)); // رنگ سبز
 
-        // افکت hover برای دکمه
+        TextButton okButton = new TextButton("OK", GameAssetManager.getGameAssetManager().getSkin());
+        okButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
+
+
         okButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                okButton.setColor(new Color(0.3f, 1f, 0.3f, 1)); // سبز روشن‌تر
+                okButton.setColor(new Color(0.3f, 1f, 0.3f, 1));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                okButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1)); // سبز اصلی
+                okButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
             }
         });
 
-        dialog.button(okButton, true); // true به عنوان نتیجه برگردانده می‌شود
+        dialog.button(okButton, true);
         dialog.getButtonTable().padBottom(15);
 
-        // تنظیمات نهایی دیالوگ
+
         dialog.setModal(true);
         dialog.setMovable(false);
 
-        // نمایش دیالوگ با انیمیشن
+
         dialog.show(stage);
         dialog.setOrigin(Align.center);
         dialog.setScale(0.1f);
@@ -216,20 +210,17 @@ public class DialogManager {
             )
         ));
 
-        // تغییر رنگ پس‌زمینه (اگر امکان‌پذیر باشد)
+
         try {
             Window dialogWindow = (Window) dialog.getChildren().get(0);
-            dialogWindow.setColor(new Color(0.9f, 1f, 0.9f, 0.95f)); // پس‌زمینه سبز بسیار روشن
+            dialogWindow.setColor(new Color(0.9f, 1f, 0.9f, 0.95f));
         } catch (Exception e) {
             Gdx.app.log("DialogManager", "Could not change background color");
         }
     }
 
-    /**
-     * نمایش دیالوگ تأیید با دو گزینه بله/خیر
-     */
-    public static void showConfirmDialog(Stage stage, String title, String message, final Runnable onYes, final Runnable onNo) {
-        // ایجاد دیالوگ با استایل پیش‌فرض
+        public static void showConfirmDialog(Stage stage, String title, String message, final Runnable onYes, final Runnable onNo) {
+
         final Dialog dialog = new Dialog("", GameAssetManager.getGameAssetManager().getSkin()) {
             @Override
             protected void result(Object object) {
@@ -246,24 +237,24 @@ public class DialogManager {
             }
         };
 
-        // پاک کردن جدول عنوان و اضافه کردن عنوان سفارشی
+
         dialog.getTitleTable().clear();
 
-        // عنوان سفارشی با رنگ آبی
+
         Label titleLabel = new Label(title, GameAssetManager.getGameAssetManager().getSkin());
         titleLabel.setColor(Color.ROYAL);
         titleLabel.setFontScale(1.2f);
         dialog.getTitleTable().add(titleLabel).expandX().center().padTop(15);
 
-        // محتوای دیالوگ
+
         Table contentTable = new Table();
         contentTable.pad(20);
 
-        // ایجاد آیکون سؤال (دایره آبی)
+
         Image questionIcon = createColorCircle(Color.ROYAL, 48);
         contentTable.add(questionIcon).size(48, 48).padRight(20);
 
-        // پیام تأیید
+
         Label messageLabel = new Label(message, GameAssetManager.getGameAssetManager().getSkin());
         messageLabel.setWrap(true);
         messageLabel.setAlignment(Align.left);
@@ -272,50 +263,50 @@ public class DialogManager {
 
         dialog.getContentTable().add(contentTable).pad(20);
 
-        // دکمه No
-        TextButton noButton = new TextButton("No", GameAssetManager.getGameAssetManager().getSkin());
-        noButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1)); // رنگ قرمز
 
-        // افکت hover برای دکمه No
+        TextButton noButton = new TextButton("No", GameAssetManager.getGameAssetManager().getSkin());
+        noButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1));
+
+
         noButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                noButton.setColor(new Color(1f, 0.3f, 0.3f, 1)); // قرمز روشن‌تر
+                noButton.setColor(new Color(1f, 0.3f, 0.3f, 1));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                noButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1)); // قرمز اصلی
+                noButton.setColor(new Color(0.8f, 0.2f, 0.2f, 1));
             }
         });
 
-        // دکمه Yes
-        TextButton yesButton = new TextButton("Yes", GameAssetManager.getGameAssetManager().getSkin());
-        yesButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1)); // رنگ سبز
 
-        // افکت hover برای دکمه Yes
+        TextButton yesButton = new TextButton("Yes", GameAssetManager.getGameAssetManager().getSkin());
+        yesButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
+
+
         yesButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                yesButton.setColor(new Color(0.3f, 1f, 0.3f, 1)); // سبز روشن‌تر
+                yesButton.setColor(new Color(0.3f, 1f, 0.3f, 1));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                yesButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1)); // سبز اصلی
+                yesButton.setColor(new Color(0.2f, 0.8f, 0.2f, 1));
             }
         });
 
-        // اضافه کردن دکمه‌ها به دیالوگ
-        dialog.button(noButton, false); // false به عنوان نتیجه برگردانده می‌شود
-        dialog.button(yesButton, true); // true به عنوان نتیجه برگردانده می‌شود
+
+        dialog.button(noButton, false);
+        dialog.button(yesButton, true);
         dialog.getButtonTable().padBottom(15);
 
-        // تنظیمات نهایی دیالوگ
+
         dialog.setModal(true);
         dialog.setMovable(false);
 
-        // نمایش دیالوگ با انیمیشن
+
         dialog.show(stage);
         dialog.setOrigin(Align.center);
         dialog.setScale(0.1f);
@@ -327,19 +318,16 @@ public class DialogManager {
             )
         ));
 
-        // تغییر رنگ پس‌زمینه (اگر امکان‌پذیر باشد)
+
         try {
             Window dialogWindow = (Window) dialog.getChildren().get(0);
-            dialogWindow.setColor(new Color(0.9f, 0.95f, 1f, 0.95f)); // پس‌زمینه آبی بسیار روشن
+            dialogWindow.setColor(new Color(0.9f, 0.95f, 1f, 0.95f));
         } catch (Exception e) {
             Gdx.app.log("DialogManager", "Could not change background color");
         }
     }
 
-    /**
-     * ایجاد یک دایره رنگی (برای استفاده به عنوان آیکون)
-     */
-    private static Image createColorCircle(Color color, int size) {
+        private static Image createColorCircle(Color color, int size) {
         Pixmap pixmap = new Pixmap(size, size, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fillCircle(size / 2, size / 2, size / 2 - 1);

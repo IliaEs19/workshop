@@ -15,12 +15,12 @@ public abstract class Enemy {
     protected int health;
     protected boolean isAlive;
     protected Rectangle bounds;
-    protected float stateTime; // برای انیمیشن
+    protected float stateTime;
 
-    // سرعت پایه دشمن
+
     protected float speed;
 
-    // برای دشمن‌هایی که شلیک می‌کنند
+
     protected Array<Bullet> bullets;
     protected float shootTimer;
 
@@ -34,7 +34,7 @@ public abstract class Enemy {
         this.isAlive = true;
         this.bounds = new Rectangle(x - width/2, y - height/2, width, height);
         this.stateTime = 0;
-        this.speed = 50; // سرعت پایه
+        this.speed = 50;
 
         if (type.canShoot()) {
             this.bullets = new Array<>();
@@ -42,32 +42,32 @@ public abstract class Enemy {
         }
     }
 
-    // متد اصلی بروزرسانی که در هر فریم صدا زده می‌شود
+
     public void update(float delta, Vector2 playerPosition) {
         if (!isAlive) return;
 
         stateTime += delta;
 
-        // بروزرسانی موقعیت و رفتار دشمن
+
         updateBehavior(delta, playerPosition);
 
-        // بروزرسانی مرزهای برخورد
+
         bounds.setPosition(x - width/2, y - height/2);
 
-        // بروزرسانی گلوله‌ها اگر دشمن شلیک می‌کند
+
         if (type.canShoot()) {
             updateBullets(delta);
         }
     }
 
-    // این متد در کلاس‌های فرزند پیاده‌سازی می‌شود
+
     protected abstract void updateBehavior(float delta, Vector2 playerPosition);
 
-    // متد شلیک برای دشمن‌هایی که می‌توانند شلیک کنند
+
     protected void shoot(Vector2 playerPosition) {
         if (!type.canShoot() || bullets == null) return;
 
-        // محاسبه جهت به سمت بازیکن
+
         float dx = playerPosition.x - x;
         float dy = playerPosition.y - y;
         float length = (float) Math.sqrt(dx * dx + dy * dy);
@@ -76,13 +76,13 @@ public abstract class Enemy {
             dx /= length;
             dy /= length;
 
-            // ایجاد گلوله جدید
+
             Bullet bullet = new Bullet(x, y, dx, dy, type.getDamage());
             bullets.add(bullet);
         }
     }
 
-    // بروزرسانی گلوله‌ها
+
     protected void updateBullets(float delta) {
         if (bullets == null) return;
 
@@ -96,11 +96,11 @@ public abstract class Enemy {
         }
     }
 
-    // رسم دشمن و گلوله‌هایش
+
     public void render(SpriteBatch batch) {
         if (!isAlive) return;
 
-        // رسم دشمن
+
         TextureRegion region = type.getTextureRegion();
         if (region != null) {
             batch.draw(region,
@@ -108,7 +108,7 @@ public abstract class Enemy {
                 width, height);
         }
 
-        // رسم گلوله‌ها
+
         if (bullets != null) {
             for (Bullet bullet : bullets) {
                 bullet.render(batch);
@@ -116,7 +116,7 @@ public abstract class Enemy {
         }
     }
 
-    // دریافت آسیب
+
     public void takeDamage(int damage) {
         if (!isAlive) return;
 
@@ -126,42 +126,42 @@ public abstract class Enemy {
         }
     }
 
-    // بررسی برخورد با گلوله
+
     public boolean checkBulletCollision(Rectangle bulletBounds) {
         return isAlive && bounds.overlaps(bulletBounds);
     }
 
-    // بررسی برخورد با بازیکن
+
     public boolean checkPlayerCollision(Rectangle playerBounds) {
         return isAlive && bounds.overlaps(playerBounds);
     }
 
-    // گرفتن موقعیت دشمن
+
     public Vector2 getPosition() {
         return new Vector2(x, y);
     }
 
-    // گرفتن مرزهای برخورد
+
     public Rectangle getBounds() {
         return bounds;
     }
 
-    // بررسی زنده بودن
+
     public boolean isAlive() {
         return isAlive;
     }
 
-    // گرفتن نوع دشمن
+
     public EnemyType getType() {
         return type;
     }
 
-    // گرفتن سلامتی دشمن
+
     public int getHealth() {
         return health;
     }
 
-    // گرفتن لیست گلوله‌ها
+
     public Array<Bullet> getBullets() {
         return bullets;
     }

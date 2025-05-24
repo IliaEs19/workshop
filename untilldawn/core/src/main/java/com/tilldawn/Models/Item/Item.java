@@ -10,8 +10,8 @@ public class Item {
     private float width, height;
     private Rectangle bounds;
     private float stateTime;
-    private float lifeTime; // زمان باقی‌مانده آیتم قبل از ناپدید شدن
-    private float floatOffset; // برای افکت شناور بودن آیتم
+    private float lifeTime;
+    private float floatOffset;
 
     public Item(ItemType type, float x, float y) {
         this.type = type;
@@ -21,7 +21,7 @@ public class Item {
         this.height = 20;
         this.bounds = new Rectangle(x - width/2, y - height/2, width, height);
         this.stateTime = 0;
-        this.lifeTime = 15; // آیتم‌ها 15 ثانیه بعد ناپدید می‌شوند
+        this.lifeTime = 15;
         this.floatOffset = 0;
     }
 
@@ -29,10 +29,10 @@ public class Item {
         stateTime += delta;
         lifeTime -= delta;
 
-        // افکت شناور بودن آیتم
+
         floatOffset = (float) Math.sin(stateTime * 5) * 2;
 
-        // بروزرسانی مرزهای برخورد
+
         bounds.setPosition(x - width/2, y - height/2 + floatOffset);
     }
 

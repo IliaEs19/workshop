@@ -46,10 +46,10 @@ public enum AbilityType {
     );
 
     public enum AbilityCategory {
-        ATTACK(new Color(0.9f, 0.3f, 0.3f, 1f)),    // قرمز
-        DEFENSE(new Color(0.3f, 0.7f, 0.9f, 1f)),   // آبی
-        MOVEMENT(new Color(0.3f, 0.9f, 0.3f, 1f)),  // سبز
-        UTILITY(new Color(0.9f, 0.7f, 0.3f, 1f));   // نارنجی
+        ATTACK(new Color(0.9f, 0.3f, 0.3f, 1f)),
+        DEFENSE(new Color(0.3f, 0.7f, 0.9f, 1f)),
+        MOVEMENT(new Color(0.3f, 0.9f, 0.3f, 1f)),
+        UTILITY(new Color(0.9f, 0.7f, 0.3f, 1f));
 
         private final Color color;
 

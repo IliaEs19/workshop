@@ -219,7 +219,7 @@ public class AvatarSelectionDialog extends Dialog {
 
     private Table createDropZone() {
         Table dropZone = new Table();
-        dropZone.setName("dropZone"); // تنظیم نام برای دسترسی بعدی
+        dropZone.setName("dropZone");
         dropZone.setBackground(createPanelBackground(new Color(0.2f, 0.2f, 0.3f, 0.5f)));
         dropZone.pad(20);
 
@@ -235,7 +235,7 @@ public class AvatarSelectionDialog extends Dialog {
         browseButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //openFileChooser();
+
             }
         });
 
@@ -280,20 +280,20 @@ public class AvatarSelectionDialog extends Dialog {
                 dropZone.setBackground(createPanelBackground(new Color(0.2f, 0.2f, 0.3f, 0.5f)));
             }
         });
-//
-//        // اضافه کردن لیسنر درگ و دراپ فایل
-//        FileDropListener fileDropListener = new FileDropListener() {
-//            @Override
-//            public void fileDropped(FileHandle file) {
-//                //handleDroppedFile(file, dropZone);
-//            }
-//        };
-//
-//        // اضافه کردن لیسنر به مدیریت کننده فایل
-//       // DesktopFileHandler.addFileDropListener(fileDropListener);
-//
-//        // ذخیره لیسنر برای حذف بعدی
-//        dropListeners.add(fileDropListener);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     private void selectPresetAvatar(int index) {

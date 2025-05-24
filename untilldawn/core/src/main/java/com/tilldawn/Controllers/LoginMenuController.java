@@ -27,14 +27,14 @@ public class LoginMenuController {
 
     private void setupListeners() {
         if (view != null) {
-            // لیسنر دکمه ورود
+
             view.getLoginButton().addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     if (!loginButtonPressed) {
                         loginButtonPressed = true;
                         processLogin();
-                        // Reset flag after a short delay to prevent multiple triggers
+
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -45,11 +45,11 @@ public class LoginMenuController {
                 }
             });
 
-            // لیسنر دکمه فراموشی رمز عبور
+
             view.getForgotPasswordButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // بررسی وجود نام کاربری
+
                     String username = view.getUserName().getText().trim();
                     if (username.isEmpty()) {
                         DialogManager.showErrorDialog(view.getStage(), "Error",
@@ -57,14 +57,14 @@ public class LoginMenuController {
                         return;
                     }
 
-                    // بررسی وجود کاربر
+
                     if (!SaveData.getInstance().userExists(username)) {
                         DialogManager.showErrorDialog(view.getStage(), "Error",
                             "Username not found. Please check your username.", null);
                         return;
                     }
 
-                    // دریافت سؤال امنیتی کاربر
+
                     String securityQuestion = SaveData.getInstance().getSecurityQuestion(username);
                     if (securityQuestion == null || securityQuestion.isEmpty()) {
                         DialogManager.showErrorDialog(view.getStage(), "Error",
@@ -72,7 +72,7 @@ public class LoginMenuController {
                         return;
                     }
 
-                    // انتقال به صفحه بازیابی رمز عبور
+
                     Main.getMain().setScreen(new ForgotPasswordMenu(
                         new ForgotPasswordMenuController(),
                         GameAssetManager.getGameAssetManager().getSkin(),
@@ -80,11 +80,11 @@ public class LoginMenuController {
                 }
             });
 
-            // لیسنر دکمه بازگشت
+
             view.getBackButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // بازگشت به منوی اصلی
+
                     Main.getMain().setScreen(new MainMenu(
                         new MainMenuController(),
                         GameAssetManager.getGameAssetManager().getSkin()));
@@ -97,21 +97,21 @@ public class LoginMenuController {
         String username = view.getUserName().getText().trim();
         String password = view.getPassword().getText();
 
-        // بررسی خالی نبودن فیلدها
+
         if (username.isEmpty() || password.isEmpty()) {
             DialogManager.showErrorDialog(view.getStage(), "Login Failed",
                 "Username and password cannot be empty.", null);
             return;
         }
 
-        // بررسی وجود کاربر
+
         if (!SaveData.getInstance().userExists(username)) {
             DialogManager.showErrorDialog(view.getStage(), "Login Failed",
                 "Username not found. Please check your username or register first.", null);
             return;
         }
 
-        // بررسی صحت رمز عبور
+
         if (!SaveData.getInstance().validateUser(username, password)) {
             DialogManager.showErrorDialog(view.getStage(), "Login Failed",
                 "Incorrect password. Please try again.", null);

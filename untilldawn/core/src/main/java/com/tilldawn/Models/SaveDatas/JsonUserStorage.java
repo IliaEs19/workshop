@@ -18,7 +18,7 @@ public class JsonUserStorage implements UserDataStorage {
     private Map<String, User> users;
     private final Json json;
 
-    // کلاس کمکی برای ذخیره‌سازی لیست کاربران در JSON
+
     private static class UserList {
         public ArrayList<User> users = new ArrayList<>();
     }
@@ -112,16 +112,16 @@ public class JsonUserStorage implements UserDataStorage {
         try {
             FileHandle file = Gdx.files.local(SAVE_FILE);
 
-            // ایجاد دایرکتوری اگر وجود نداشته باشد
+
             if (!file.parent().exists()) {
                 file.parent().mkdirs();
             }
 
-            // تبدیل Map به لیست برای ذخیره‌سازی
+
             UserList userList = new UserList();
             userList.users.addAll(users.values());
 
-            // ذخیره‌سازی به فرمت JSON
+
             String jsonString = json.prettyPrint(userList);
             file.writeString(jsonString, false);
 

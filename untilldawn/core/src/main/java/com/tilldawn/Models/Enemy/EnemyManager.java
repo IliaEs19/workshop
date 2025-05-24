@@ -19,12 +19,12 @@ public class EnemyManager {
     private float eyebatSpawnTimer;
     private boolean bossSpawned;
 
-    // محدوده بازی
+
     private float worldWidth, worldHeight;
 
-    // پارامترهای اسپاون دشمن‌ها
-    private float baseSpawnInterval = 3.0f; // زمان پایه بین اسپاون‌ها
-    private float minSpawnInterval = 0.5f; // حداقل زمان بین اسپاون‌ها
+
+    private float baseSpawnInterval = 3.0f;
+    private float minSpawnInterval = 0.5f;
 
     public EnemyManager(float worldWidth, float worldHeight, float gameMaxTime) {
         this.enemies = new Array<>();
@@ -37,11 +37,11 @@ public class EnemyManager {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
 
-        // بارگذاری تکسچرهای دشمن‌ها و آیتم‌ها
+
         EnemyType.loadTextures();
         ItemType.loadTextures();
 
-        // ایجاد درخت‌ها در مکان‌های تصادفی
+
         spawnInitialTrees(20);
     }
 
@@ -56,22 +56,22 @@ public class EnemyManager {
     }
 
     public void update(float delta, Vector2 playerPosition) {
-        // بروزرسانی زمان بازی
+
         gameTime += delta;
 
-        // بروزرسانی همه دشمن‌های موجود
+
         for (int i = enemies.size - 1; i >= 0; i--) {
             Enemy enemy = enemies.get(i);
             enemy.update(delta, playerPosition);
 
-            // حذف دشمن‌های مرده و دراپ آیتم
+
             if (!enemy.isAlive()) {
-                // دراپ آیتم تجربه با احتمال 100%
+
                 Item xpItem = new Item(ItemType.EXPERIENCE, enemy.getPosition().x, enemy.getPosition().y);
                 items.add(xpItem);
 
-                // دراپ آیتم دیگر با احتمال کمتر
-                if (Math.random() < 0.3) { // 30% احتمال
+
+                if (Math.random() < 0.3) {
                     ItemType randomItemType = getRandomItemType();
                     if (randomItemType != null && randomItemType != ItemType.EXPERIENCE) {
                         Item item = new Item(randomItemType,
@@ -85,7 +85,7 @@ public class EnemyManager {
             }
         }
 
-        // بروزرسانی آیتم‌ها
+
         for (int i = items.size - 1; i >= 0; i--) {
             Item item = items.get(i);
             item.update(delta);
@@ -95,31 +95,31 @@ public class EnemyManager {
             }
         }
 
-        // بررسی ایجاد دشمن‌های جدید
+
         updateEnemySpawning(delta, playerPosition);
     }
 
     private void updateEnemySpawning(float delta, Vector2 playerPosition) {
-        // محاسبه فاصله زمانی اسپاون با توجه به پیشرفت بازی
+
         float progress = Math.min(gameTime / gameMaxTime, 1.0f);
         float currentSpawnInterval = baseSpawnInterval - (baseSpawnInterval - minSpawnInterval) * progress;
 
-        // ایجاد Tentacle Monster
+
         tentacleSpawnTimer += delta;
         if (gameTime >= 0 && tentacleSpawnTimer >= currentSpawnInterval) {
             spawnTentacleMonster(playerPosition);
             tentacleSpawnTimer = 0;
         }
 
-        // ایجاد Eyebat با نرخ متفاوت
+
         eyebatSpawnTimer += delta;
-        float eyebatSpawnInterval = currentSpawnInterval * 2; // دو برابر زمان اسپاون معمولی
+        float eyebatSpawnInterval = currentSpawnInterval * 2;
         if (gameTime >= gameMaxTime / 4 && eyebatSpawnTimer >= eyebatSpawnInterval) {
             spawnEyebat(playerPosition);
             eyebatSpawnTimer = 0;
         }
 
-        // ایجاد باس در نیمه بازی
+
         if (!bossSpawned && gameTime >= gameMaxTime / 2) {
             spawnElder(playerPosition);
             bossSpawned = true;
@@ -133,39 +133,39 @@ public class EnemyManager {
     }
 
     private void spawnTentacleMonster(Vector2 playerPosition) {
-        // ایجاد دشمن در فاصله مناسب از بازیکن
+
         Vector2 spawnPos = getSpawnPosition(playerPosition, 300, 500);
         TentacleMonsterEnemy enemy = new TentacleMonsterEnemy(spawnPos.x, spawnPos.y);
         enemies.add(enemy);
     }
 
     private void spawnEyebat(Vector2 playerPosition) {
-        // ایجاد دشمن در فاصله مناسب از بازیکن
+
         Vector2 spawnPos = getSpawnPosition(playerPosition, 400, 600);
         EyebatEnemy enemy = new EyebatEnemy(spawnPos.x, spawnPos.y);
         enemies.add(enemy);
     }
 
     private void spawnElder(Vector2 playerPosition) {
-        // ایجاد باس در فاصله مناسب از بازیکن
+
         Vector2 spawnPos = getSpawnPosition(playerPosition, 500, 700);
         ElderEnemy enemy = new ElderEnemy(spawnPos.x, spawnPos.y, gameMaxTime);
         enemies.add(enemy);
     }
 
     private Vector2 getSpawnPosition(Vector2 playerPosition, float minDistance, float maxDistance) {
-        // انتخاب یک زاویه تصادفی
+
         float angle = MathUtils.random(360);
         float radians = (float) Math.toRadians(angle);
 
-        // انتخاب یک فاصله تصادفی بین min و max
+
         float distance = MathUtils.random(minDistance, maxDistance);
 
-        // محاسبه موقعیت ایجاد
+
         float x = playerPosition.x + distance * (float) Math.cos(radians);
         float y = playerPosition.y + distance * (float) Math.sin(radians);
 
-        // محدود کردن به مرزهای دنیای بازی
+
         x = MathUtils.clamp(x, 50, worldWidth - 50);
         y = MathUtils.clamp(y, 50, worldHeight - 50);
 
@@ -173,12 +173,12 @@ public class EnemyManager {
     }
 
     public void render(SpriteBatch batch) {
-        // رسم آیتم‌ها
+
         for (Item item : items) {
             item.render(batch);
         }
 
-        // رسم دشمن‌ها
+
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }
@@ -193,17 +193,17 @@ public class EnemyManager {
 
             for (Enemy enemy : enemies) {
                 if (enemy.isAlive() && enemy.checkBulletCollision(bulletBounds)) {
-                    // دشمن آسیب می‌بیند
+
                     enemy.takeDamage(bullet.getDamage());
 
-                    // اگر دشمن کشته شد، تعداد کشته‌ها را افزایش بده
+
                     if (!enemy.isAlive()) {
                         gameView.addKill();
-                        // می‌توانید XP هم اضافه کنید
-                        //gameView.addXP(enemy.getType().getXpValue());
+
+
                     }
 
-                    // حذف گلوله
+
                     bullets.removeIndex(i);
                     break;
                 }
@@ -246,10 +246,7 @@ public class EnemyManager {
         enemies.clear();
     }
 
-    /**
-     * اضافه کردن یک دشمن سفارشی
-     */
-    public void addCustomEnemy(Enemy enemy) {
+        public void addCustomEnemy(Enemy enemy) {
         enemies.add(enemy);
     }
 

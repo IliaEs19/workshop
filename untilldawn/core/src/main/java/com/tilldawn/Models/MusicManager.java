@@ -10,23 +10,23 @@ public class MusicManager implements Disposable {
     private Music currentMusic;
     private Music mainTheme;
     private Music secondaryTheme;
-    private float volume = 0.5f; // حجم صدای پیش‌فرض (0 تا 1)
-    private boolean musicEnabled = true; // فعال/غیرفعال بودن موزیک
+    private float volume = 0.5f;
+    private boolean musicEnabled = true;
 
     private MusicManager() {
-        // بارگذاری موزیک‌ها
+
         mainTheme = Gdx.audio.newMusic(Gdx.files.internal("Music/music2.mp3"));
         secondaryTheme = Gdx.audio.newMusic(Gdx.files.internal("Music/music1.mp3"));
 
-        // تنظیم ویژگی‌های موزیک‌ها
-        mainTheme.setLooping(true); // تکرار خودکار
+
+        mainTheme.setLooping(true);
         secondaryTheme.setLooping(true);
 
-        // تنظیم حجم صدا
+
         mainTheme.setVolume(volume);
         secondaryTheme.setVolume(volume);
 
-        // تنظیم موزیک فعلی به موزیک اصلی
+
         currentMusic = mainTheme;
     }
 
@@ -37,60 +37,39 @@ public class MusicManager implements Disposable {
         return instance;
     }
 
-    /**
-     * شروع پخش موزیک پیش‌فرض
-     */
-    public void playDefaultMusic() {
+        public void playDefaultMusic() {
         if (musicEnabled && currentMusic != null) {
             currentMusic.play();
         }
     }
 
-    /**
-     * توقف پخش موزیک فعلی
-     */
-    public void stopMusic() {
+        public void stopMusic() {
         if (currentMusic != null && currentMusic.isPlaying()) {
             currentMusic.stop();
         }
     }
 
-    /**
-     * مکث پخش موزیک فعلی
-     */
-    public void pauseMusic() {
+        public void pauseMusic() {
         if (currentMusic != null && currentMusic.isPlaying()) {
             currentMusic.pause();
         }
     }
 
-    /**
-     * ادامه پخش موزیک فعلی (اگر در حالت مکث باشد)
-     */
-    public void resumeMusic() {
+        public void resumeMusic() {
         if (musicEnabled && currentMusic != null) {
             currentMusic.play();
         }
     }
 
-    /**
-     * تغییر به موزیک اصلی
-     */
-    public void switchToMainTheme() {
+        public void switchToMainTheme() {
         switchMusic(mainTheme);
     }
 
-    /**
-     * تغییر به موزیک ثانویه
-     */
-    public void switchToSecondaryTheme() {
+        public void switchToSecondaryTheme() {
         switchMusic(secondaryTheme);
     }
 
-    /**
-     * تغییر موزیک فعلی به موزیک جدید
-     */
-    private void switchMusic(Music newMusic) {
+        private void switchMusic(Music newMusic) {
         if (currentMusic != null && currentMusic.isPlaying()) {
             currentMusic.stop();
         }
@@ -103,29 +82,19 @@ public class MusicManager implements Disposable {
         }
     }
 
-    /**
-     * تنظیم حجم صدای موزیک
-     * @param volume مقدار بین 0 (بی‌صدا) تا 1 (حداکثر صدا)
-     */
-    public void setVolume(float volume) {
-        this.volume = Math.max(0, Math.min(1, volume)); // محدود کردن بین 0 و 1
+        public void setVolume(float volume) {
+        this.volume = Math.max(0, Math.min(1, volume));
 
         if (currentMusic != null) {
             currentMusic.setVolume(this.volume);
         }
     }
 
-    /**
-     * دریافت حجم صدای فعلی
-     */
-    public float getVolume() {
+        public float getVolume() {
         return volume;
     }
 
-    /**
-     * فعال/غیرفعال کردن موزیک
-     */
-    public void setMusicEnabled(boolean enabled) {
+        public void setMusicEnabled(boolean enabled) {
         this.musicEnabled = enabled;
 
         if (currentMusic != null) {
@@ -141,17 +110,11 @@ public class MusicManager implements Disposable {
         }
     }
 
-    /**
-     * بررسی فعال بودن موزیک
-     */
-    public boolean isMusicEnabled() {
+        public boolean isMusicEnabled() {
         return musicEnabled;
     }
 
-    /**
-     * بررسی در حال پخش بودن موزیک
-     */
-    public boolean isPlaying() {
+        public boolean isPlaying() {
         return currentMusic != null && currentMusic.isPlaying();
     }
 
@@ -159,17 +122,11 @@ public class MusicManager implements Disposable {
         return currentMusic == mainTheme && currentMusic.isPlaying();
     }
 
-    /**
-     * بررسی اینکه آیا موزیک ثانویه در حال پخش است
-     */
-    public boolean isSecondaryThemePlaying() {
+        public boolean isSecondaryThemePlaying() {
         return currentMusic == secondaryTheme && currentMusic.isPlaying();
     }
 
-    /**
-     * آزادسازی منابع
-     */
-    @Override
+        @Override
     public void dispose() {
         if (mainTheme != null) {
             mainTheme.dispose();

@@ -50,7 +50,7 @@ public class RegisterMenuController {
                 public void run() {
                     User user = SaveData.getInstance().getUser(userName);
 
-                    // نمایش صفحه انتخاب آواتار
+
                     Main.getMain().setScreen(new AvatarSelectionScreen(
                         new AvatarSelectionController(),
                         GameAssetManager.getGameAssetManager().getSkin(),
@@ -68,7 +68,7 @@ public class RegisterMenuController {
                     if (!registerButtonPressed) {
                         registerButtonPressed = true;
                         processRegistration();
-                        // Reset flag after a short delay to prevent multiple triggers
+
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -82,7 +82,7 @@ public class RegisterMenuController {
             view.getGuestButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // انتقال به صفحه PreGameMenu
+
                     Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController()));
                 }
             });
@@ -90,7 +90,7 @@ public class RegisterMenuController {
             view.getBackButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // بازگشت به منوی اصلی
+
                     Main.getMain().setScreen(new MainMenu(new MainMenuController(), GameAssetManager.getGameAssetManager().getSkin()));
                 }
             });

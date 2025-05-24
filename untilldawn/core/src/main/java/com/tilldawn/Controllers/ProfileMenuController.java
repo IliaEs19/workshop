@@ -37,14 +37,14 @@ public class ProfileMenuController {
                 }
             });
 
-            // لیسنر دکمه تغییر نام کاربری
+
             view.getChangeUsernameButton().addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     if (!changeUsernameButtonPressed) {
                         changeUsernameButtonPressed = true;
                         processChangeUsername();
-                        // Reset flag after a short delay to prevent multiple triggers
+
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -55,14 +55,14 @@ public class ProfileMenuController {
                 }
             });
 
-            // لیسنر دکمه تغییر رمز عبور
+
             view.getChangePasswordButton().addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     if (!changePasswordButtonPressed) {
                         changePasswordButtonPressed = true;
                         processChangePassword();
-                        // Reset flag after a short delay to prevent multiple triggers
+
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -73,14 +73,14 @@ public class ProfileMenuController {
                 }
             });
 
-            // لیسنر دکمه حذف حساب کاربری
+
             view.getDeleteAccountButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if (!deleteAccountButtonPressed) {
                         deleteAccountButtonPressed = true;
                         confirmDeleteAccount();
-                        // Reset flag after a short delay to prevent multiple triggers
+
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -91,11 +91,11 @@ public class ProfileMenuController {
                 }
             });
 
-            // لیسنر دکمه بازگشت
+
             view.getBackButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // بازگشت به منوی اصلی
+
                     Main.getMain().setScreen(new MainMenu(
                         new MainMenuController(),
                         GameAssetManager.getGameAssetManager().getSkin()));
@@ -105,14 +105,14 @@ public class ProfileMenuController {
     }
 
     private void showAvatarSelectionDialog() {
-        // ایجاد و نمایش دیالوگ انتخاب آواتار
+
         AvatarSelectionDialog dialog = new AvatarSelectionDialog(
             view.getStage(),
             view.getCurrentUsername(),
             new Runnable() {
                 @Override
                 public void run() {
-                    // به‌روزرسانی آواتار در صفحه پروفایل پس از تغییر
+
                     view.updateUserAvatar(view.getCurrentUsername());
                 }
             }
@@ -126,7 +126,7 @@ public class ProfileMenuController {
         String newUsername = view.getNewUsername().getText().trim();
         String currentPassword = view.getCurrentPassword().getText();
 
-        // بررسی خالی نبودن فیلدها
+
         if (newUsername.isEmpty()) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "New username cannot be empty.", null);
@@ -139,39 +139,39 @@ public class ProfileMenuController {
             return;
         }
 
-        // بررسی یکسان نبودن نام کاربری جدید با نام کاربری فعلی
+
         if (newUsername.equals(currentUsername)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "New username is the same as current username.", null);
             return;
         }
 
-        // بررسی تکراری نبودن نام کاربری جدید
+
         if (SaveData.getInstance().userExists(newUsername)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "Username already exists. Please choose a different username.", null);
             return;
         }
 
-        // تأیید رمز عبور فعلی
+
         if (!SaveData.getInstance().validateUser(currentUsername, currentPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "Incorrect password. Please enter your correct password.", null);
             return;
         }
 
-        // تغییر نام کاربری
+
         boolean success = SaveData.getInstance().changeUsername(currentUsername, newUsername, currentPassword);
 
         if (success) {
-            // به‌روزرسانی نام کاربری نمایش داده شده
+
             view.updateUsernameLabel(newUsername);
 
-            // پاک کردن فیلدها
+
             view.getNewUsername().setText("");
             view.getCurrentPassword().setText("");
 
-            // نمایش پیام موفقیت
+
             final String finalNewUsername = newUsername;
             DialogManager.showSuccessDialog(view.getStage(), "Success",
                 "Username has been changed successfully!", null);
@@ -190,7 +190,7 @@ public class ProfileMenuController {
                         }
                     });
                 }
-            }, 8); // 2 ثانیه تأخیر
+            }, 8);
         } else {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "Failed to change username. Please try again later.", null);
@@ -203,7 +203,7 @@ public class ProfileMenuController {
         String newPassword = view.getNewPassword().getText();
         String confirmPassword = view.getConfirmPassword().getText();
 
-        // بررسی خالی نبودن فیلدها
+
         if (currentPassword.isEmpty()) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "Current password cannot be empty.", null);
@@ -216,21 +216,21 @@ public class ProfileMenuController {
             return;
         }
 
-        // بررسی تطابق رمز عبور جدید و تأیید آن
+
         if (!newPassword.equals(confirmPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "New password and confirmation do not match.", null);
             return;
         }
 
-        // بررسی یکسان نبودن رمز عبور جدید با رمز عبور فعلی
+
         if (newPassword.equals(currentPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "New password is the same as current password.", null);
             return;
         }
 
-        // اعتبارسنجی رمز عبور جدید
+
         Result passwordValidation = validatePassword(newPassword);
         if (!passwordValidation.isSuccessful()) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
@@ -238,23 +238,23 @@ public class ProfileMenuController {
             return;
         }
 
-        // تأیید رمز عبور فعلی
+
         if (!SaveData.getInstance().validateUser(currentUsername, currentPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Change Failed",
                 "Incorrect current password. Please try again.", null);
             return;
         }
 
-        // تغییر رمز عبور
+
         boolean success = SaveData.getInstance().changePassword(currentUsername, currentPassword, newPassword);
 
         if (success) {
-            // پاک کردن فیلدها
+
             view.getCurrentPassword().setText("");
             view.getNewPassword().setText("");
             view.getConfirmPassword().setText("");
 
-            // نمایش پیام موفقیت
+
             DialogManager.showSuccessDialog(view.getStage(), "Success",
                 "Password has been changed successfully!", null);
         } else {
@@ -279,25 +279,25 @@ public class ProfileMenuController {
         String currentUsername = view.getCurrentUsername();
         String currentPassword = view.getCurrentPassword().getText();
 
-        // بررسی خالی نبودن رمز عبور
+
         if (currentPassword.isEmpty()) {
             DialogManager.showErrorDialog(view.getStage(), "Deletion Failed",
                 "Please enter your current password to confirm account deletion.", null);
             return;
         }
 
-        // تأیید رمز عبور
+
         if (!SaveData.getInstance().validateUser(currentUsername, currentPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Deletion Failed",
                 "Incorrect password. Please enter your correct password.", null);
             return;
         }
 
-        // حذف حساب کاربری
+
         boolean success = SaveData.getInstance().removeUser(currentUsername);
 
         if (success) {
-            // نمایش پیام موفقیت و بازگشت به منوی اصلی
+
             DialogManager.showSuccessDialog(view.getStage(), "Success",
                 "Your account has been deleted successfully!", new Runnable() {
                     @Override
@@ -313,7 +313,7 @@ public class ProfileMenuController {
         }
     }
 
-    // اعتبارسنجی رمز عبور
+
     public static Result validatePassword(String password) {
         if (password.length() < 8) {
             return new Result(false, "Password must be at least 8 characters long.");

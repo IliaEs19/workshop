@@ -32,7 +32,7 @@ public class ForgotPasswordMenu implements Screen {
     private TextButton resetButton;
     private TextButton backButton;
 
-    // اندازه‌های استاندارد برای عناصر فرم
+
     private static final float FIELD_WIDTH = 450;
     private static final float FIELD_HEIGHT = 90;
     private static final float LABEL_SCALE = 1.0f;
@@ -47,12 +47,12 @@ public class ForgotPasswordMenu implements Screen {
         this.username = username;
         this.securityQuestion = securityQuestion;
 
-        // عنوان با فونت بزرگتر
+
         menuTitle = new Label("RESET PASSWORD", skin);
         menuTitle.setFontScale(TITLE_SCALE);
         menuTitle.setColor(Color.CYAN);
 
-        // فیلدهای ورودی با اندازه بزرگتر
+
         this.securityAnswer = new TextField("", skin);
         this.securityAnswer.setMessageText("Enter your answer...");
 
@@ -66,13 +66,13 @@ public class ForgotPasswordMenu implements Screen {
         this.confirmPassword.setPasswordMode(true);
         this.confirmPassword.setPasswordCharacter('*');
 
-        // دکمه‌ها
+
         this.resetButton = new TextButton("RESET PASSWORD", skin);
         this.backButton = new TextButton("BACK", skin);
 
         this.table = new Table();
 
-        // اعمال فونت بزرگتر به TextField ها
+
         TextField.TextFieldStyle style = this.securityAnswer.getStyle();
         style.font.getData().setScale(1.2f);
 
@@ -87,13 +87,13 @@ public class ForgotPasswordMenu implements Screen {
         table.setFillParent(true);
         table.center();
 
-        // تنظیم فاصله‌ها
+
         table.pad(70);
 
-        // اضافه کردن عنوان
+
         table.add(menuTitle).colspan(2).padBottom(40);
 
-        // نمایش نام کاربری
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label userTitleLabel = new Label("USERNAME:", GameAssetManager.getGameAssetManager().getSkin());
         userTitleLabel.setColor(Color.CYAN);
@@ -105,7 +105,7 @@ public class ForgotPasswordMenu implements Screen {
         usernameLabel.setFontScale(1.2f);
         table.add(usernameLabel).width(FIELD_WIDTH).height(40).left();
 
-        // نمایش سؤال امنیتی
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label questionTitleLabel = new Label("SECURITY QUESTION:", GameAssetManager.getGameAssetManager().getSkin());
         questionTitleLabel.setColor(Color.CYAN);
@@ -118,7 +118,7 @@ public class ForgotPasswordMenu implements Screen {
         questionLabel.setWrap(true);
         table.add(questionLabel).width(FIELD_WIDTH).height(60).left();
 
-        // بخش پاسخ امنیتی
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label answerLabel = new Label("YOUR ANSWER:", GameAssetManager.getGameAssetManager().getSkin());
         answerLabel.setColor(Color.CYAN);
@@ -126,7 +126,7 @@ public class ForgotPasswordMenu implements Screen {
         table.add(answerLabel).width(200).right().padRight(30);
         table.add(securityAnswer).width(FIELD_WIDTH).height(FIELD_HEIGHT).left();
 
-        // بخش رمز عبور جدید
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label newPassLabel = new Label("NEW PASSWORD:", GameAssetManager.getGameAssetManager().getSkin());
         newPassLabel.setColor(Color.CYAN);
@@ -134,7 +134,7 @@ public class ForgotPasswordMenu implements Screen {
         table.add(newPassLabel).width(200).right().padRight(30);
         table.add(newPassword).width(FIELD_WIDTH).height(FIELD_HEIGHT).left();
 
-        // بخش تأیید رمز عبور
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label confirmPassLabel = new Label("CONFIRM PASSWORD:", GameAssetManager.getGameAssetManager().getSkin());
         confirmPassLabel.setColor(Color.CYAN);
@@ -142,40 +142,40 @@ public class ForgotPasswordMenu implements Screen {
         table.add(confirmPassLabel).width(200).right().padRight(30);
         table.add(confirmPassword).width(FIELD_WIDTH).height(FIELD_HEIGHT).left();
 
-        // دکمه بازنشانی رمز عبور
+
         table.row().pad(PADDING * 2, 0, BUTTON_SPACING, 0);
         resetButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
 
         resetButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                resetButton.setColor(new Color(0.3f, 0.7f, 1f, 1f)); // آبی روشن‌تر
+                resetButton.setColor(new Color(0.3f, 0.7f, 1f, 1f));
                 resetButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                resetButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f)); // برگشت به رنگ اصلی
+                resetButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
                 resetButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
 
         table.add(resetButton).colspan(2).width(BUTTON_WIDTH + 30).height(BUTTON_HEIGHT_SMALL);
 
-        // دکمه بازگشت
+
         table.row().pad(BUTTON_SPACING, 0, PADDING * 2, 0);
-        backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f)); // رنگ قرمز ملایم
+        backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f));
 
         backButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                backButton.setColor(new Color(1f, 0.4f, 0.4f, 1f)); // قرمز روشن‌تر
+                backButton.setColor(new Color(1f, 0.4f, 0.4f, 1f));
                 backButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f)); // برگشت به رنگ اصلی
+                backButton.setColor(new Color(0.9f, 0.3f, 0.3f, 1f));
                 backButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
@@ -184,7 +184,7 @@ public class ForgotPasswordMenu implements Screen {
 
         stage.addActor(table);
 
-        // تنظیم اندازه فونت برای TextField ها
+
         try {
             securityAnswer.getStyle().font.getData().setScale(1.2f);
             newPassword.getStyle().font.getData().setScale(1.2f);
@@ -196,7 +196,7 @@ public class ForgotPasswordMenu implements Screen {
 
     @Override
     public void render(float v) {
-        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1); // پس‌زمینه تیره
+        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

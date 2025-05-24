@@ -24,14 +24,12 @@ public class ForgotPasswordMenuController {
 
     private void setupListeners() {
         if (view != null) {
-            // لیسنر دکمه بازنشانی رمز عبور
             view.getResetButton().addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     if (!resetButtonPressed) {
                         resetButtonPressed = true;
                         processPasswordReset();
-                        // Reset flag after a short delay to prevent multiple triggers
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -42,11 +40,9 @@ public class ForgotPasswordMenuController {
                 }
             });
 
-            // لیسنر دکمه بازگشت
             view.getBackButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    // بازگشت به منوی ورود
                     Main.getMain().setScreen(new LoginMenu(
                         new LoginMenuController(),
                         GameAssetManager.getGameAssetManager().getSkin()));
@@ -61,7 +57,6 @@ public class ForgotPasswordMenuController {
         String newPassword = view.getNewPassword().getText();
         String confirmPassword = view.getConfirmPassword().getText();
 
-        // بررسی خالی نبودن فیلدها
         if (securityAnswer.isEmpty()) {
             DialogManager.showErrorDialog(view.getStage(), "Reset Failed",
                 "Security answer cannot be empty.", null);
@@ -74,14 +69,12 @@ public class ForgotPasswordMenuController {
             return;
         }
 
-        // بررسی صحت پاسخ سؤال امنیتی
         if (!SaveData.getInstance().validateSecurityAnswer(username, securityAnswer)) {
             DialogManager.showErrorDialog(view.getStage(), "Reset Failed",
                 "Incorrect security answer. Please try again.", null);
             return;
         }
 
-        // بررسی تطابق رمز عبور و تأیید آن
         if (!newPassword.equals(confirmPassword)) {
             DialogManager.showErrorDialog(view.getStage(), "Reset Failed",
                 "New password and confirmation do not match.", null);
@@ -114,7 +107,6 @@ public class ForgotPasswordMenuController {
         }
     }
 
-    // اعتبارسنجی رمز عبور
     public static Result validatePassword(String password) {
         if (password.length() < 8) {
             return new Result(false, "Password must be at least 8 characters long.");

@@ -10,12 +10,10 @@ public class SettingMenuController {
         this.view = view;
     }
 
-    // متد جدید برای دریافت نوع کنترل فعلی
     public GameSettings.ControlType getControlType() {
         return GameSettings.getInstance().getControlType();
     }
 
-    // متد جدید برای تغییر نوع کنترل
     public void setControlType(GameSettings.ControlType controlType) {
         GameSettings.getInstance().setControlType(controlType);
     }

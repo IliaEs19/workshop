@@ -8,40 +8,40 @@ public enum HeroType {
     SHANA(
         "Shana",
         "A balanced character with moderate speed and health.",
-        4,  // HP
-        4,  // Speed
+        4,
+        4,
         "heroes/character1.png"
     ),
 
     DIAMOND(
         "Diamond",
         "A slow but durable character with high health.",
-        7,  // HP
-        1,  // Speed
+        7,
+        1,
         "heroes/character2.png"
     ),
 
     SCARLET(
         "Scarlet",
         "A fast character with low health.",
-        3,  // HP
-        5,  // Speed
+        3,
+        5,
         "heroes/character2.png"
     ),
 
     LILITH(
         "Lilith",
         "A moderately fast character with good health.",
-        5,  // HP
-        3,  // Speed
+        5,
+        3,
         "heroes/character3.png"
     ),
 
     DASHER(
         "Dasher",
         "An extremely fast character with very low health.",
-        2,  // HP
-        10,  // Speed
+        2,
+        10,
         "heroes/character4.png"
     );
 
@@ -86,7 +86,7 @@ public enum HeroType {
                 Texture texture = new Texture(texturePath);
                 textureRegion = new TextureRegion(texture);
             } catch (Exception e) {
-                // Handle the case when texture cannot be loaded
+
                 System.err.println("Error loading texture for " + name + ": " + e.getMessage());
             }
         }

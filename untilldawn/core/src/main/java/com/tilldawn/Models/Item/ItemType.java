@@ -8,7 +8,7 @@ public enum ItemType {
     AMMO("Ammo", "items/AMMO.png"),
     SPEED_BOOST("Speed Boost", "items/SPEED.png"),
     DAMAGE_BOOST("Damage Boost", "items/DAMAGE.png"),
-    EXPERIENCE("XP", "items/DAMAGE.png"); // آیتم تجربه جدید
+    EXPERIENCE("XP", "items/DAMAGE.png");
 
     private final String name;
     private final String texturePath;

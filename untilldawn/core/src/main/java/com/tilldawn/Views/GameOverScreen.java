@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-//import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,29 +29,29 @@ public class GameOverScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    // متغیرهای مربوط به نتیجه بازی
+
     private boolean isVictory;
     private int playerKills;
     private float survivalTimeSeconds;
     private int playerScore;
     private String resultMessage;
 
-    // متغیرهای گرافیکی
+
     private Texture backgroundTexture;
     private Texture pixelTexture;
-    private TextureRegion trophyTexture; // برای نمایش در صورت پیروزی
-    private TextureRegion skullTexture;  // برای نمایش در صورت شکست
+    private TextureRegion trophyTexture;
+    private TextureRegion skullTexture;
     private BitmapFont titleFont;
     private BitmapFont subtitleFont;
     private BitmapFont regularFont;
     private BitmapFont buttonFont;
 
-    // متغیرهای انیمیشن
+
     private float animationTime = 0;
     private float[] itemAnimationDelays = {0.2f, 0.4f, 0.6f, 0.8f, 1.0f, 1.2f};
     private float buttonAnimationTime = 0;
 
-    // دکمه بازگشت به منوی اصلی
+
     private float buttonX;
     private float buttonY;
     private float buttonWidth;
@@ -64,23 +64,23 @@ public class GameOverScreen implements Screen {
         this.playerKills = kills;
         this.survivalTimeSeconds = survivalTime;
 
-        // محاسبه امتیاز با استفاده از فرمول: زمان زنده ماندن (ثانیه) * تعداد کشته‌ها
+
         this.playerScore = controller.getScore();
 
-        // تعیین پیام نتیجه
+
         if (isVictory) {
             resultMessage = "VICTORY!";
         } else {
             resultMessage = "GAME OVER";
         }
 
-        // راه‌اندازی گرافیک
+
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
 
-        // تنظیم دکمه بازگشت به منوی اصلی
+
         buttonWidth = 250;
         buttonHeight = 60;
         buttonX = WORLD_WIDTH / 2 - buttonWidth / 2;
@@ -90,10 +90,10 @@ public class GameOverScreen implements Screen {
     }
 
     private void loadAssets() {
-        // سعی کنید از GameAssetManager برای لود تکسچرها استفاده کنید
+
         GameAssetManager assetManager = GameAssetManager.getGameAssetManager();
 
-        // لود تکسچر پس‌زمینه
+
         try {
             if (isVictory) {
                 backgroundTexture = new Texture(Gdx.files.internal("backgrounds/YOUWIN.png"));
@@ -101,31 +101,31 @@ public class GameOverScreen implements Screen {
                 backgroundTexture = new Texture(Gdx.files.internal("backgrounds/YOULOSE.png"));
             }
         } catch (Exception e) {
-            // اگر فایل پس‌زمینه وجود نداشت، از پس‌زمینه پیش‌فرض استفاده می‌کنیم
+
             Gdx.app.error("GameOverScreen", "Error loading background texture: " + e.getMessage());
         }
 
-        // ایجاد تکسچر پیکسل برای رسم اشکال ساده
+
         com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
         pixelTexture = new Texture(pixmap);
         pixmap.dispose();
 
-        // لود آیکون‌ها
+
         try {
             Texture iconSheet = new Texture(Gdx.files.internal("heroes/character1.png"));
             trophyTexture = new TextureRegion(iconSheet, 0, 0, 64, 64);
             skullTexture = new TextureRegion(iconSheet, 64, 0, 64, 64);
         } catch (Exception e) {
-            // اگر فایل آیکون وجود نداشت، آیکون‌های پیش‌فرض را ایجاد می‌کنیم
+
             trophyTexture = new TextureRegion(pixelTexture);
             skullTexture = new TextureRegion(pixelTexture);
             Gdx.app.error("GameOverScreen", "Error loading icon textures: " + e.getMessage());
         }
 
-        // استفاده از فونت‌های موجود در GameAssetManager
-            // اگر فونت‌ها در GameAssetManager موجود نبودند، از فونت‌های پیش‌فرض استفاده کنید
+
+
             titleFont = new BitmapFont();
             titleFont.getData().setScale(3);
 
@@ -138,114 +138,114 @@ public class GameOverScreen implements Screen {
             buttonFont = new BitmapFont();
             buttonFont.getData().setScale(2);
 
-            //Gdx.app.error("GameOverScreen", "Error loading fonts from asset manager: " + e.getMessage());
+
     }
 
-//    private void createFonts() {
-//        try {
-//            // استفاده از FreeTypeFont برای فونت‌های با کیفیت بهتر
-//            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
-//            FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-//
-//            // فونت عنوان
-//            parameter.size = 48;
-//            parameter.color = isVictory ? Color.GOLD : Color.FIREBRICK;
-//            parameter.borderWidth = 2;
-//            parameter.borderColor = Color.BLACK;
-//            parameter.shadowOffsetX = 3;
-//            parameter.shadowOffsetY = 3;
-//            parameter.shadowColor = new Color(0, 0, 0, 0.5f);
-//            titleFont = generator.generateFont(parameter);
-//
-//            // فونت زیرعنوان
-//            parameter.size = 32;
-//            parameter.color = Color.WHITE;
-//            parameter.borderWidth = 1;
-//            parameter.shadowOffsetX = 2;
-//            parameter.shadowOffsetY = 2;
-//            subtitleFont = generator.generateFont(parameter);
-//
-//            // فونت معمولی
-//            parameter.size = 24;
-//            parameter.borderWidth = 0;
-//            parameter.shadowOffsetX = 1;
-//            parameter.shadowOffsetY = 1;
-//            regularFont = generator.generateFont(parameter);
-//
-//            // فونت دکمه
-//            parameter.size = 28;
-//            parameter.color = Color.WHITE;
-//            buttonFont = generator.generateFont(parameter);
-//
-//            generator.dispose();
-//        } catch (Exception e) {
-//            // اگر فونت‌های سفارشی قابل بارگذاری نبودند، از فونت پیش‌فرض استفاده می‌کنیم
-//            titleFont = new BitmapFont();
-//            titleFont.getData().setScale(3);
-//
-//            subtitleFont = new BitmapFont();
-//            subtitleFont.getData().setScale(2);
-//
-//            regularFont = new BitmapFont();
-//            regularFont.getData().setScale(1.5f);
-//
-//            buttonFont = new BitmapFont();
-//            buttonFont.getData().setScale(2);
-//
-//            Gdx.app.error("GameOverScreen", "Error creating fonts: " + e.getMessage());
-//        }
-//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void show() {
-        // اجرای موسیقی مناسب
+
         if (isVictory) {
-            // پخش موسیقی پیروزی
-            // GameAssetManager.getGameAssetManager().playMusic("victory_music.mp3");
+
+
         } else {
-            // پخش موسیقی شکست
-            // GameAssetManager.getGameAssetManager().playMusic("defeat_music.mp3");
+
+
         }
     }
 
     @Override
     public void render(float delta) {
-        // بروزرسانی انیمیشن‌ها
+
         updateAnimations(delta);
 
-        // بررسی کلیک روی دکمه بازگشت به منو
+
         checkButtonInteraction();
 
-        // پاک کردن صفحه
+
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // رسم محتوا
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // رسم پس‌زمینه
+
         if (backgroundTexture != null) {
             batch.draw(backgroundTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         } else {
-            // اگر تکسچر پس‌زمینه وجود نداشت، یک پس‌زمینه گرادیان رسم می‌کنیم
+
             drawGradientBackground();
         }
 
-        // رسم نتیجه بازی با انیمیشن
+
         float titleY = WORLD_HEIGHT - 80;
         float itemSpacing = 60;
 
-        // رسم عنوان با انیمیشن
+
         if (animationTime > itemAnimationDelays[0]) {
             float alpha = Math.min(1, (animationTime - itemAnimationDelays[0]) * 2);
             Color titleColor = isVictory ? Color.GOLD : Color.FIREBRICK;
             titleFont.setColor(titleColor.r, titleColor.g, titleColor.b, alpha);
 
-            // رسم آیکون مناسب در کنار عنوان
+
             TextureRegion icon = isVictory ? trophyTexture : skullTexture;
             float iconSize = 64;
-            float bounce = (float) Math.sin(animationTime * 5) * 5; // افکت پرش
+            float bounce = (float) Math.sin(animationTime * 5) * 5;
 
             GlyphLayout titleLayout = new GlyphLayout(titleFont, resultMessage);
             float titleX = WORLD_WIDTH / 2 - titleLayout.width / 2;
@@ -258,7 +258,7 @@ public class GameOverScreen implements Screen {
             titleFont.draw(batch, resultMessage, titleX, titleY);
         }
 
-        // رسم زمان زنده ماندن
+
         if (animationTime > itemAnimationDelays[1]) {
             float alpha = Math.min(1, (animationTime - itemAnimationDelays[1]) * 2);
             subtitleFont.setColor(subtitleFont.getColor().r, subtitleFont.getColor().g, subtitleFont.getColor().b, alpha);
@@ -271,7 +271,7 @@ public class GameOverScreen implements Screen {
             subtitleFont.draw(batch, timeText, WORLD_WIDTH / 2 - layout.width / 2, titleY - itemSpacing);
         }
 
-        // رسم تعداد کشته‌ها
+
         if (animationTime > itemAnimationDelays[2]) {
             float alpha = Math.min(1, (animationTime - itemAnimationDelays[2]) * 2);
             subtitleFont.setColor(subtitleFont.getColor().r, subtitleFont.getColor().g, subtitleFont.getColor().b, alpha);
@@ -281,7 +281,7 @@ public class GameOverScreen implements Screen {
             subtitleFont.draw(batch, killsText, WORLD_WIDTH / 2 - layout.width / 2, titleY - itemSpacing * 2);
         }
 
-        // رسم امتیاز
+
         if (animationTime > itemAnimationDelays[3]) {
             float alpha = Math.min(1, (animationTime - itemAnimationDelays[3]) * 2);
             subtitleFont.setColor(subtitleFont.getColor().r, subtitleFont.getColor().g, subtitleFont.getColor().b, alpha);
@@ -290,14 +290,14 @@ public class GameOverScreen implements Screen {
             GlyphLayout layout = new GlyphLayout(subtitleFont, scoreText);
             subtitleFont.draw(batch, scoreText, WORLD_WIDTH / 2 - layout.width / 2, titleY - itemSpacing * 3);
 
-            // رسم توضیح فرمول امتیاز
+
             regularFont.setColor(regularFont.getColor().r, regularFont.getColor().g, regularFont.getColor().b, alpha * 0.8f);
             String formulaText = "Score = Survival Time (seconds) * Kills";
             GlyphLayout formulaLayout = new GlyphLayout(regularFont, formulaText);
             regularFont.draw(batch, formulaText, WORLD_WIDTH / 2 - formulaLayout.width / 2, titleY - itemSpacing * 3 - 30);
         }
 
-        // رسم پیام نهایی
+
         if (animationTime > itemAnimationDelays[4]) {
             float alpha = Math.min(1, (animationTime - itemAnimationDelays[4]) * 2);
             regularFont.setColor(regularFont.getColor().r, regularFont.getColor().g, regularFont.getColor().b, alpha);
@@ -311,7 +311,7 @@ public class GameOverScreen implements Screen {
             regularFont.draw(batch, finalMessage, WORLD_WIDTH / 2 - layout.width / 2, titleY - itemSpacing * 4);
         }
 
-        // رسم دکمه بازگشت به منو
+
         if (animationTime > itemAnimationDelays[5]) {
             drawBackToMenuButton();
         }
@@ -320,19 +320,19 @@ public class GameOverScreen implements Screen {
     }
 
     private void drawGradientBackground() {
-        // رسم پس‌زمینه گرادیان
+
         Color topColor = isVictory ? new Color(0.2f, 0.4f, 0.6f, 1) : new Color(0.4f, 0.1f, 0.1f, 1);
         Color bottomColor = isVictory ? new Color(0.1f, 0.2f, 0.4f, 1) : new Color(0.2f, 0.05f, 0.05f, 1);
 
-        // رسم مستطیل بالایی
+
         batch.setColor(topColor);
         batch.draw(pixelTexture, 0, WORLD_HEIGHT / 2, WORLD_WIDTH, WORLD_HEIGHT / 2);
 
-        // رسم مستطیل پایینی
+
         batch.setColor(bottomColor);
         batch.draw(pixelTexture, 0, 0, WORLD_WIDTH, WORLD_HEIGHT / 2);
 
-        // رسم افکت‌های نور
+
         if (isVictory) {
             drawLightEffects();
         } else {
@@ -343,7 +343,7 @@ public class GameOverScreen implements Screen {
     }
 
     private void drawLightEffects() {
-        // رسم افکت‌های نور برای صفحه پیروزی
+
         for (int i = 0; i < 5; i++) {
             float x = WORLD_WIDTH * (0.2f + 0.15f * i);
             float y = WORLD_HEIGHT * 0.7f;
@@ -356,7 +356,7 @@ public class GameOverScreen implements Screen {
     }
 
     private void drawDarkEffects() {
-        // رسم افکت‌های تاریک برای صفحه شکست
+
         for (int i = 0; i < 5; i++) {
             float x = WORLD_WIDTH * (0.2f + 0.15f * i);
             float y = WORLD_HEIGHT * 0.3f;
@@ -369,14 +369,14 @@ public class GameOverScreen implements Screen {
     }
 
     private void drawBackToMenuButton() {
-        // محاسبه افکت انیمیشن دکمه
+
         float pulseScale = 1 + (float)Math.sin(buttonAnimationTime * 3) * 0.03f;
         float actualButtonWidth = buttonWidth * pulseScale + 60;
         float actualButtonHeight = buttonHeight * pulseScale;
         float actualButtonX = buttonX + (buttonWidth - actualButtonWidth) / 2;
         float actualButtonY = buttonY + (buttonHeight - actualButtonHeight) / 2;
 
-        // رسم پس‌زمینه دکمه
+
         if (buttonHovered) {
             batch.setColor(isVictory ? new Color(0.3f, 0.5f, 0.9f, 0.9f) : new Color(0.7f, 0.2f, 0.2f, 0.9f));
         } else {
@@ -384,20 +384,20 @@ public class GameOverScreen implements Screen {
         }
         batch.draw(pixelTexture, actualButtonX, actualButtonY, actualButtonWidth, actualButtonHeight);
 
-        // رسم حاشیه دکمه
+
         batch.setColor(isVictory ? Color.CYAN : Color.ORANGE);
         float borderThickness = 2;
 
-        // حاشیه بالا
+
         batch.draw(pixelTexture, actualButtonX, actualButtonY + actualButtonHeight - borderThickness, actualButtonWidth, borderThickness);
-        // حاشیه پایین
+
         batch.draw(pixelTexture, actualButtonX, actualButtonY, actualButtonWidth, borderThickness);
-        // حاشیه چپ
+
         batch.draw(pixelTexture, actualButtonX, actualButtonY, borderThickness, actualButtonHeight);
-        // حاشیه راست
+
         batch.draw(pixelTexture, actualButtonX + actualButtonWidth - borderThickness, actualButtonY, borderThickness, actualButtonHeight);
 
-        // رسم متن دکمه
+
         String buttonText = "BACK TO MAIN MENU";
         GlyphLayout layout = new GlyphLayout(buttonFont, buttonText);
         buttonFont.setColor(Color.WHITE);
@@ -412,22 +412,22 @@ public class GameOverScreen implements Screen {
     }
 
     private void checkButtonInteraction() {
-        // فقط اگر انیمیشن دکمه شروع شده باشد
+
         if (animationTime <= itemAnimationDelays[5]) {
             return;
         }
 
-        // تبدیل مختصات موس به مختصات دنیای بازی
+
         Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(mousePos);
 
-        // بررسی hover روی دکمه
+
         buttonHovered = (mousePos.x >= buttonX && mousePos.x <= buttonX + buttonWidth &&
             mousePos.y >= buttonY && mousePos.y <= buttonY + buttonHeight);
 
-        // بررسی کلیک روی دکمه
+
         if (buttonHovered && Gdx.input.justTouched()) {
-            // برگشت به منوی اصلی
+
             controller.returnToMainMenu();
         }
     }

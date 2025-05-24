@@ -67,11 +67,6 @@ public enum WeaponType {
     }
 
     public static void loadTextures(Texture weaponsTexture) {
-        // این متد برای لود کردن تکسچر سلاح‌ها از اسپرایت شیت استفاده می‌شود
-        // مثال:
-        // REVOLVER.setTextureRegion(new TextureRegion(weaponsTexture, 0, 0, 64, 64));
-        // SHOTGUN.setTextureRegion(new TextureRegion(weaponsTexture, 64, 0, 64, 64));
-        // SMGS_DUAL.setTextureRegion(new TextureRegion(weaponsTexture, 128, 0, 64, 64));
     }
 
     public TextureRegion getTextureRegion() {
@@ -80,7 +75,7 @@ public enum WeaponType {
                 Texture texture = new Texture(texturePath);
                 textureRegion = new TextureRegion(texture);
             } catch (Exception e) {
-                // Handle the case when texture cannot be loaded
+
                 System.err.println("Error loading texture for " + name + ": " + e.getMessage());
             }
         }

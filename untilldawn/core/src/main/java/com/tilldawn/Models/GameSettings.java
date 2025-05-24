@@ -7,7 +7,7 @@ public class GameSettings {
     private static final String PREFS_NAME = "tilldawn_settings";
     private static final String CONTROL_TYPE_KEY = "control_type";
 
-    // انواع کنترل
+
     public enum ControlType {
         WASD, ARROWS
     }
@@ -18,12 +18,12 @@ public class GameSettings {
 
     private GameSettings() {
         prefs = Gdx.app.getPreferences(PREFS_NAME);
-        // بارگذاری تنظیمات ذخیره شده یا استفاده از مقادیر پیش‌فرض
+
         String controlTypeStr = prefs.getString(CONTROL_TYPE_KEY, ControlType.WASD.name());
         try {
             controlType = ControlType.valueOf(controlTypeStr);
         } catch (Exception e) {
-            controlType = ControlType.WASD; // مقدار پیش‌فرض
+            controlType = ControlType.WASD;
         }
     }
 
@@ -41,7 +41,7 @@ public class GameSettings {
     public void setControlType(ControlType controlType) {
         this.controlType = controlType;
         prefs.putString(CONTROL_TYPE_KEY, controlType.name());
-        prefs.flush(); // ذخیره تغییرات
+        prefs.flush();
     }
 
     public boolean isUsingWASD() {

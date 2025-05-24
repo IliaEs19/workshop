@@ -13,13 +13,13 @@ public class SqliteUserStorage implements UserDataStorage {
 
     public SqliteUserStorage() {
         try {
-            // لود کردن درایور SQLite
+
             Class.forName("org.sqlite.JDBC");
 
-            // ایجاد اتصال به دیتابیس
+
             connection = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
 
-            // ایجاد جدول کاربران اگر وجود نداشته باشد
+
             createTablesIfNotExists();
 
             Gdx.app.log("SqliteUserStorage", "SQLite database initialized successfully");
@@ -30,7 +30,7 @@ public class SqliteUserStorage implements UserDataStorage {
 
     private void createTablesIfNotExists() {
         try (Statement statement = connection.createStatement()) {
-            // ایجاد جدول کاربران
+
             statement.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS users (" +
                     "username TEXT PRIMARY KEY, " +
@@ -58,12 +58,12 @@ public class SqliteUserStorage implements UserDataStorage {
     @Override
     public void saveUser(User user) {
         try {
-            // بررسی اینکه آیا کاربر قبلاً وجود دارد
+
             if (userExists(user.getUserName())) {
-                // به‌روزرسانی کاربر موجود
+
                 updateUser(user);
             } else {
-                // افزودن کاربر جدید
+
                 insertUser(user);
             }
         } catch (SQLException e) {

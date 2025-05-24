@@ -30,7 +30,7 @@ public class LoginMenu implements Screen {
     private TextButton forgotPasswordButton;
     private TextButton backButton;
 
-    // اندازه‌های استاندارد برای عناصر فرم
+
     private static final float FIELD_WIDTH = 450;
     private static final float FIELD_HEIGHT = 90;
     private static final float LABEL_SCALE = 1.0f;
@@ -44,12 +44,12 @@ public class LoginMenu implements Screen {
     public LoginMenu(LoginMenuController controller, Skin skin) {
         this.controller = controller;
 
-        // عنوان با فونت بزرگتر
+
         menuTitle = new Label("LOGIN", skin);
         menuTitle.setFontScale(TITLE_SCALE);
         menuTitle.setColor(Color.CYAN);
 
-        // فیلدهای ورودی با اندازه بزرگتر
+
         this.userName = new TextField("", skin);
         this.userName.setMessageText("Enter your username...");
 
@@ -58,7 +58,7 @@ public class LoginMenu implements Screen {
         this.password.setPasswordMode(true);
         this.password.setPasswordCharacter('*');
 
-        // چک‌باکس برای نمایش/مخفی کردن رمز عبور
+
         this.showPasswordCheckbox = new CheckBox(" Show Password", skin);
         this.showPasswordCheckbox.setChecked(false);
         this.showPasswordCheckbox.getLabel().setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
@@ -70,14 +70,14 @@ public class LoginMenu implements Screen {
             }
         });
 
-        // دکمه‌ها
+
         this.loginButton = new TextButton("LOGIN", skin);
         this.forgotPasswordButton = new TextButton("FORGOT PASSWORD?", skin);
         this.backButton = new TextButton("BACK", skin);
 
         this.table = new Table();
 
-        // اعمال فونت بزرگتر به TextField ها
+
         TextField.TextFieldStyle style = this.userName.getStyle();
         style.font.getData().setScale(1.2f);
 
@@ -92,13 +92,13 @@ public class LoginMenu implements Screen {
         table.setFillParent(true);
         table.center();
 
-        // تنظیم فاصله‌ها
+
         table.pad(70);
 
-        // اضافه کردن عنوان
+
         table.add(menuTitle).colspan(2).padBottom(60);
 
-        // بخش نام کاربری
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label userLabel = new Label("USERNAME:", GameAssetManager.getGameAssetManager().getSkin());
         userLabel.setColor(Color.CYAN);
@@ -106,14 +106,14 @@ public class LoginMenu implements Screen {
         table.add(userLabel).width(200).right().padRight(30);
         table.add(userName).width(FIELD_WIDTH).height(FIELD_HEIGHT).left();
 
-        // بخش رمز عبور
+
         table.row().pad(PADDING, 70, PADDING, 100);
         Label passLabel = new Label("PASSWORD:", GameAssetManager.getGameAssetManager().getSkin());
         passLabel.setColor(Color.CYAN);
         passLabel.setFontScale(LABEL_SCALE);
         table.add(passLabel).width(200).right().padRight(30);
 
-        // ایجاد جدول برای قرار دادن فیلد رمز عبور و چک‌باکس
+
         Table passwordTable = new Table();
         passwordTable.add(password).width(FIELD_WIDTH).height(FIELD_HEIGHT);
         passwordTable.row().pad(5, 0, 0, 0);
@@ -121,40 +121,40 @@ public class LoginMenu implements Screen {
 
         table.add(passwordTable).left();
 
-        // دکمه ورود
+
         table.row().pad(PADDING * 2, 0, BUTTON_SPACING, 0);
         loginButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
 
         loginButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                loginButton.setColor(new Color(0.3f, 0.7f, 1f, 1f)); // آبی روشن‌تر
+                loginButton.setColor(new Color(0.3f, 0.7f, 1f, 1f));
                 loginButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                loginButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f)); // برگشت به رنگ اصلی
+                loginButton.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
                 loginButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
 
         table.add(loginButton).colspan(2).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
 
-        // دکمه فراموشی رمز عبور
+
         table.row().pad(BUTTON_SPACING, 0, BUTTON_SPACING, 0);
-        forgotPasswordButton.setColor(new Color(0.7f, 0.7f, 0.7f, 1f)); // رنگ خاکستری
+        forgotPasswordButton.setColor(new Color(0.7f, 0.7f, 0.7f, 1f));
 
         forgotPasswordButton.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                forgotPasswordButton.setColor(new Color(0.8f, 0.8f, 0.8f, 1f)); // خاکستری روشن‌تر
+                forgotPasswordButton.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
                 forgotPasswordButton.addAction(Actions.scaleTo(1.05f, 1.05f, 0.1f));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                forgotPasswordButton.setColor(new Color(0.7f, 0.7f, 0.7f, 1f)); // برگشت به رنگ اصلی
+                forgotPasswordButton.setColor(new Color(0.7f, 0.7f, 0.7f, 1f));
                 forgotPasswordButton.addAction(Actions.scaleTo(1f, 1f, 0.1f));
             }
         });
@@ -197,7 +197,7 @@ public class LoginMenu implements Screen {
 
     @Override
     public void render(float v) {
-        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1); // پس‌زمینه تیره
+        ScreenUtils.clear(0.05f, 0.05f, 0.1f, 1);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }

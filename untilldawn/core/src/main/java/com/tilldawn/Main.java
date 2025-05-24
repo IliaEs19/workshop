@@ -15,7 +15,6 @@ import com.tilldawn.Models.MusicManager;
 import com.tilldawn.Models.SaveData;
 import com.tilldawn.Views.MainMenu;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 
 public class Main extends Game {
 

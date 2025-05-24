@@ -10,42 +10,33 @@ import com.tilldawn.Models.Enemy.EnemyManager;
 import com.tilldawn.Views.GameView;
 
 public class CheatManager {
-    // مرجع به کلاس GameView برای دسترسی به متدهای آن
+
     private GameView gameView;
 
-    // متغیرهای مربوط به نمایش پیام فعال‌سازی چیت
+
     private boolean showCheatMessage;
     private String cheatMessage;
     private float messageTimer;
-    private static final float MESSAGE_DURATION = 3.0f; // مدت زمان نمایش پیام (3 ثانیه)
+    private static final float MESSAGE_DURATION = 3.0f;
     private BitmapFont messageFont;
 
-    // وضعیت چیت‌های فعال
+
     private boolean infiniteShootingEnabled;
 
-    /**
-     * سازنده کلاس CheatManager
-     * @param gameView مرجع به کلاس GameView
-     */
-    public CheatManager(GameView gameView) {
+        public CheatManager(GameView gameView) {
         this.gameView = gameView;
         this.showCheatMessage = false;
         this.messageTimer = 0;
         this.cheatMessage = "";
         this.infiniteShootingEnabled = false;
 
-        // ایجاد فونت برای نمایش پیام‌ها
+
         messageFont = new BitmapFont();
         messageFont.getData().setScale(1.5f);
         messageFont.setColor(Color.YELLOW);
     }
 
-    /**
-     * پردازش کلید چیت وارد شده
-     * @param key شماره کلید
-     * @return true اگر چیت کد فعال شد، false در غیر این صورت
-     */
-    public boolean processCheatKey(int key) {
+        public boolean processCheatKey(int key) {
         CheatCode cheatCode = CheatCode.getByKeyCode(key);
         if (cheatCode == null) {
             return false;
@@ -67,11 +58,8 @@ public class CheatManager {
         }
     }
 
-    /**
-     * چیت کد 1: کاهش زمان باقی‌مانده بازی به میزان یک دقیقه
-     */
-    private boolean decreaseRemainingTime() {
-        if (gameView.decreaseGameTime(60)) { // کاهش 60 ثانیه (1 دقیقه)
+        private boolean decreaseRemainingTime() {
+        if (gameView.decreaseGameTime(60)) {
             showMessage("Cheat Activated: Time decreased by 1 minute!");
             return true;
         }
@@ -79,19 +67,13 @@ public class CheatManager {
         return false;
     }
 
-    /**
-     * چیت کد 2: افزایش سطح بازیکن (لول آپ)
-     */
-    private boolean forceLevelUp() {
+        private boolean forceLevelUp() {
         gameView.forceLevelUp();
         showMessage("Cheat Activated: Level Up!");
         return true;
     }
 
-    /**
-     * چیت کد 3: پر کردن جان بازیکن در صورت خالی بودن
-     */
-    private boolean refillHealth() {
+        private boolean refillHealth() {
         if (gameView.getPlayerHealth() < gameView.getPlayerMaxHealth() * 0.5f) {
             gameView.refillPlayerHealth();
             showMessage("Cheat Activated: Health Refilled!");
@@ -101,18 +83,15 @@ public class CheatManager {
         return false;
     }
 
-    /**
-     * چیت کد 4: شروع نبرد با باس (Elder)
-     */
-    private boolean startBossFight() {
+        private boolean startBossFight() {
         EnemyManager enemyManager = gameView.getEnemyManager();
         if (enemyManager != null) {
-            // پاک کردن همه دشمن‌های موجود
+
             enemyManager.clearAllEnemies();
 
-            // ایجاد یک Elder در نزدیکی بازیکن
+
             Vector2 playerPos = gameView.getPlayerPosition();
-            float spawnX = playerPos.x + 200; // 200 واحد به راست بازیکن
+            float spawnX = playerPos.x + 200;
             float spawnY = playerPos.y;
 
             ElderEnemy elder = new ElderEnemy(spawnX, spawnY, gameView.getRemainingGameTime());
@@ -125,10 +104,7 @@ public class CheatManager {
         return false;
     }
 
-    /**
-     * چیت کد 5: فعال/غیرفعال کردن شلیک بی‌نهایت بدون نیاز به ریلود
-     */
-    private boolean toggleInfiniteShooting() {
+        private boolean toggleInfiniteShooting() {
         infiniteShootingEnabled = !infiniteShootingEnabled;
         if (infiniteShootingEnabled) {
             showMessage("Cheat Activated: Infinite Shooting Without Reload!");
@@ -138,23 +114,14 @@ public class CheatManager {
         return true;
     }
 
-    /**
-     * نمایش پیام فعال‌سازی چیت
-     * @param message پیام مورد نظر
-     */
-    private void showMessage(String message) {
+        private void showMessage(String message) {
         this.cheatMessage = message;
         this.showCheatMessage = true;
         this.messageTimer = MESSAGE_DURATION;
     }
 
-    /**
-     * بروزرسانی وضعیت چیت‌ها
-     * این متد باید در هر فریم فراخوانی شود
-     * @param delta زمان گذشته از فریم قبلی
-     */
-    public void update(float delta) {
-        // بروزرسانی تایمر پیام
+        public void update(float delta) {
+
         if (showCheatMessage) {
             messageTimer -= delta;
             if (messageTimer <= 0) {
@@ -163,32 +130,22 @@ public class CheatManager {
         }
     }
 
-    /**
-     * رسم پیام‌های چیت
-     * @param batch اسپرایت بچ برای رسم
-     */
-    public void render(SpriteBatch batch) {
+        public void render(SpriteBatch batch) {
         if (showCheatMessage) {
-            // رسم پیام در بالای صفحه
+
             messageFont.draw(batch, cheatMessage,
                 400 - 250,
                 480 - 300);
         }
     }
 
-    /**
-     * آزادسازی منابع
-     */
-    public void dispose() {
+        public void dispose() {
         if (messageFont != null) {
             messageFont.dispose();
         }
     }
 
-    /**
-     * آیا شلیک بی‌نهایت بدون ریلود فعال است؟
-     */
-    public boolean isInfiniteShootingEnabled() {
+        public boolean isInfiniteShootingEnabled() {
         return infiniteShootingEnabled;
     }
 }

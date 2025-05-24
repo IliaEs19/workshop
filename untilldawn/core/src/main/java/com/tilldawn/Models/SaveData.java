@@ -17,15 +17,15 @@ public class SaveData {
     private boolean useSqlite;
 
     private SaveData() {
-        // راه‌اندازی هر دو سیستم ذخیره‌سازی
+
         jsonStorage = new JsonUserStorage();
 
-        // تلاش برای راه‌اندازی SQLite
+
         try {
             sqliteStorage = new SqliteUserStorage();
             useSqlite = true;
 
-            // انتقال داده‌ها از JSON به SQLite اگر SQLite خالی باشد
+
             if (sqliteStorage.loadAllUsers().isEmpty() && !jsonStorage.loadAllUsers().isEmpty()) {
                 migrateFromJsonToSqlite();
             }
@@ -62,7 +62,7 @@ public class SaveData {
         SaveData.currentUser = currentUser;
     }
 
-    // متد برای تغییر روش ذخیره‌سازی
+
     public void setStorageMethod(boolean useSqlite) {
         if (this.useSqlite != useSqlite) {
             this.useSqlite = useSqlite;
@@ -70,7 +70,7 @@ public class SaveData {
         }
     }
 
-    // متد برای دریافت روش ذخیره‌سازی فعلی
+
     public boolean isUsingSqlite() {
         return useSqlite;
     }
@@ -87,7 +87,7 @@ public class SaveData {
         User user = new User(username, password, securityQuestion, securityAnswer);
         getActiveStorage().saveUser(user);
 
-        // ذخیره در هر دو سیستم برای هماهنگی
+
         if (useSqlite) {
             jsonStorage.saveUser(user);
         }
@@ -137,7 +137,7 @@ public class SaveData {
             user.setPassword(newPassword);
             getActiveStorage().saveUser(user);
 
-            // بروزرسانی در هر دو سیستم
+
             if (useSqlite) {
                 jsonStorage.saveUser(user);
             }
@@ -153,7 +153,7 @@ public class SaveData {
             user.setPassword(newPassword);
             getActiveStorage().saveUser(user);
 
-            // بروزرسانی در هر دو سیستم
+
             if (useSqlite) {
                 jsonStorage.saveUser(user);
             }
@@ -171,7 +171,7 @@ public class SaveData {
             user.setSecurityAnswer(newSecurityAnswer);
             getActiveStorage().saveUser(user);
 
-            // بروزرسانی در هر دو سیستم
+
             if (useSqlite) {
                 jsonStorage.saveUser(user);
             }
@@ -192,7 +192,7 @@ public class SaveData {
     public boolean removeUser(String username) {
         boolean result = getActiveStorage().deleteUser(username);
 
-        // حذف از هر دو سیستم
+
         if (result && useSqlite) {
             jsonStorage.deleteUser(username);
         }
@@ -204,7 +204,7 @@ public class SaveData {
         if (getActiveStorage().userExists(user.getUserName())) {
             getActiveStorage().saveUser(user);
 
-            // بروزرسانی در هر دو سیستم
+
             if (useSqlite) {
                 jsonStorage.saveUser(user);
             }
@@ -231,7 +231,7 @@ public class SaveData {
         user.setAvatarPath(avatarPath);
         getActiveStorage().saveUser(user);
 
-        // بروزرسانی در هر دو سیستم
+
         if (useSqlite) {
             jsonStorage.saveUser(user);
         }
@@ -240,7 +240,7 @@ public class SaveData {
     }
 
     public boolean saveUserAvatarByIndex(String username, int avatarIndex) {
-        // مسیر آواتارها بر اساس شماره
+
         String[] AVATAR_PATHS = {
             "avatars/character1.jpg",
             "avatars/character2.jpg",
@@ -248,7 +248,7 @@ public class SaveData {
             "avatars/character4.jpg"
         };
 
-        // بررسی معتبر بودن شماره آواتار
+
         if (avatarIndex < 0 || avatarIndex >= AVATAR_PATHS.length) {
             return false;
         }
@@ -274,7 +274,7 @@ public class SaveData {
             user.getAvatarPath()
         );
 
-        // کپی سایر اطلاعات
+
         newUser.setLastWeaponUsed(user.getLastWeaponUsed());
         newUser.setLastGameTime(user.getLastGameTime());
         newUser.setLastHeroUsed(user.getLastHeroUsed());
@@ -284,11 +284,11 @@ public class SaveData {
         newUser.updateLongestSurvivalTime(user.getLongestSurvivalTime());
         newUser.addSurvivalTime(user.getTotalSurvivalTime());
 
-        // حذف کاربر قدیمی و اضافه کردن کاربر جدید
+
         getActiveStorage().deleteUser(oldUsername);
         getActiveStorage().saveUser(newUser);
 
-        // بروزرسانی در هر دو سیستم
+
         if (useSqlite) {
             jsonStorage.deleteUser(oldUsername);
             jsonStorage.saveUser(newUser);
@@ -297,7 +297,7 @@ public class SaveData {
         return true;
     }
 
-    // کلاس کمکی برای ذخیره‌سازی لیست کاربران در JSON - نگه داشته شده برای سازگاری
+
     static class UserList {
         public ArrayList<User> users = new ArrayList<>();
     }

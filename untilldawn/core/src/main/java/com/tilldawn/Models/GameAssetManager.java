@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 public class GameAssetManager {
     private static GameAssetManager gameAssetManager ;
     private Skin skin ;
-       // = new Skin(Gdx.files.internal("skin1/pixthulhu-ui.json"));
+
 
     private Texture mainMenuBackground;
 
@@ -43,13 +43,13 @@ public class GameAssetManager {
 
     public static void resetGameAssetManager() {
         if (gameAssetManager != null) {
-            gameAssetManager.dispose(); // آزادسازی منابع قبلی
+            gameAssetManager.dispose();
             gameAssetManager = null;
         }
-        // نمونه جدید در فراخوانی بعدی getGameAssetManager ایجاد خواهد شد
+
     }
 
-    // آزادسازی منابع
+
     public void dispose() {
         if (skin != null) {
             skin.dispose();

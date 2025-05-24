@@ -53,7 +53,7 @@ public enum EnemyType {
     }
 
     public static void loadTextures() {
-        // این متد در زمان شروع بازی فراخوانی می‌شود تا تکسچرهای دشمن‌ها را لود کند
+
         for (EnemyType type : values()) {
             try {
                 Texture texture = new Texture(type.getTexturePath());
@@ -65,7 +65,7 @@ public enum EnemyType {
     }
 
     public static void disposeTextures() {
-        // این متد در زمان پایان بازی فراخوانی می‌شود تا منابع را آزاد کند
+
         for (EnemyType type : values()) {
             if (type.textureRegion != null && type.textureRegion.getTexture() != null) {
                 type.textureRegion.getTexture().dispose();

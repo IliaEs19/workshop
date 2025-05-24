@@ -6,12 +6,12 @@ public class TentacleMonsterEnemy extends Enemy {
 
     public TentacleMonsterEnemy(float x, float y) {
         super(EnemyType.TENTACLE_MONSTER, x, y, 40, 40);
-        this.speed = 60; // سرعت متوسط
+        this.speed = 60;
     }
 
     @Override
     protected void updateBehavior(float delta, Vector2 playerPosition) {
-        // حرکت به سمت بازیکن
+
         float dx = playerPosition.x - x;
         float dy = playerPosition.y - y;
         float length = (float) Math.sqrt(dx * dx + dy * dy);

@@ -7,9 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.tilldawn.Models.Bullet;
 
 public class ElderEnemy extends Enemy {
-    private static final float DASH_INTERVAL = 5.0f; // هر 5 ثانیه یک بار dash می‌زند
-    private static final float DASH_SPEED = 300.0f; // سرعت dash
-    private static final float DASH_DURATION = 1.0f; // مدت زمان dash
+    private static final float DASH_INTERVAL = 5.0f;
+    private static final float DASH_SPEED = 300.0f;
+    private static final float DASH_DURATION = 1.0f;
 
     private boolean isDashing;
     private float dashTimer;
@@ -22,12 +22,12 @@ public class ElderEnemy extends Enemy {
 
     public ElderEnemy(float x, float y, float gameMaxTime) {
         super(EnemyType.ELDER, x, y, 70, 70);
-        this.speed = 40; // سرعت پایه
+        this.speed = 40;
         this.isDashing = false;
         this.dashTimer = 0;
         this.dashDurationTimer = 0;
         this.dashDirection = new Vector2();
-        this.maxShieldSize = 400; // اندازه اولیه حفاظ
+        this.maxShieldSize = 400;
         this.shieldSize = maxShieldSize;
         this.gameTime = 0;
         this.gameMaxTime = gameMaxTime;
@@ -35,28 +35,28 @@ public class ElderEnemy extends Enemy {
 
     @Override
     protected void updateBehavior(float delta, Vector2 playerPosition) {
-        // بروزرسانی زمان بازی
+
         gameTime += delta;
 
-        // بروزرسانی اندازه حفاظ
+
         float progress = Math.min(gameTime / gameMaxTime, 1.0f);
         shieldSize = maxShieldSize * (1.0f - progress);
 
         if (isDashing) {
-            // اگر در حال dash است
+
             dashDurationTimer += delta;
 
-            // حرکت با سرعت dash در جهت تعیین شده
+
             x += dashDirection.x * DASH_SPEED * delta;
             y += dashDirection.y * DASH_SPEED * delta;
 
-            // پایان dash
+
             if (dashDurationTimer >= DASH_DURATION) {
                 isDashing = false;
                 dashDurationTimer = 0;
             }
         } else {
-            // حرکت عادی به سمت بازیکن
+
             float dx = playerPosition.x - x;
             float dy = playerPosition.y - y;
             float length = (float) Math.sqrt(dx * dx + dy * dy);
@@ -69,7 +69,7 @@ public class ElderEnemy extends Enemy {
                 y += dy * speed * delta;
             }
 
-            // بررسی زمان dash
+
             dashTimer += delta;
             if (dashTimer >= DASH_INTERVAL) {
                 startDash(playerPosition);
@@ -77,10 +77,10 @@ public class ElderEnemy extends Enemy {
             }
         }
 
-        // شلیک گلوله‌های تصادفی
+
         shootTimer += delta;
         if (shootTimer >= 1.0f) {
-            // شلیک به چند جهت تصادفی
+
             for (int i = 0; i < 3; i++) {
                 float angle = MathUtils.random(360);
                 float radians = (float) Math.toRadians(angle);
@@ -100,7 +100,7 @@ public class ElderEnemy extends Enemy {
         isDashing = true;
         dashDurationTimer = 0;
 
-        // تعیین جهت dash به سمت بازیکن
+
         float dx = playerPosition.x - x;
         float dy = playerPosition.y - y;
         float length = (float) Math.sqrt(dx * dx + dy * dy);
@@ -110,25 +110,25 @@ public class ElderEnemy extends Enemy {
             dy /= length;
             dashDirection.set(dx, dy);
         } else {
-            dashDirection.set(1, 0); // جهت پیش‌فرض
+            dashDirection.set(1, 0);
         }
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        // رسم حفاظ
+
         if (shieldSize > 0) {
-            // اینجا باید کد رسم حفاظ را اضافه کنید
-            // می‌توانید از ShapeRenderer استفاده کنید یا یک تکسچر دایره‌ای
+
+
         }
 
-        // رسم دشمن و گلوله‌ها
+
         super.render(batch);
     }
 
     @Override
     public boolean checkBulletCollision(Rectangle bulletBounds) {
-        // اگر حفاظ فعال است، ابتدا برخورد با حفاظ را بررسی کنید
+
         if (shieldSize > 0) {
             float centerX = x;
             float centerY = y;
@@ -140,11 +140,11 @@ public class ElderEnemy extends Enemy {
             float distanceSquared = dx * dx + dy * dy;
 
             if (distanceSquared <= shieldSize * shieldSize / 4) {
-                return true; // برخورد با حفاظ
+                return true;
             }
         }
 
-        // بررسی برخورد با خود دشمن
+
         return super.checkBulletCollision(bulletBounds);
     }
 

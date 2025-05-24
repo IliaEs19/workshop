@@ -10,13 +10,6 @@ public class AvatarSelectionController {
     public void setView(AvatarSelectionScreen view) {
         this.view = view;
     }
-
-    /**
-     * ذخیره آواتار انتخاب شده برای کاربر
-     *
-     * @param user        کاربر
-     * @param avatarIndex شاخص آواتار انتخاب شده
-     */
     public void saveUserAvatar(User user, int avatarIndex) {
         user.setAvatarIndex(avatarIndex);
         SaveData.getInstance().saveUserAvatarByIndex(user.getUserName(), avatarIndex);

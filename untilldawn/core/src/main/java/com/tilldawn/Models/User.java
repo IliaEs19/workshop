@@ -13,16 +13,16 @@ public class User {
     private int avatarIndex = -1;
     private String avatarPath;
 
-    private String lastWeaponUsed; // نام سلاح آخر استفاده شده
-    private int lastGameTime; // زمان آخرین بازی به دقیقه
-    private String lastHeroUsed; // نام قهرمان آخر استفاده شده
-    private int highScore; // بالاترین امتیاز کاربر
+    private String lastWeaponUsed;
+    private int lastGameTime;
+    private String lastHeroUsed;
+    private int highScore;
     private int totalGamesPlayed;
 
     public User(){}
 
-    private int totalKills; // تعداد کل کشته‌ها
-    private float longestSurvivalTime; // بیشترین مدت زمان زنده ماندن (به ثانیه)
+    private int totalKills;
+    private float longestSurvivalTime;
     private float totalSurvivalTime;
 
 
@@ -147,27 +147,15 @@ public class User {
         return totalKills;
     }
 
-    /**
-     * افزودن به تعداد کشته‌ها
-     * @param kills تعداد کشته‌های جدید
-     */
-    public void addKills(int kills) {
+        public void addKills(int kills) {
         this.totalKills += kills;
     }
 
-    /**
-     * تنظیم تعداد کل کشته‌ها
-     * @param totalKills تعداد کل کشته‌ها
-     */
-    public void setTotalKills(int totalKills) {
+        public void setTotalKills(int totalKills) {
         this.totalKills = totalKills;
     }
 
-    /**
-     * دریافت بیشترین مدت زمان زنده ماندن (به ثانیه)
-     * @return بیشترین مدت زمان زنده ماندن
-     */
-    public float getLongestSurvivalTime() {
+        public float getLongestSurvivalTime() {
         return longestSurvivalTime;
     }
 
@@ -175,29 +163,17 @@ public class User {
         this.totalGamesPlayed = totalGamesPlayed;
     }
 
-    /**
-     * تنظیم بیشترین مدت زمان زنده ماندن
-     * @param survivalTime مدت زمان زنده ماندن جدید (به ثانیه)
-     */
-    public void updateLongestSurvivalTime(float survivalTime) {
+        public void updateLongestSurvivalTime(float survivalTime) {
         if (survivalTime > this.longestSurvivalTime) {
             this.longestSurvivalTime = survivalTime;
         }
     }
 
-    /**
-     * دریافت مدت زمان کل زنده ماندن (به ثانیه)
-     * @return مدت زمان کل زنده ماندن
-     */
-    public float getTotalSurvivalTime() {
+        public float getTotalSurvivalTime() {
         return totalSurvivalTime;
     }
 
-    /**
-     * افزودن به مدت زمان کل زنده ماندن
-     * @param survivalTime مدت زمان زنده ماندن جدید (به ثانیه)
-     */
-    public void addSurvivalTime(float survivalTime) {
+        public void addSurvivalTime(float survivalTime) {
         this.totalSurvivalTime += survivalTime;
     }
 }

@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-//import com.tilldawn.Controllers.GameController;
+
 import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Controllers.PreGameMenuController;
@@ -35,23 +35,23 @@ public class PreGameMenu implements Screen {
     private Skin skin;
     private HeroType selectedHero = null;
     private WeaponType selectedWeapon = null;
-    private int selectedTime = 0; // زمان انتخاب شده به دقیقه
-    private final Array<Integer> availableTimes = new Array<>(new Integer[]{2, 5, 10, 20}); // آپشن‌های زمان بازی
+    private int selectedTime = 0;
+    private final Array<Integer> availableTimes = new Array<>(new Integer[]{2, 5, 10, 20});
 
-    // ثابت‌های طراحی
+
     private static final Color BACKGROUND_COLOR = new Color(0.1f, 0.1f, 0.2f, 1f);
-    private static final Color TITLE_COLOR = new Color(0.9f, 0.7f, 0.2f, 1f); // طلایی
-    private static final Color SELECTED_COLOR = new Color(0.3f, 0.6f, 0.9f, 1f); // آبی
-    private static final Color TEXT_COLOR = new Color(0.9f, 0.9f, 0.9f, 1f); // سفید
+    private static final Color TITLE_COLOR = new Color(0.9f, 0.7f, 0.2f, 1f);
+    private static final Color SELECTED_COLOR = new Color(0.3f, 0.6f, 0.9f, 1f);
+    private static final Color TEXT_COLOR = new Color(0.9f, 0.9f, 0.9f, 1f);
     private static final float PADDING = 25f;
 
-    // بخش‌های مختلف منو
+
     private Table heroSelectionTable;
     private Table weaponSelectionTable;
     private Table timeSelectionTable;
     private Table previewTable;
 
-    // جزئیات انتخاب شده
+
     private Label heroNameLabel;
     private Label heroDescLabel;
     private Image heroImage;
@@ -63,11 +63,11 @@ public class PreGameMenu implements Screen {
 
     public PreGameMenu(PreGameMenuController controller) {
         this.controller = controller;
-        skin = GameAssetManager.getGameAssetManager().getSkin(); // اضافه کردن این خط
+        skin = GameAssetManager.getGameAssetManager().getSkin();
 
-        // بررسی اینکه آیا کاربر لاگین کرده است
+
         if (!controller.checkUserLoggedIn()) {
-            return; // اگر کاربر لاگین نکرده باشد، از سازنده خارج می‌شویم
+            return;
         }
     }
 
@@ -77,60 +77,60 @@ public class PreGameMenu implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // ایجاد جدول اصلی
+
         mainTable = new Table();
         mainTable.setFillParent(true);
         mainTable.setBackground(createBackground(BACKGROUND_COLOR));
         mainTable.pad(PADDING);
 
-        // ایجاد عنوان با افکت درخشش
+
         Label titleLabel = new Label("PRE-GAME SETUP", skin);
         titleLabel.setFontScale(2.2f);
         titleLabel.setColor(TITLE_COLOR);
         titleLabel.setAlignment(Align.center);
 
-        // افزودن انیمیشن درخشش به عنوان
+
         titleLabel.addAction(Actions.forever(Actions.sequence(
             Actions.color(new Color(TITLE_COLOR.r, TITLE_COLOR.g, TITLE_COLOR.b, 0.8f), 1.5f),
             Actions.color(TITLE_COLOR, 1.5f)
         )));
 
-        // ایجاد بخش‌های مختلف منو
+
         createHeroSelectionSection();
         createWeaponSelectionSection();
         createTimeSelectionSection();
         createPreviewSection();
         createButtonsSection();
 
-        // افزودن همه بخش‌ها به جدول اصلی
+
         mainTable.add(titleLabel).colspan(3).expandX().fillX().pad(PADDING).row();
 
         Table contentTable = new Table();
 
-        // ستون اول: انتخاب قهرمان و سلاح
+
         Table leftColumn = new Table();
         leftColumn.add(new Label("SELECT HERO", skin)).padBottom(10).row();
         leftColumn.add(heroSelectionTable).expandX().fillX().height(300).row();
         leftColumn.add(new Label("SELECT WEAPON", skin)).padTop(20).padBottom(10).row();
         leftColumn.add(weaponSelectionTable).expandX().fillX().height(250).row();
 
-        // ستون دوم: پیش‌نمایش
+
         Table middleColumn = new Table();
         middleColumn.add(previewTable).expand().fill();
 
-        // ستون سوم: انتخاب زمان و دکمه‌ها
+
         Table rightColumn = new Table();
         rightColumn.add(new Label("SELECT GAME TIME", skin)).padBottom(10).row();
         rightColumn.add(timeSelectionTable).expandX().fillX().height(150).row();
 
-        // افزودن ستون‌ها به جدول محتوا
+
         contentTable.add(leftColumn).width(300).padRight(20);
         contentTable.add(middleColumn).expand().fill();
         contentTable.add(rightColumn).width(300).padLeft(30);
 
         mainTable.add(contentTable).expand().fill().row();
 
-        // ایجاد بخش دکمه‌ها
+
         Table buttonSection = new Table();
 
         TextButton backButton = new TextButton("BACK", skin);
@@ -162,7 +162,7 @@ public class PreGameMenu implements Screen {
 
         mainTable.add(buttonSection).colspan(3).padTop(20).row();
 
-        // انتخاب اولین گزینه‌ها به صورت پیش‌فرض
+
         if (HeroType.values().length > 0) {
             selectHero(HeroType.values()[0]);
         }
@@ -174,7 +174,7 @@ public class PreGameMenu implements Screen {
 
         stage.addActor(mainTable);
 
-        // افزودن انیمیشن ورودی
+
         mainTable.getColor().a = 0f;
         mainTable.addAction(Actions.sequence(
             Actions.fadeIn(0.5f, Interpolation.smooth)
@@ -207,13 +207,13 @@ public class PreGameMenu implements Screen {
 
     private void createHeroSelectionSection() {
         heroSelectionTable = new Table();
-//        heroSelectionTable.setBackground(createGradientBackground(
-//            new Color(0.15f, 0.15f, 0.25f, 0.9f),
-//            new Color(0.1f, 0.1f, 0.2f, 0.9f)
-//        ));
+
+
+
+
         heroSelectionTable.pad(15);
 
-        // ایجاد اسکرول پنل برای لیست قهرمانان
+
         Table heroListTable = new Table();
 
         for (final HeroType hero : HeroType.values()) {
@@ -244,13 +244,13 @@ public class PreGameMenu implements Screen {
 
     private void createWeaponSelectionSection() {
         weaponSelectionTable = new Table();
-//        weaponSelectionTable.setBackground(createGradientBackground(
-//            new Color(0.15f, 0.15f, 0.25f, 0.9f),
-//            new Color(0.1f, 0.1f, 0.2f, 0.9f)
-//        ));
+
+
+
+
         weaponSelectionTable.pad(15);
 
-        // ایجاد اسکرول پنل برای لیست سلاح‌ها
+
         Table weaponListTable = new Table();
 
         for (final WeaponType weapon : WeaponType.values()) {
@@ -287,7 +287,7 @@ public class PreGameMenu implements Screen {
         ));
         timeSelectionTable.pad(15);
 
-        // ایجاد گزینه‌های انتخاب زمان
+
         Table timeOptionsTable = new Table();
 
         for (final Integer time : availableTimes) {
@@ -300,7 +300,7 @@ public class PreGameMenu implements Screen {
                     selectedTime = time;
                     updateTimeLabel();
 
-                    // به‌روزرسانی رنگ دکمه‌ها
+
                     for (Actor actor : timeOptionsTable.getChildren()) {
                         if (actor instanceof TextButton) {
                             TextButton button = (TextButton) actor;
@@ -314,7 +314,7 @@ public class PreGameMenu implements Screen {
                 }
             });
 
-            // انتخاب اولین گزینه به صورت پیش‌فرض
+
             if (time.equals(availableTimes.get(0))) {
                 timeButton.setColor(SELECTED_COLOR);
             }
@@ -333,13 +333,13 @@ public class PreGameMenu implements Screen {
         ));
         previewTable.pad(20);
 
-        // عنوان پیش‌نمایش
+
         Label previewTitle = new Label("PREVIEW", skin);
         previewTitle.setFontScale(1.5f);
         previewTitle.setColor(TITLE_COLOR);
         previewTitle.setAlignment(Align.center);
 
-        // بخش قهرمان
+
         Table heroPreview = new Table();
         heroPreview.setBackground(createPanelBackground(new Color(0.2f, 0.2f, 0.3f, 0.5f)));
         heroPreview.pad(15);
@@ -366,7 +366,7 @@ public class PreGameMenu implements Screen {
         heroInfoTable.add(heroDescLabel).width(350).left();
         heroPreview.add(heroInfoTable).expand().fill().row();
 
-        // بخش سلاح
+
         Table weaponPreview = new Table();
         weaponPreview.setBackground(createPanelBackground(new Color(0.2f, 0.2f, 0.3f, 0.5f)));
         weaponPreview.pad(15);
@@ -393,7 +393,7 @@ public class PreGameMenu implements Screen {
         weaponInfoTable.add(weaponDescLabel).width(300).left();
         weaponPreview.add(weaponInfoTable).expand().fill().row();
 
-        // بخش زمان
+
         Table timePreview = new Table();
         timePreview.setBackground(createPanelBackground(new Color(0.2f, 0.2f, 0.3f, 0.5f)));
         timePreview.pad(15);
@@ -408,7 +408,7 @@ public class PreGameMenu implements Screen {
         timePreview.add(timeSectionTitle).padBottom(10).row();
         timePreview.add(timeLabel);
 
-        // افزودن همه بخش‌ها به جدول پیش‌نمایش
+
         previewTable.add(previewTitle).colspan(2).expandX().fillX().padBottom(20).row();
         previewTable.add(heroPreview).expand().fill().padRight(10);
 
@@ -418,45 +418,45 @@ public class PreGameMenu implements Screen {
 
         previewTable.add(rightPreviewColumn).expand().fill();
 
-        // افزودن انیمیشن‌های مختلف به اجزای پیش‌نمایش
+
         addPulseEffect(heroImage);
         addPulseEffect(weaponImage);
         addFloatEffect(timeLabel);
     }
 
     private void createButtonsSection() {
-        // این بخش در متد show() پیاده‌سازی شده است
+
     }
 
     private void selectHero(HeroType hero) {
         this.selectedHero = hero;
 
-        // به‌روزرسانی تصویر قهرمان با انیمیشن
+
         if (hero.getTextureRegion() != null) {
             heroImage.setDrawable(new TextureRegionDrawable(hero.getTextureRegion()));
         } else {
-            // تنظیم تصویر پیش‌فرض اگر تکسچر موجود نیست
+
             heroImage.setDrawable(createDefaultImage());
         }
 
-        // اعمال انیمیشن بزرگنمایی به تصویر
+
         heroImage.addAction(Actions.sequence(
             Actions.scaleTo(0.9f, 0.9f, 0.1f),
             Actions.scaleTo(1.1f, 1.1f, 0.2f),
             Actions.scaleTo(1.0f, 1.0f, 0.1f)
         ));
 
-        // به‌روزرسانی اطلاعات قهرمان با انیمیشن
+
         heroNameLabel.setText(hero.getName());
         heroDescLabel.setText(hero.getDescription());
 
-        // افزودن افکت فید-این به کل جدول جزئیات
+
         heroImage.getParent().addAction(Actions.sequence(
             Actions.alpha(0.5f),
             Actions.alpha(1f, 0.4f)
         ));
 
-        // به‌روزرسانی رنگ دکمه‌ها
+
         updateHeroButtonsColors(hero);
         controller.setSelectedHero(hero);
     }
@@ -464,22 +464,22 @@ public class PreGameMenu implements Screen {
     private void selectWeapon(WeaponType weapon) {
         this.selectedWeapon = weapon;
 
-        // به‌روزرسانی تصویر سلاح با انیمیشن
+
         if (weapon.getTextureRegion() != null) {
             weaponImage.setDrawable(new TextureRegionDrawable(weapon.getTextureRegion()));
         } else {
-            // تنظیم تصویر پیش‌فرض اگر تکسچر موجود نیست
+
             weaponImage.setDrawable(createDefaultImage());
         }
 
-        // اعمال انیمیشن بزرگنمایی به تصویر
+
         weaponImage.addAction(Actions.sequence(
             Actions.scaleTo(0.9f, 0.9f, 0.1f),
             Actions.scaleTo(1.1f, 1.1f, 0.2f),
             Actions.scaleTo(1.0f, 1.0f, 0.1f)
         ));
 
-        // به‌روزرسانی اطلاعات سلاح با انیمیشن
+
         weaponNameLabel.setText(weapon.getName());
         weaponDescLabel.setText(
             weapon.getEnglishDescription() + "\n\n" +
@@ -502,7 +502,7 @@ public class PreGameMenu implements Screen {
         if (timeLabel != null) {
             timeLabel.setText(selectedTime + "MINUTE");
 
-            // افزودن انیمیشن به برچسب زمان
+
             timeLabel.addAction(Actions.sequence(
                 Actions.scaleTo(1.2f, 1.2f, 0.2f),
                 Actions.scaleTo(1.0f, 1.0f, 0.2f)
@@ -566,7 +566,7 @@ public class PreGameMenu implements Screen {
         button.getLabel().setFontScale(1.0f);
         button.setColor(new Color(0.6f, 0.6f, 0.7f, 1f));
 
-        // افزودن افکت‌های هاور و کلیک
+
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -595,7 +595,7 @@ public class PreGameMenu implements Screen {
         button.getLabel().setFontScale(1.0f);
         button.setColor(new Color(0.6f, 0.6f, 0.7f, 1f));
 
-        // افزودن افکت‌های هاور و کلیک
+
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -624,7 +624,7 @@ public class PreGameMenu implements Screen {
         button.getLabel().setFontScale(1.1f);
         button.setColor(new Color(0.6f, 0.6f, 0.7f, 1f));
 
-        // افزودن افکت‌های هاور
+
         button.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -655,7 +655,7 @@ public class PreGameMenu implements Screen {
         button.getLabel().setFontScale(1.3f);
         button.setColor(baseColor);
 
-        // افزودن افکت‌های هاور و کلیک
+
         final Color originalColor = new Color(baseColor);
 
         button.addListener(new ClickListener() {
@@ -700,13 +700,13 @@ public class PreGameMenu implements Screen {
     }
 
     private void startGame() {
-        // انیمیشن خروج قبل از شروع بازی
+
         mainTable.addAction(Actions.sequence(
             Actions.fadeOut(0.5f, Interpolation.smooth),
             Actions.run(new Runnable() {
                 @Override
                 public void run() {
-                    // ایجاد بازی جدید با تنظیمات انتخاب شده
+
                     GameController gameController = new GameController(selectedHero, selectedWeapon, selectedTime);
                     Main.getMain().setScreen(gameController.getGameScreen());
                 }
@@ -720,14 +720,14 @@ public class PreGameMenu implements Screen {
         dialog.text(message);
         dialog.button("OK").padBottom(10);
 
-        // افزودن افکت به دیالوگ
+
         dialog.show(stage);
         dialog.setPosition(
             (stage.getWidth() - dialog.getWidth()) / 2,
             (stage.getHeight() - dialog.getHeight()) / 2
         );
 
-        // انیمیشن ظاهر شدن دیالوگ
+
         dialog.getColor().a = 0f;
         dialog.addAction(Actions.fadeIn(0.3f, Interpolation.smooth));
     }
@@ -769,7 +769,7 @@ public class PreGameMenu implements Screen {
         pixmap.setColor(color);
         pixmap.fill();
 
-        // افزودن حاشیه ظریف
+
         pixmap.setColor(new Color(color.r + 0.1f, color.g + 0.1f, color.b + 0.1f, color.a));
         for (int i = 0; i < 2; i++) {
             pixmap.drawRectangle(i, i, pixmap.getWidth() - i*2, pixmap.getHeight() - i*2);
@@ -786,7 +786,7 @@ public class PreGameMenu implements Screen {
         pixmap.setColor(new Color(0.3f, 0.3f, 0.4f, 1f));
         pixmap.fill();
 
-        // افزودن یک الگوی جالب برای تصویر پیش‌فرض
+
         pixmap.setColor(new Color(0.4f, 0.4f, 0.5f, 1f));
         for (int i = 0; i < 100; i += 10) {
             pixmap.drawLine(0, i, i, 0);
@@ -808,7 +808,7 @@ public class PreGameMenu implements Screen {
 
     @Override
     public void render(float delta) {
-        // افزودن تپش رنگ ملایم به پس‌زمینه
+
         float t = (System.currentTimeMillis() % 10000) / 10000f;
         float r = 0.05f + 0.02f * (float)Math.sin(t * Math.PI * 2);
         float g = 0.05f + 0.01f * (float)Math.sin((t + 0.33f) * Math.PI * 2);
