@@ -11,7 +11,6 @@ import java.util.List;
 public class SaveData {
     private static SaveData instance;
     private static User currentUser;
-
     private UserDataStorage jsonStorage;
     private UserDataStorage sqliteStorage;
     private boolean useSqlite;

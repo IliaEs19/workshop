@@ -82,7 +82,9 @@ public class RegisterMenuController {
             view.getGuestButton().addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-
+                    String name = "guest" + SaveData.getInstance().getAllUsers().size();
+                    User guestUser = new User(name,"GUEst313@#","What was the name of your first pet?","guest");
+                    SaveData.setCurrentUser(guestUser);
                     Main.getMain().setScreen(new PreGameMenu(new PreGameMenuController()));
                 }
             });
