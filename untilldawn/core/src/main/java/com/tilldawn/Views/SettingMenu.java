@@ -22,6 +22,7 @@ import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.GameSettings;
 import com.tilldawn.Models.MusicManager;
+import com.tilldawn.Models.SoundManager;
 
 public class SettingMenu implements Screen {
     private Stage stage;
@@ -29,7 +30,7 @@ public class SettingMenu implements Screen {
     private final SettingMenuController controller;
     private Image backgroundImage;
 
-
+    private CheckBox sfxEnableCheckbox;
     private CheckBox musicEnabledCheckbox;
     private Slider volumeSlider;
     private TextButton mainThemeButton;
@@ -59,17 +60,6 @@ public class SettingMenu implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
-
-
-
-
-
-
-
-
-
-
 
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -101,6 +91,11 @@ public class SettingMenu implements Screen {
         musicEnabledCheckbox.setChecked(MusicManager.getInstance().isMusicEnabled());
         musicEnabledCheckbox.getLabel().setFontScale(1.2f);
         panelTable.add(musicEnabledCheckbox).colspan(2).pad(PADDING / 2).left().row();
+
+        sfxEnableCheckbox = new CheckBox(" Enable SFX", GameAssetManager.getGameAssetManager().getSkin());
+        sfxEnableCheckbox.setChecked(SoundManager.getInstance().isSoundEnabled());
+        sfxEnableCheckbox.getLabel().setFontScale(1.2f);
+        panelTable.add(sfxEnableCheckbox).colspan(2).pad(PADDING / 2).right().row();
 
 
         Label selectMusicLabel = new Label("SELECT MUSIC:", GameAssetManager.getGameAssetManager().getSkin());
@@ -250,6 +245,13 @@ public class SettingMenu implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 MusicManager.getInstance().setMusicEnabled(musicEnabledCheckbox.isChecked());
+            }
+        });
+
+        sfxEnableCheckbox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                SoundManager.getInstance().setSoundEnabled(sfxEnableCheckbox.isChecked());
             }
         });
 

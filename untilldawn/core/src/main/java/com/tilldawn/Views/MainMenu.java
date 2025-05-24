@@ -5,22 +5,29 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.tilldawn.Controllers.MainMenuController;
 import com.tilldawn.Main;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.SaveData;
+import com.tilldawn.Models.SoundManager;
 import com.tilldawn.Models.User;
 
 import java.util.ArrayList;
+
+import static com.tilldawn.Models.SoundManager.addSoundToButton;
 
 public class MainMenu implements Screen {
     private Stage stage;
@@ -42,7 +49,7 @@ public class MainMenu implements Screen {
     private TextButton logoutButton;
     private TextButton saveGame;
 
-
+    private Array<Texture> generatedTextures = new Array<>();
     private ArrayList<TextButton> menus = new ArrayList<>();
     private TextButton exit;
 
@@ -99,7 +106,6 @@ public class MainMenu implements Screen {
                     button.setColor(hoverColor);
                     button.addAction(Actions.scaleTo(1.1f, 1.1f, 0.2f));
                 }
-
                 @Override
                 public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                     button.clearActions();
@@ -113,7 +119,6 @@ public class MainMenu implements Screen {
                     ));
                 }
             });
-
             table.add(button).width(430).height(100).padLeft(1100).padBottom(0);
             table.row().pad(15, 0, 15, 0);
         }
@@ -149,7 +154,7 @@ public class MainMenu implements Screen {
                 ));
             }
         });
-
+        addSoundToButton(exit);
         table.add(exit).width(420).height(100).padLeft(1100);
         stage.addActor(table);
 
@@ -237,7 +242,27 @@ public class MainMenu implements Screen {
     }
 
 
-    private void updateUserInfoPanel() {
+    private Drawable createCircleWithBorderDrawable(int size, Color fillColor, Color borderColor, int borderWidth) {
+        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(size, size, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+
+
+        pixmap.setColor(borderColor);
+        pixmap.fillCircle(size / 2, size / 2, size / 2 - 1);
+
+
+        pixmap.setColor(fillColor);
+        pixmap.fillCircle(size / 2, size / 2, size / 2 - borderWidth - 1);
+
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+
+
+        generatedTextures.add(texture);
+
+        return new TextureRegionDrawable(new TextureRegion(texture));
+    }
+
+        private void updateUserInfoPanel() {
         if (SaveData.getCurrentUser() != null) {
             User currentUser = SaveData.getCurrentUser();
 
@@ -251,14 +276,20 @@ public class MainMenu implements Screen {
             if (currentUser.getAvatarPath() != null && !currentUser.getAvatarPath().isEmpty()) {
                 try {
                     Texture avatarTexture = new Texture(Gdx.files.internal(currentUser.getAvatarPath()));
-                    userAvatar.setDrawable(new Image(avatarTexture).getDrawable());
+                    userAvatar.setDrawable(new TextureRegionDrawable(new TextureRegion(avatarTexture)));
                 } catch (Exception e) {
 
-                    userAvatar.setDrawable(GameAssetManager.getGameAssetManager().getSkin().getDrawable("default-round"));
+                    userAvatar.setDrawable(createCircleWithBorderDrawable(64,
+                        new Color(0.4f, 0.6f, 0.9f, 1f),
+                        new Color(0.2f, 0.3f, 0.8f, 1f),
+                        3));
                 }
             } else {
 
-                userAvatar.setDrawable(GameAssetManager.getGameAssetManager().getSkin().getDrawable("default-round"));
+                userAvatar.setDrawable(createCircleWithBorderDrawable(64,
+                    new Color(0.4f, 0.6f, 0.9f, 1f),
+                    new Color(0.2f, 0.3f, 0.8f, 1f),
+                    3));
             }
         } else {
 
@@ -310,8 +341,14 @@ public class MainMenu implements Screen {
         if (stage != null) {
             stage.dispose();
         }
-    }
 
+
+        for (Texture texture : generatedTextures) {
+            if (texture != null) {
+                texture.dispose();
+            }
+        }
+    }
     public ArrayList<TextButton> getMenus() {
         return menus;
     }

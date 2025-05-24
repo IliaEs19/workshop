@@ -9,11 +9,11 @@
 		"lastWeaponUsed": "Revolver",
 		"lastGameTime": 2,
 		"lastHeroUsed": "Shana",
-		"highScore": 562,
-		"totalGamesPlayed": 2,
-		"totalKills": 15,
-		"longestSurvivalTime": 37.47496,
-		"totalSurvivalTime": 37.47496
+		"highScore": 14040,
+		"totalGamesPlayed": 24,
+		"totalKills": 176,
+		"longestSurvivalTime": 120.000885,
+		"totalSurvivalTime": 330.31125
 	},
 	{
 		"userName": "salam1",
@@ -25,10 +25,10 @@
 		"lastGameTime": 2,
 		"lastHeroUsed": "Shana",
 		"highScore": 4790,
-		"totalGamesPlayed": 4,
-		"totalKills": 71,
+		"totalGamesPlayed": 10,
+		"totalKills": 83,
 		"longestSurvivalTime": 85.54997,
-		"totalSurvivalTime": 129.90155
+		"totalSurvivalTime": 157.83553
 	},
 	{
 		"userName": "sasaa",

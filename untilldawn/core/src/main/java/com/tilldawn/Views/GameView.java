@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -1229,6 +1228,7 @@ public class GameView implements Screen {
     }
 
     private void takeDamage(float amount) {
+        SoundManager.getInstance().play(SoundManager.PLAYER_HURT,0.4f);
 
         if (invincibilityTimer > 0) {
             return;
@@ -1409,6 +1409,8 @@ public class GameView implements Screen {
     }
 
     private void levelUp() {
+        SoundManager.getInstance().play(SoundManager.LEVEL_UP,0.9f);
+
         playerLevel++;
         playerXP -= xpToNextLevel;
 
@@ -1768,7 +1770,8 @@ public class GameView implements Screen {
     }
 
         public void forceLevelUp() {
-        playerLevel++;
+            SoundManager.getInstance().play(SoundManager.LEVEL_UP,0.9f);
+            playerLevel++;
 
         xpToNextLevel = 20 * playerLevel;
 

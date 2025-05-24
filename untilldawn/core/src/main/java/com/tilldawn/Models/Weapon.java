@@ -132,6 +132,7 @@ public class Weapon {
     }
 
     public boolean shoot(Vector2 playerPosition, float targetX, float targetY, boolean infiniteShootingEnabled) {
+        SoundManager.getInstance().play(SoundManager.WEAPON_FIRE,0.06f);
 
         if (!infiniteShootingEnabled && isReloading) {
             lastShootAttemptFailed = true;
@@ -212,6 +213,8 @@ public class Weapon {
     }
 
     public void startReload() {
+        SoundManager.getInstance().play(SoundManager.WEAPON_RELOAD,0.5f);
+
         if (!isReloading && currentAmmo < type.getMaxAmmo()) {
             isReloading = true;
             reloadTimer = 0;

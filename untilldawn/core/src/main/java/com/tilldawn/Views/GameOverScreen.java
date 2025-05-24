@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tilldawn.Controllers.GameController;
 import com.tilldawn.Models.GameAssetManager;
 import com.tilldawn.Models.SaveData;
+import com.tilldawn.Models.SoundManager;
 
 public class GameOverScreen implements Screen {
     private static final float WORLD_WIDTH = 800;
@@ -141,70 +142,14 @@ public class GameOverScreen implements Screen {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public void show() {
 
         if (isVictory) {
-
+            SoundManager.getInstance().play(SoundManager.YOU_WIN,0.9f);
 
         } else {
-
-
+            SoundManager.getInstance().play(SoundManager.YOU_LOSE,0.9f);
         }
     }
 
